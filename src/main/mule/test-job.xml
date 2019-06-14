@@ -17,10 +17,6 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 		
 			<set-variable value="#[payload]" doc:name="Save TestId" doc:id="07a13084-3712-4a51-be0c-2e20f0a51010" variableName="TestId"/>
 		<logger level="INFO" doc:name="Logger" doc:id="7a21533c-7569-435a-b941-09a080742acc" message="Started Testjob" />
-		<flow-ref doc:name="Check Time Server is Up" doc:id="0e8016f4-4473-4287-97fd-dfb5e50884ff" name="CheckTimeServerIsUp"/>
-		<choice doc:name="If Time server is available, due work" doc:id="75fceb65-bb92-42fd-b716-165e61435dd2" >
-			<when expression='#[vars.TimeServerIsAvailable == "true"]'>
-				<logger level="INFO" doc:name="Logger" doc:id="d515645e-6324-4f4f-8116-3558523a8c64" message="Time server is up, so will run test job"/>
 				<db:stored-procedure doc:name="Get details for Fusion Request" doc:id="a090a89e-459e-48d9-8483-a6cbbed2378e" config-ref="mssql-jdbc">
 				<db:sql>{ call GetNextFusionRequestToTest(:TestId) }</db:sql>
 				<db:input-parameters><![CDATA[#[{ 'TestId': vars.TestId }]]]></db:input-parameters>
@@ -45,7 +41,7 @@ output application/java
 			</ee:transform>
 				<flow-ref doc:name="buildSoapRequest" doc:id="2071d4b0-89a7-4ac3-ab20-78e61080350f" name="buildSoapRequest" />
 				<flow-ref doc:name="testFusionRequest" doc:id="24d7d97d-9c34-4b94-978c-8fc72693fb4c" name="testFusionRequest" />
-				<logger level="INFO" doc:name="Logger" doc:id="69d50fdd-1b99-4344-b4c6-3808d5daef53" message="Test job run, will result save in db" />
+				<logger level="INFO" doc:name="Logger" doc:id="69d50fdd-1b99-4344-b4c6-3808d5daef53" message="Test job run, will save result in db" />
 				<db:stored-procedure doc:name="Store test result" doc:id="18e6b2e3-204d-4f82-9791-abaf9d262559" config-ref="mssql-jdbc">
 				<db:sql>{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult,:ExpectedResponse,:ActualResponse,:ActualDCScalls,:NumberOfDifferences,:DCScallsMatch) }</db:sql>
 				<db:input-parameters><![CDATA[#[{
@@ -61,11 +57,10 @@ output application/java
 		
 </db:stored-procedure>
 				<logger level="INFO" doc:name="Logger" doc:id="9eb54461-a20b-442f-8156-c3a56d26e723" message="#['Finished testjob']" />
-			</when>
-		</choice>
+
 		<error-handler>
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="87b206cb-6aed-4f30-9311-fa01b9b2b58f" >
-				<logger level="INFO" doc:name="Logger" doc:id="3356136e-1030-41b2-9704-ba01c24754e2" message="There was an error in Testjob.: #[error.description]"/>
+				<logger level="INFO" doc:name="Logger" doc:id="3356136e-1030-41b2-9704-ba01c24754e2" message="There was an error when executing TestJob: #[error.description]"/>
 			</on-error-propagate>
 
 		</error-handler>
@@ -80,21 +75,33 @@ output application/java
 </http:request>
 			<error-handler>
 				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b43e246e-6232-4ea7-a8fd-9960a658e0d8" >
-					<logger level="INFO" doc:name="Logger" doc:id="f61e3544-40bd-455a-962d-36cd2a1a5c98" message="There was an error when calling Fusion: #[error.description]"/>
+					<set-variable value="#[error.description]" doc:name="Save error info" doc:id="190774c8-c41b-4028-a415-37d2e05e1e44" variableName="ErrorDescription"/>
+					<logger level="INFO" doc:name="Logger" doc:id="f61e3544-40bd-455a-962d-36cd2a1a5c98" message="There was an error when calling Fusion: #[vars.ErrorDescription]"/>
+					<flow-ref doc:name="SetTimeToCurrentTime" doc:id="3bb95090-8cdc-4466-be82-da1c2efe2c31" name="SetTimeToCurrentTime" />
 					<choice doc:name="Check if it timed out (the system time could have been reset externally)" doc:id="d38fb9b4-3db7-49ac-bf63-39da14b469ed" >
-						<when expression="#[error.description == &quot;HTTP POST on resource ''http://local.fusion.aero:80/FusionService.svc'' failed: Timeout exceeded.&quot;]">
+						<when expression="#[vars.ErrorDescription == &quot;HTTP POST on resource ''http://local.fusion.aero:80/FusionService.svc'' failed: Timeout exceeded.&quot;]">
 							<db:stored-procedure doc:name="Remove test record" doc:id="d6de20ff-9b76-4dd5-b8a3-580d2e151e47" config-ref="mssql-jdbc">
 								<db:sql >{ call RemoveTestRecord(:testid) }</db:sql>
 								<db:input-parameters ><![CDATA[#[{ 'TestId': vars.Testid }]]]></db:input-parameters>
 							</db:stored-procedure>
 						</when>
 						<otherwise >
+							<ee:transform doc:name="Build error message" doc:id="500eb2e9-72b9-4474-bfbc-f9f01795fe1b">
+								<ee:message>
+								</ee:message>
+								<ee:variables >
+									<ee:set-variable variableName="ErrorMessage" ><![CDATA[%dw 2.0
+output application/java
+---
+"There was an error when calling Fusion: " ++ vars.ErrorDescription]]></ee:set-variable>
+								</ee:variables>
+							</ee:transform>
 							<db:stored-procedure doc:name="Store Test Result" doc:id="88d11474-0fc1-4806-bf69-373bcd48e834" config-ref="mssql-jdbc">
 					<db:sql>{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult,:ExpectedResponse,:ActualResponse,:ActualDCScalls,:NumberOfDifferences,:DCScallsMatch) }</db:sql>
 						<db:input-parameters><![CDATA[#[{
 	'TestId': vars.TestId,
 	'FusionRequestId': vars.loggedItem.FusionRequestId,
-	'TestResult': error.description,
+	'TestResult': vars.ErrorMessage,
 	'ExpectedResponse': '',
 	'ActualResponse': '',
 	'ActualDCScalls': '',
@@ -105,7 +112,6 @@ output application/java
 					</db:stored-procedure>
 						</otherwise>
 					</choice>
-					<flow-ref doc:name="SetTimeToCurrentTime" doc:id="3bb95090-8cdc-4466-be82-da1c2efe2c31" name="SetTimeToCurrentTime" />
 				</on-error-propagate>
 			</error-handler>
 		</try>

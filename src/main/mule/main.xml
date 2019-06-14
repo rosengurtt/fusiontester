@@ -60,7 +60,7 @@ output application/java
 				<vm:publish doc:name="Send job to TestJobQueue" doc:id="01e532db-6c4a-4d23-a81e-216536561f9a" config-ref="VM_Config_TestJob" queueName="TestJobQueue" />
 			</when>
 		</choice>
-		<java:invoke-static doc:name="Sleep" doc:id="d41d9419-a9b3-4aed-b807-2aaae590989d" class="fusiontester.ThreadHandling" method="SleepNseconds(long) ">
+		<java:invoke-static doc:name="Sleep" doc:id="d41d9419-a9b3-4aed-b807-2aaae590989d" class="fusiontester.Helpers" method="SleepNseconds(long) ">
 			<java:args ><![CDATA[#[{i: vars.FusionTesterTimeout}]]]></java:args>
 		</java:invoke-static>
 		<choice doc:name="If there are records to process continue" doc:id="ba6e4b04-d8ee-4b1b-b58e-2c1d3c722fc5" >
@@ -83,12 +83,10 @@ output application/java
 		<set-variable value="${fusiontester.timeout}" doc:name="Set Timeout" doc:id="332da731-944f-4d19-93bb-6e15d43557af" variableName="FusionTesterTimeout" />
 	</flow>
 	<flow name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="367fc517-98ae-4525-ac63-f735cc96037c" >
-		<flow-ref doc:name="GetRealCurrentDateTime" doc:id="df017b21-c655-4d00-b412-cf4577595f8d" name="GetRealCurrentDateTime" />
 		<db:stored-procedure doc:name="Get Active Status of Testjob" doc:id="114db2a2-6a9d-49c5-852c-40d91fbb369b" config-ref="mssql-jdbc">
-			<db:sql>{ call IsTestJobActive(:TestId, :CurrentDateTimeString, :TimeoutInMilliSeconds) }</db:sql>
+			<db:sql>{ call IsTestJobActive(:TestId,  :TimeoutInMilliSeconds) }</db:sql>
 			<db:input-parameters><![CDATA[#[{ 
 'TestId': vars.TestId, 
-'CurrentDateTimeString': vars.RealCurrentDateTime,
 'TimeoutInMilliSeconds': vars.FusionTesterTimeout
 }]]]></db:input-parameters>
 		</db:stored-procedure>

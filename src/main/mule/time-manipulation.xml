@@ -10,6 +10,19 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+	<flow name="GetRealCurrentDateTime" doc:id="adce82b5-8ea3-43ec-8378-7cda430cef0d" >
+		<http:request method="GET" doc:name="Get real time" doc:id="ca763fa6-d6ec-49c8-8d04-6312a17fdabb" config-ref="RealTime_http_configuration" url="${real.time.server.url}" />
+		<ee:transform doc:name="Save in var 'RealCurrentDateTime'" doc:id="897beba6-14d1-4f19-83f4-9f32bd2d679e" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="RealCurrentDateTime" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.datetime as LocalDateTime as String {format: "yyyy-MM-dd hh:mm:ss"}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</flow>
 		<flow name="CheckTimeServerIsUp" doc:id="2ee5b06f-9acd-46d9-8455-e9a6436d5797" >
 		<try doc:name="Try" doc:id="9ae1c495-d26b-4069-aa33-dd981d479c4f" >
 			<flow-ref doc:name="GetRealCurrentDateTime" doc:id="def88170-4177-4001-9fbf-3b0f571eb4a8" name="GetRealCurrentDateTime" />
@@ -28,26 +41,31 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 			</error-handler>
 		</try>
 	</flow>
-	<flow name="GetRealCurrentDateTime" doc:id="adce82b5-8ea3-43ec-8378-7cda430cef0d" >
-		<http:request method="GET" doc:name="Get real time" doc:id="ca763fa6-d6ec-49c8-8d04-6312a17fdabb" config-ref="RealTime_http_configuration" url="${real.time.server.url}" />
-		<ee:transform doc:name="Save in var 'RealCurrentDateTime'" doc:id="897beba6-14d1-4f19-83f4-9f32bd2d679e" >
-			<ee:message >
-			</ee:message>
+	<flow name="SetTimeToCurrentTime" doc:id="c12be2a5-7c5a-4f0b-b50b-2c29597854d9" >
+				<java:invoke-static doc:name="Get Current Time using saved info" doc:id="af43cbb7-0c2e-4f2e-aff8-6279296eb697" class="fusiontester.Helpers" method="GetCurrentTimeFromSavedInfo(String, String)" target="CalculatedCurrentDateTime">
+			<java:args ><![CDATA[#[{ 'eventDateTime': vars.loggedItem.FusionRequestTime, 'savedCurrentDateTime': vars.CurrentDateTime  }]]]></java:args>
+		</java:invoke-static>
+		<ee:transform doc:name="Format request" doc:id="87adc105-4628-4538-9eb0-9c2e99395fd3" >
+			<ee:message />
 			<ee:variables >
-				<ee:set-variable variableName="RealCurrentDateTime" ><![CDATA[%dw 2.0
-output application/java
+				<ee:set-variable variableName="CurrentDateTime" ><![CDATA[%dw 2.0
+output application/json
 ---
-payload.datetime as LocalDateTime as String {format: "yyyy-MM-dd hh:mm:ss"}]]></ee:set-variable>
+{
+	datetime: vars.CalculatedCurrentDateTime
+}]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-	</flow>
-	<flow name="SetTimeToCurrentTime" doc:id="c12be2a5-7c5a-4f0b-b50b-2c29597854d9" >
-				<http:request method="GET" doc:name="Get real time" doc:id="7343f530-8d4c-4ace-b244-debdcdd0bb5c" config-ref="RealTime_http_configuration" url="${real.time.server.url}" />
-		<ee:transform doc:name="Format request" doc:id="17c06df7-b3da-4944-94ed-edf2a48f4b85">
+		<set-variable value="# [new java.util.Random().nextInt(20)]" doc:name="Generate Random Variable" doc:id="1e6e2b9a-9ddf-4422-b414-f2a4a6e065c0" variableName="RandomNumber"/>
+		<choice doc:name="5% of the time we get the time from an external source" doc:id="3dad5fee-73d7-4a1a-92a5-257357cc0d58" >
+			<when expression="vars.RandomNumber == 19">
+				<try doc:name="Try" doc:id="bf5614bd-6825-4359-ab5d-aadf56f75d74" >
+					<http:request method="GET" doc:name="Get real time" doc:id="7343f530-8d4c-4ace-b244-debdcdd0bb5c" config-ref="RealTime_http_configuration" url="${real.time.server.url}" />
+					<ee:transform doc:name="Format request" doc:id="17c06df7-b3da-4944-94ed-edf2a48f4b85">
 			<ee:message>
 			</ee:message>
 			<ee:variables>
-				<ee:set-variable variableName="DateTimeInCorrectFormat" ><![CDATA[%dw 2.0
+							<ee:set-variable variableName="CurrentDateTime" ><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -56,18 +74,38 @@ output application/json
 
 			</ee:variables>
 		</ee:transform>
-		<http:request method="POST" doc:name="TimeSetterWeb" doc:id="96277b73-448b-4e31-b776-62795221bf15" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
-				<http:body><![CDATA[#[vars.DateTimeInCorrectFormat]]]></http:body>
+					<logger level="INFO" doc:name="Logger" doc:id="b681dd95-357b-4bdc-9c50-431951771998" message="Setting time back to normal using external date time server" />
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b690856e-5575-4981-b2d4-2134369f72ee" >
+							<logger level="INFO" doc:name="Logger" doc:id="11582101-4b52-4048-9a91-b78e1dc5409f" message="Tried to get real time but failed. Error was: #[error.description]. Will use saved info instead."/>
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="df9e61d9-fc29-4759-b968-94ce44f771e6" message="Setting time back to normal using saved info"/>
+			</otherwise>
+		</choice>
+		<try doc:name="Try" doc:id="0f7f850f-8bb3-4d39-8615-8d547f074c6b" >
+			<http:request method="POST" doc:name="TimeSetterWeb" doc:id="96277b73-448b-4e31-b776-62795221bf15" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
+				<http:body><![CDATA[#[vars.CurrentDateTime]]]></http:body>
 				<http:response-validator>
 					<http:success-status-code-validator values="200..599" />
 				</http:response-validator>
 		</http:request>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="49943820-a982-49a3-989a-58cb04f1cef0" >
+					<logger level="INFO" doc:name="Logger" doc:id="26f9a60c-78e8-453f-9fa9-10396621329e" message="Failed to set current time. Error was: #[error.description]"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
 		<logger level="INFO" doc:name="Logger" doc:id="305df0f5-e8e0-46fe-b73e-2d2afd08b4be" message="Changed time to current time"/>
 	
 </flow>
 	
 	
 	<flow name="SetTimeToEventTime" doc:id="bfec2897-7c9a-4d5b-9f90-e902eda8ce66" >
+		<java:invoke-static method="SaveCurrentDateTime()" doc:name="Save current date time" doc:id="0b8f4760-dfbd-42e7-9d03-26de15b2404c" class="fusiontester.Helpers" target="CurrentDateTime"/>
 		<ee:transform doc:name="Format request" doc:id="41a795d7-3c75-42d6-9b3b-8e8025173c6b">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
