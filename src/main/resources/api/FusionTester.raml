@@ -1,0 +1,74 @@
+#%RAML 1.0
+title: FusionTester
+version: v1
+description: "Reads the Fusion requests from a table that has the logs of Fusion sesions and sends the requests to a Fusion service. It then compares the response from the Fusion service and compares it with the response in the log."
+
+/fusion:
+  post:
+    body:
+      application/json:
+        type: object
+        properties:
+          Airline:
+            type: string
+            required: false
+            default: "ALL airlines"
+            example: "FR"
+          Airport:
+            type: string
+            required: false
+            default: "ALL airports"
+            example: "MAN"
+          StartDate:
+            type: string
+            required: false
+            default: "1900-01-01"
+            example: "2019-05-08 22:17:09"
+          EndDate:
+            type: string
+            required: false
+            default: "2100-01-01"
+            example: "2019-05-08 22:17:09"
+          ParallelRuns:
+            type: integer
+            required: false
+            default: 3
+            example: 5
+          DBServerName:
+            type: string
+            required: true
+            example: "test.fusion.aero"
+          DatabaseName:
+            type: string
+            required: true
+            example: "FusionRequest"
+          DatabaseTable:
+            type: string
+            required: true
+            example: "FusionRequest"
+          DbUser:
+            type: string
+            required: true
+            example: "SonicService"
+          DbPassword:
+            type: string
+            required: true
+            example: "fsad9f341*fd^&gs"
+          FusionServiceUrl:
+            type: string
+            required: true
+            default: "local.pulse.aero"
+            example: "local.pulse.aero"
+
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            properties:
+              message:
+                type: string
+                #example: |
+                #  {
+                #    "message" : "Test started"
+                #  }

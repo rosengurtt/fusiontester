@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ns0:GetReservationByNativeReferenceResponse xmlns:ns0="http://services.fusion.aero">
+  <ns0:GetReservationByNativeReferenceResult>
+    <ns01:DcsRequestsIds xmlns:ns01="http://schemas.datacontract.org/2004/07/Fusion.Integration"/>
+    <ns01:Errors xmlns:ns01="http://schemas.datacontract.org/2004/07/Fusion.Integration"/>
+    <ns01:RequestId xmlns:ns01="http://schemas.datacontract.org/2004/07/Fusion.Integration">????</ns01:RequestId>
+    <ns01:ResponseId xmlns:ns01="http://schemas.datacontract.org/2004/07/Fusion.Integration">????</ns01:ResponseId>
+    <ns0:Reservation/>
+  </ns0:GetReservationByNativeReferenceResult>
+</ns0:GetReservationByNativeReferenceResponse>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Fusion.Integration" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Fusion.Integration" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="DepartureAirportCode" type="xs:string" />
+  <xs:element name="IataAirlineCode" type="xs:string" />
+  <xs:element name="MACAddress" type="xs:string" />
+  <xs:element name="RequestId" type="xs:string" />
+  <xs:element name="RequestSourceName" type="xs:string" />
+  <xs:element name="RequestType" type="xs:string" />
+  <xs:element name="TestRequest" type="xs:string" />
+  <xs:element name="OverridingKioskUser">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="DateCreated" type="xs:string" />
+        <xs:element name="DisplayName" type="xs:string" />
+        <xs:element name="HashedPassword" type="xs:string" />
+        <xs:element name="IsAdmin" type="xs:string" />
+        <xs:element name="LastLogin" type="xs:string" />
+        <xs:element name="NativeUserId" type="xs:string" />
+        <xs:element name="OrganisationId" type="xs:string" />
+        <xs:element name="UserId" type="xs:string" />
+        <xs:element name="UserName" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Session">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="EndTime" type="xs:string" />
+        <xs:element name="KioskId" type="xs:string" />
+        <xs:element name="LicensePlate" type="xs:string" />
+        <xs:element name="PNR" type="xs:string" />
+        <xs:element name="Price" type="xs:string" />
+        <xs:element name="ServiceConfigId" type="xs:string" />
+        <xs:element name="SessionId" type="xs:string" />
+        <xs:element name="StartTime" type="xs:string" />
+        <xs:element name="Status" type="xs:string" />
+        <xs:element name="UserId" type="xs:string" />
+        <xs:element name="Weight" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AirlineReference" type="xs:string" />
+  <xs:element name="ArrivalAirport" type="xs:string" />
+  <xs:element name="BarcodeData" type="xs:string" />
+  <xs:element name="BookingReference" type="xs:string" />
+  <xs:element name="ClientCode" type="xs:string" />
+  <xs:element name="DepartureAirport" type="xs:string" />
+  <xs:element name="DepartureDate" type="xs:string" />
+  <xs:element name="DepartureTime" type="xs:string" />
+  <xs:element name="FastTrack" type="xs:string" />
+  <xs:element name="FirstName" type="xs:string" />
+  <xs:element name="FlightNumber" type="xs:string" />
+  <xs:element name="GateClosureTime" type="xs:string" />
+  <xs:element name="IATACode" type="xs:string" />
+  <xs:element name="InfantName" type="xs:string" />
+  <xs:element name="LastName" type="xs:string" />
+  <xs:element name="PassengerName" type="xs:string" />
+  <xs:element name="Seat" type="xs:string" />
+  <xs:element name="SeatNumber" type="xs:string" />
+  <xs:element name="SequenceNumber" type="xs:string" />
+  <xs:element name="TermsAndConditions" type="xs:string" />
+</xs:schema>

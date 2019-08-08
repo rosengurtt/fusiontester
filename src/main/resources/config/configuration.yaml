@@ -1,0 +1,23 @@
+db:
+  server.name: "J-ROSENGURTT\\SQLEXPRESS"
+  database.name: "FusionRequest"
+  username: "sonic"
+  password: "sonic"
+
+http:
+  port: "8093"
+  host: "0.0.0.0"
+  basepath: "/"
+  
+https:
+  port: "8092"
+  host: "0.0.0.0"
+  basepath: "/"
+
+certificate:
+  keystore: "faky.keystore"
+  password: "password"
+  
+fusion:
+  url: "local.fusion.aero"
+  port: "80"

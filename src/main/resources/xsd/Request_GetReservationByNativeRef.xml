@@ -1,0 +1,38 @@
+﻿<GetReservationByNativeReference_Request xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <RequestId>18ddd343-751d-4e16-9a83-00083f4a9bfe</RequestId>
+  <IataAirlineCode>FR</IataAirlineCode>
+  <DepartureAirportCode>DUB</DepartureAirportCode>
+  <MACAddress>B8-AE-ED-7E-9D-F0</MACAddress>
+  <TestRequest>false</TestRequest>
+  <RequestType>DCS</RequestType>
+  <RequestSourceName>DUB/000208</RequestSourceName>
+  <Session>
+    <SessionId>59557770-1b36-4fbd-b586-9b6d7142f3f4</SessionId>
+    <KioskId>0e08986a-de11-464d-913c-2706ce39829e</KioskId>
+    <ServiceConfigId>00000000-0000-0000-0000-000000000000</ServiceConfigId>
+    <UserId>098db1c2-529f-4cbf-87c5-af718afa549b</UserId>
+    <StartTime>2019-06-18T04:50:41.6471213+01:00</StartTime>
+    <EndTime xsi:nil="true" />
+    <Weight>11.7</Weight>
+    <Price>0</Price>
+    <Status>Started</Status>
+    <PNR>A5RB4X</PNR>
+  </Session>
+  <NativeReference>A5RB4X</NativeReference>
+  <AirlineReference>.5181W 9168BFR 04056813610012A0000000000000 1                          N</AirlineReference>
+  <BoardingPassInfo>
+    <FlightNumber>7128</FlightNumber>
+    <DepartureDate>2019-06-18T00:00:00</DepartureDate>
+    <DepartureAirport>DUB</DepartureAirport>
+    <ArrivalAirport>FUE</ArrivalAirport>
+    <BarcodeData>M1HUME/JAMIE           A5RB4X DUBFUEFR 7128 169Y026D0155 348.5181W 9168BFR 04056813610012A0000000000000 1                          N</BarcodeData>
+    <SequenceNumber>0155</SequenceNumber>
+    <BookingReference>A5RB4X</BookingReference>
+    <FastTrack>false</FastTrack>
+    <AirlineReference>.5181W 9168BFR 04056813610012A0000000000000 1                          N</AirlineReference>
+    <Seat>026D</Seat>
+    <FirstName>JAMIE</FirstName>
+    <LastName>HUME</LastName>
+    <IATACode>FR</IATACode>
+  </BoardingPassInfo>
+</GetReservationByNativeReference_Request>

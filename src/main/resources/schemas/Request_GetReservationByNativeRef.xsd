@@ -1,0 +1,54 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="GetReservationByNativeReference_Request">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element type="xs:string" name="RequestId"/>
+        <xs:element type="xs:string" name="IataAirlineCode"/>
+        <xs:element type="xs:string" name="DepartureAirportCode"/>
+        <xs:element type="xs:string" name="MACAddress"/>
+        <xs:element type="xs:string" name="TestRequest"/>
+        <xs:element type="xs:string" name="RequestType"/>
+        <xs:element type="xs:string" name="RequestSourceName"/>
+        <xs:element name="Session">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="SessionId"/>
+              <xs:element type="xs:string" name="KioskId"/>
+              <xs:element type="xs:string" name="ServiceConfigId"/>
+              <xs:element type="xs:string" name="UserId"/>
+              <xs:element type="xs:dateTime" name="StartTime"/>
+              <xs:element type="xs:string" name="EndTime" nillable="true"/>
+              <xs:element type="xs:float" name="Weight"/>
+              <xs:element type="xs:byte" name="Price"/>
+              <xs:element type="xs:string" name="Status"/>
+              <xs:element type="xs:string" name="PNR"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element type="xs:string" name="NativeReference"/>
+        <xs:element type="xs:string" name="AirlineReference"/>
+        <xs:element name="BoardingPassInfo">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:short" name="FlightNumber"/>
+              <xs:element type="xs:dateTime" name="DepartureDate"/>
+              <xs:element type="xs:string" name="DepartureAirport"/>
+              <xs:element type="xs:string" name="ArrivalAirport"/>
+              <xs:element type="xs:string" name="BarcodeData"/>
+              <xs:element type="xs:short" name="SequenceNumber"/>
+              <xs:element type="xs:string" name="BookingReference"/>
+              <xs:element type="xs:string" name="FastTrack"/>
+              <xs:element type="xs:string" name="AirlineReference"/>
+              <xs:element type="xs:float" name="Seat"/>
+              <xs:element type="xs:string" name="FirstName"/>
+              <xs:element type="xs:string" name="LastName"/>
+              <xs:element type="xs:string" name="IATACode"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+
+

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
+<xs:schema xmlns:tns="http://services.fusion.aero" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://services.fusion.aero" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="schema2.xsd" namespace="http://schemas.datacontract.org/2004/07/Fusion.Integration" />
+  <xs:import schemaLocation="schema3.xsd" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:element name="GetReservationByNativeReference">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="request">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q1:DepartureAirportCode" />
+              <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q2:IataAirlineCode" />
+              <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q3:MACAddress" />
+              <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q4:RequestId" />
+              <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q5:RequestSourceName" />
+              <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q6:RequestType" />
+              <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q7:TestRequest" />
+              <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q8:OverridingKioskUser" />
+              <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q9:Session" />
+              <xs:element name="AirlineReference" type="xs:string" />
+              <xs:element name="BagTagNumber" type="xs:string" />
+              <xs:element name="BoardingPassInfo">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q10:AirlineReference" />
+                    <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q11:ArrivalAirport" />
+                    <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q12:BarcodeData" />
+                    <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q13:BookingReference" />
+                    <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q14:ClientCode" />
+                    <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q15:DepartureAirport" />
+                    <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q16:DepartureDate" />
+                    <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q17:DepartureTime" />
+                    <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q18:FastTrack" />
+                    <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q19:FirstName" />
+                    <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q20:FlightNumber" />
+                    <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q21:GateClosureTime" />
+                    <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q22:IATACode" />
+                    <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q23:InfantName" />
+                    <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q24:LastName" />
+                    <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q25:PassengerName" />
+                    <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q26:Seat" />
+                    <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q27:SeatNumber" />
+                    <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q28:SequenceNumber" />
+                    <xs:element xmlns:q29="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q29:TermsAndConditions" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="NativeReference" type="xs:string" />
+              <xs:element name="PolicySupport">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element xmlns:q30="http://schemas.microsoft.com/2003/10/Serialization/Arrays" ref="q30:KeyValueOfPolicyTypebooleanMK9aSvu_S" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

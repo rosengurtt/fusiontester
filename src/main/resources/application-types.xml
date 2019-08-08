@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="SampleGetReservationByNativeRef" format="xml">
+      <types:shape format="xml-schema" element="GetReservationByNativeReference_Request" location="schemas/Request_GetReservationByNativeRef.xsd"/>
+    </types:type>
+    <types:type name="SampleGetReservationByNativeRefResponse" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+    <types:type name="GetReservationByNativeReferenceWSResponse" format="xml">
+      <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="xsd/ws/GetReservationByNativeReference/Response/schema0.xsd"/>
+    </types:type>
+    <types:type name="GetReservationByNativeReferenceLogResponse" format="xml">
+      <types:shape format="xml-schema" element="GetReservationByNativeReference_Response" location="xsd/log/GetReservationByNativeReference/Response/schema0.xsd"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#060fc1ae-0b3c-4f7b-802c-557c4ec1aa58">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="SampleGetReservationByNativeRef"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#442222af-363b-494d-bd08-e946befaa7c4">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="GetReservationByNativeReferenceWSResponse"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="GetReservationByNativeReferenceLogResponse"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#f41ab2c1-e3dd-4f4c-917c-8152cab1fca9">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="GetReservationByNativeReferenceWSResponse"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="GetReservationByNativeReferenceLogResponse"/>
+        </types:message>
+        <types:variables>
+          <types:variable name="actualResponse" type="GetReservationByNativeReferenceLogResponse"/>
+        </types:variables>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
