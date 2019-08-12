@@ -2,6 +2,9 @@
   "sampleData": {
     "ea74384e-31d1-429d-a1f6-7d96499d2c9a": {
       "payload": "sample_data/getreservationbynativereferenceresponse.xml"
+    },
+    "f41ab2c1-e3dd-4f4c-917c-8152cab1fca9": {
+      "payload": "sample_data/unknown.dwl"
     }
   }
 }

@@ -28,7 +28,8 @@ output application/java
 	DatabaseTable: payload['DatabaseTable'],
 	DbUser: payload['DbUser'],
 	DbPassword: payload['DbPassword'],	
-	FusionServiceUrl: payload['FusionServiceUrl']
+	FusionServiceUrl: payload['FusionServiceUrl'],
+	TestInfo: payload['TestInfo']
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
@@ -83,82 +84,13 @@ output application/java
 	FusionRequestId: payload[0].FusionRequestId[0],
 	FusionRequestXml: payload[0].FusionRequestXml[0],
 	FusionResponseXml: payload[0].FusionResponseXml[0],
-	FusionRequestType: payload[0].RequestType[0]
+	FusionRequestType: payload[0].RequestType[0],
+	FusionRequestTypeLowerCase: lower (payload[0].RequestType[0])
 }]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
-			<set-payload value="#[vars.loggedItem.FusionRequestXml]" doc:name="Copy logged request to payload" doc:id="14f4dd9c-4ea8-4d79-9d0a-db83fe64cb19" mimeType="application/xml"/>
-			<ee:transform doc:name="Create SOAP request" doc:id="060fc1ae-0b3c-4f7b-802c-557c4ec1aa58">
-				<ee:message>
-					<ee:set-payload ><![CDATA[%dw 2.0
-output application/xml 
-ns a http://www.w3.org/2005/08/addressing
-ns s http://www.w3.org/2003/05/soap-envelope
-ns ns0 http://services.fusion.aero
-ns ns01 http://schemas.datacontract.org/2004/07/Fusion.Integration
-ns i http://www.w3.org/2001/XMLSchema-instance
----
-
-{
-	s#Envelope:{
-		s#Header: 
-			{
-	          a#Action @(s#mustUnderstand: "1"): "http://services.fusion.aero/IFusionService/GetReservationByNativeReference",
-	          a#MessageID: "urn:uuid:e933edc2-19c0-4e4e-87c2-8628bc7bf3b7",
-	          a#ReplyTo: {
-	          	a#Address: "http://www.w3.org/2005/08/addressing/anonymous"
-	          },
-	          a#To @(s#mustUnderstand: "1"): "http://local.fusion.aero/FusionService.svc"
-	     	},
-	     s#Body:
-			{
-				ns0#GetReservationByNativeReference: {
-					ns0#request: {
-						ns01#DepartureAirportCode: payload.GetReservationByNativeReference_Request.DepartureAirportCode,
-						ns01#IataAirlineCode: payload.GetReservationByNativeReference_Request.IataAirlineCode,
-						ns01#MACAddress: payload.GetReservationByNativeReference_Request.MACAddress,
-						ns01#RequestId: payload.GetReservationByNativeReference_Request.RequestId,
-						ns01#RequestSourceName: payload.GetReservationByNativeReference_Request.RequestSourceName,
-						ns01#RequestType: payload.GetReservationByNativeReference_Request.RequestType,
-						ns01#TestRequest: payload.GetReservationByNativeReference_Request.TestRequest as Boolean,
-						ns01#Session: {
-							ns01#EndTime: '2119-08-06T09:41:13.1896001Z' as DateTime,
-							ns01#KioskId: payload.GetReservationByNativeReference_Request.Session.KioskId,
-							ns01#PNR: payload.GetReservationByNativeReference_Request.Session.PNR,
-							ns01#Price: payload.GetReservationByNativeReference_Request.Session.Price,
-							ns01#ServiceConfigId: payload.GetReservationByNativeReference_Request.Session.ServiceConfigId,
-							ns01#SessionId: payload.GetReservationByNativeReference_Request.Session.SessionId,
-							ns01#StartTime: payload.GetReservationByNativeReference_Request.Session.StartTime,
-							ns01#Status: payload.GetReservationByNativeReference_Request.Session.Status,
-							ns01#UserId: payload.GetReservationByNativeReference_Request.Session.UserId,
-							ns01#Weight: payload.GetReservationByNativeReference_Request.Session.Weight
-						},
-						ns0#AirlineReference: payload.GetReservationByNativeReference_Request.AirlineReference,
-						ns0#BoardingPassInfo: {
-							ns01#AirlineReference: payload.GetReservationByNativeReference_Request.BoardingPassInfo.AirlineReference,
-							ns01#ArrivalAirport: payload.GetReservationByNativeReference_Request.BoardingPassInfo.ArrivalAirport,
-							ns01#BarcodeData: payload.GetReservationByNativeReference_Request.BoardingPassInfo.BarcodeData,
-							ns01#BookingReference: payload.GetReservationByNativeReference_Request.BoardingPassInfo.BookingReference,
-							ns01#DepartureAirport: payload.GetReservationByNativeReference_Request.BoardingPassInfo.DepartureAirport,
-							ns01#DepartureDate: payload.GetReservationByNativeReference_Request.BoardingPassInfo.DepartureDate,
-							ns01#FastTrack: payload.GetReservationByNativeReference_Request.BoardingPassInfo.FastTrack as Boolean,
-							ns01#FirstName: payload.GetReservationByNativeReference_Request.BoardingPassInfo.FirstName,
-							ns01#FlightNumber: payload.GetReservationByNativeReference_Request.BoardingPassInfo.FlightNumber as String,
-							ns01#IATACode: payload.GetReservationByNativeReference_Request.BoardingPassInfo.IATACode,
-							ns01#LastName: payload.GetReservationByNativeReference_Request.BoardingPassInfo.LastName,
-							ns01#Seat: payload.GetReservationByNativeReference_Request.BoardingPassInfo.Seat as String,
-							ns01#SequenceNumber: payload.GetReservationByNativeReference_Request.BoardingPassInfo.SequenceNumber as String
-						},
-						ns0#NativeReference: payload.GetReservationByNativeReference_Request.NativeReference
-					}
-				}
-			}
-		}
-}]]></ee:set-payload>
-				</ee:message>
-				<ee:variables >
-				</ee:variables>
-			</ee:transform>
+	
+			<flow-ref doc:name="buildSoapRequest" doc:id="2071d4b0-89a7-4ac3-ab20-78e61080350f" name="buildSoapRequest"/>
 			<http:request method="POST" doc:name="Fusion WS" doc:id="8f351ffe-262c-498f-801e-66d6cdd266f7" config-ref="FusionWebService" path="/FusionService.svc">
 				<http:headers ><![CDATA[#[output application/java
 ---
@@ -175,211 +107,29 @@ ns i http://www.w3.org/2001/XMLSchema-instance
 					<wsc:headers><![CDATA[#[vars.soapHeader]]]></wsc:headers>
     </wsc:message>
 			</wsc:consume>-->
-			<ee:transform doc:name="Format and save response to 'actualResponse'" doc:id="f41ab2c1-e3dd-4f4c-917c-8152cab1fca9" >
-				<ee:message >
-				</ee:message>
-				<ee:variables >
-					<ee:set-variable variableName="actualResponse" ><![CDATA[%dw 2.0
-output application/xml skipNullOn="everywhere"
-ns ns0 http://services.fusion.aero
-ns ns01 http://schemas.datacontract.org/2004/07/Fusion.Integration
-ns ns02 http://schemas.microsoft.com/2003/10/Serialization/Arrays
-ns ns03 http://www.w3.org/2003/05/soap-envelope
----
-{
-	GetReservationByNativeReference_Response: {
-		RequestId: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#RequestId,
-		ResponseId: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#ResponseId,
-		DcsRequestsIds: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#DcsRequestsIds.ns02#guid,
-		Errors: {
-			FusionError: {
-				Code: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#Errors.ns01#FusionError.ns01#Code,
-				Critical: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#Errors.ns01#FusionError.ns01#Critical,
-				Description: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#Errors.ns01#FusionError.ns01#Description,
-				Method: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#Errors.ns01#FusionError.ns01#Method,
-				Source: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#Errors.ns01#FusionError.ns01#Source
-			}
-		},
-		Reservation: {
-			NativeReference: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#NativeReference,
-			IsGroupBooking: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#IsGroupBooking,
-			Flights: {
-				Flight: {
-					Id: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#Id,
-					Origin: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#Origin,
-					Destination: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#Destination,
-					DepartureTime: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#DepartureTime,
-					ArrivalTime: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#ArrivalTime,
-					UTCDepartureTime: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#UTCDepartureTime,
-					UTCArrivalTime: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#UTCArrivalTime,
-					OperatingCarrier: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#OperatingCarrier,
-					MarketingCarrier: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#MarketingCarrier,
-					FlightNumber: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#FlightNumber,
-					NativeFlightId: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#NativeFlightId,
-					FlightRPH: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#FlightRPH,
-					ApisRequired: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#ApisRequired,
-					RequireMultipleAPISDocuments: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#RequireMultipleAPISDocuments,
-					OpenForCheckIn: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#OpenForCheckIn,
-					OpenForBoarding: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#OpenForBoarding,
-					ConnectingFlight: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#ConnectingFlight,
-					JourneyRPH: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#JourneyRPH,
-					CustomProperties: {	
-						 string: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#CustomProperties.*string					
-					},
-				}
-			},
-			Passengers: {
-				(payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Passengers.*ns01#Passenger map ( passenger , indexOfPassenger ) -> {
-					Passenger: {
-						PassengerId: passenger.ns01#PassengerId,
-						Title: passenger.ns01#Title,
-						FirstName: passenger.ns01#FirstName,
-						MiddleName: passenger.ns01#MiddleName,
-						LastName: passenger.ns01#LastName,
-						NativePassengerId: passenger.ns01#NativePassengerId,
-						Gender: passenger.ns01#Gender,
-						DateOfBirth: passenger.ns01#DateOfBirth ,
-						PassengerSequenceNumber: passenger.ns01#PassengerSequenceNumber,
-						SeatNumber: passenger.ns01#SeatNumber,
-						PaxType: passenger.ns01#PaxType,
-						PassengerRPH: passenger.ns01#PassengerRPH,
-						ConnectingFlightNumber: passenger.ns01#ConnectingFlightNumber,
-						ConfirmedDga: passenger.ns01#ConfirmedDga,
-						ConfirmedIdentity: passenger.ns01#ConfirmedIdentity,
-						AllowanceRetrieved: passenger.ns01#AllowanceRetrieved,
-						IsSelected: passenger.ns01#IsSelected,
-						IsSelectableForBoardingPass: passenger.ns01#IsSelectableForBoardingPass,
-						ClearanceRequired: passenger.ns01#ClearanceRequired,
-						ClearanceStatus: passenger.ns01#ClearanceStatus,
-						CheckedIn: passenger.ns01#CheckedIn,
-						RequiresCheckin: passenger.ns01#RequiresCheckin,
-						SupportsCheckin: passenger.ns01#SupportsCheckin,
-						Boarded: passenger.ns01#Boarded,
-						Active: passenger.ns01#Active,
-						DocumentCheckRequired: passenger.ns01#DocumentCheckRequired,
-						Identity: {
-							LastAPIS: {
-								Surname: passenger.ns01#Identity.ns01#LastAPIS.ns01#Surname,
-								Firstname: passenger.ns01#Identity.ns01#LastAPIS.ns01#Firstname,
-								DateOfBirth: passenger.ns01#Identity.ns01#LastAPIS.ns01#DateOfBirth,
-								Nationality: passenger.ns01#Identity.ns01#LastAPIS.ns01#Nationality,
-								DocumentType: passenger.ns01#Identity.ns01#LastAPIS.ns01#DocumentType,
-								DocumentNumber: passenger.ns01#Identity.ns01#LastAPIS.ns01#DocumentNumber,
-								DocumentIssueDate: passenger.ns01#Identity.ns01#LastAPIS.ns01#DocumentIssueDate ,
-								DocumentExpiryDate: passenger.ns01#Identity.ns01#LastAPIS.ns01#DocumentExpiryDate ,
-								CountryOfIssue: passenger.ns01#Identity.LastAPIS.ns01#CountryOfIssue
-							}
-						},
-						Baggage: {
-							BaggageAllowance: {
-								Id: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#Id,
-								BaggageAllowanceTypeId: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#BaggageAllowanceTypeId,
-								BaggageItemTypeId: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#BaggageItemTypeId,
-								BagDropId: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#BagDropId,
-								FlightId: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#FlightId,
-								PassengerId: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#PassengerId,
-								PoolItems: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#PoolItems,
-								PoolWeight: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#PoolWeight,
-								ConsumeItemWeight: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#ConsumeItemWeight,
-								UpdateInitialAllowance: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#UpdateInitialAllowance,
-								MaxSingleItemWeight: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#MaxSingleItemWeight,
-								InitialBags: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#InitialBags,
-								InitialWeight: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#InitialWeight,
-								PurchasedBags: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#PurchasedBags,
-								PurchasedWeight: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#PurchasedWeight,
-								RemainingBags: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#RemainingBags,
-								RemainingWeight: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#RemainingWeight,
-								CreatedOn: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#CreatedOn
-							},
-							BaggageAllowances: {
-								"text()": passenger.ns01#Baggage.ns01#BaggageAllowances."text()"
-							},
-							BaggageItems: {
-								BaggageItem: {
-									Id: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Id,
-									BaggageAllowanceId: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#BaggageAllowanceId,
-									PassengerId: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#PassengerId,
-									TagNumber: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#TagNumber,
-									Weight: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Weight,
-									InitialWeight: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#InitialWeight,
-									BaggageItemType: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#BaggageItemType,
-									BaggageItemTypeId: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#BaggageItemTypeId,
-									BaggageItemTypeName: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#BaggageItemTypeName,
-									BaggageItemSubTypeId: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#BaggageItemSubTypeId,
-									HasNotionalWeight: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#HasNotionalWeight,
-									OutOfGauge: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#OutOfGauge,
-									ConsumeAllowance: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#ConsumeAllowance,
-									Registered: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Registered,
-									Printed: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Printed,
-									Dropped: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Dropped,
-									RegisteredTime: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#RegisteredTime,
-									PrintedTime: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#PrintedTime,
-									DroppedTime: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#DroppedTime,
-									CreatedOn: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#CreatedOn,
-									NativeBaggageId:  passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#NativeBaggageId,
-									Active: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Active
-								}
-							},
-							MaxSingleItemWeight: passenger.ns01#Baggage.ns01#MaxSingleItemWeight
-						},
-						SSRs: {
-							SSR: {
-								SSRCode: passenger.ns01#SSRs.ns01#SSR.ns01#SSRCode,
-								SSRDescription: {
-									"text()": passenger.ns01#SSRs.ns01#SSR.ns01#SSRDescription
-								},
-								FeeCode: passenger.ns01#SSRs.ns01#SSR.ns01#FeeCode,
-								PaxNumber: passenger.ns01#SSRs.ns01#SSR.ns01#PaxNumber,
-								Price: passenger.ns01#SSRs.ns01#SSR.ns01#Price
-							}
-						},
-						CustomProperties: {
-							string: passenger.ns01#CustomProperties
-						}
-					}
-				})
-			},
-			Contact: {
-				ContactTitle: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Contact.ns01#ContactTitle,
-				ContactFirstName: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Contact.ns01#ContactFirstName,
-				ContactLastName: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Contact.ns01#ContactLastName,
-				TelephoneNumber: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Contact.ns01#TelephoneNumber,
-				EmailAddress: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Contact.ns01#EmailAddress,
-				AddressLine: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Contact.ns01#AddressLine,
-				City: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Contact.ns01#City,
-				Country: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Contact.ns01#Country,
-				PostalCode: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Contact.ns01#PostalCode,
-				CompanyName: {
-					"text()": payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Contact.ns01#CompanyName
-				},
-				NotificationPreference: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Contact.ns01#NotificationPreference
-			},
-			IsCachedReservation: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#IsCachedReservation,
-			BalanceDueOnReservation: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#BalanceDueOnReservation,
-			NextFlightRph: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#NextFlightRph
-		}
-	}
-}]]></ee:set-variable>
-				</ee:variables>
-			</ee:transform>
+			<flow-ref doc:name="formatResponse" doc:id="ebabee6f-5948-4d52-85c0-9216bd0d3ad0" name="formatResponse"/>
+
+			
 			<java:invoke-static doc:name="Compare logged response with actual" doc:id="e4467348-009a-44b9-be6e-1bed32177923" class="fusiontester.ProcessData" method="CompareFusionResponses(String, String, String)">
-				<java:args ><![CDATA[#[{ 
+				<java:args><![CDATA[#[{ 
 	requestType: vars.loggedItem.FusionRequestType,
 	loggedResponse: vars.loggedItem.FusionResponseXml,
 	actualResponse: vars.actualResponse
 }]]]></java:args>
+
 			</java:invoke-static>
 			<db:stored-procedure doc:name="Store test result" doc:id="18e6b2e3-204d-4f82-9791-abaf9d262559" config-ref="mssql-jdbc">
-				<db:sql >{ call UpdateTestResult(:DatabaseName, :TableName, :FusionRequestId, :TestResult) }</db:sql>
+				<db:sql >{ call InsertTestResult(:DatabaseName, :TableName, :FusionRequestId, :TestResult, :TestInfo) }</db:sql>
 				<db:input-parameters ><![CDATA[#[{
 	'DatabaseName': vars.inputData.DatabaseName,
 	'TableName': vars.inputData.DatabaseTable,
 	'FusionRequestId': vars.loggedItem.FusionRequestId,
-	'TestResult': payload
+	'TestResult': payload,
+	'TestInfo': vars.inputData.TestInfo
 }]]]></db:input-parameters>
 			</db:stored-procedure>
 		
 </foreach>
 	</flow>
-	
+
 </mule>

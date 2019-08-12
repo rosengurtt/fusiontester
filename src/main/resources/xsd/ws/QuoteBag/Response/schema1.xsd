@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
+<xs:schema xmlns:tns="http://services.fusion.aero" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://services.fusion.aero" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="schema2.xsd" namespace="http://schemas.datacontract.org/2004/07/Fusion.Integration" />
+  <xs:element name="QuoteBagResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="QuoteBagResult">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q1:DcsRequestsIds" />
+              <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q2:Errors" />
+              <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q3:RequestId" />
+              <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q4:ResponseId" />
+              <xs:element name="Costs">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q5:CardPayment" />
+                    <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q6:Currency" />
+                    <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q7:ItemList" />
+                    <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q8:PaymentReference" />
+                    <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q9:PaymentType" />
+                    <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q10:PaymentTypeDetail" />
+                    <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q11:QuoteStatus" />
+                    <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q12:StatusMessage" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

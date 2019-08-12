@@ -1,4 +1,4 @@
-package fusiontester;
+package fusiontester.methods;
 
 
 public class GetReservationByNativeReference {

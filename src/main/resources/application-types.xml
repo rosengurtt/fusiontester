@@ -1,29 +1,61 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
   <types:catalog>
-    <types:type name="SampleGetReservationByNativeRef" format="xml">
-      <types:shape format="xml-schema" element="GetReservationByNativeReference_Request" location="schemas/Request_GetReservationByNativeRef.xsd"/>
-    </types:type>
-    <types:type name="SampleGetReservationByNativeRefResponse" format="java">
-      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
-type: string]]></types:shape>
-    </types:type>
     <types:type name="GetReservationByNativeReferenceWSResponse" format="xml">
       <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="xsd/ws/GetReservationByNativeReference/Response/schema0.xsd"/>
     </types:type>
     <types:type name="GetReservationByNativeReferenceLogResponse" format="xml">
       <types:shape format="xml-schema" element="GetReservationByNativeReference_Response" location="xsd/log/GetReservationByNativeReference/Response/schema0.xsd"/>
     </types:type>
+    <types:type name="GetBagLicensePlateLogResponse" format="xml">
+      <types:shape format="xml-schema" element="GetBagLicensePlate_Response" location="xsd/log/GetBagLicensePlate/Response/schema0.xsd"/>
+    </types:type>
+    <types:type name="GetBagLicensePlateWSResponse" format="xml">
+      <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="schemas/schema0.xsd"/>
+    </types:type>
+    <types:type name="GetBagLicensePlateLogRequest" format="xml">
+      <types:shape format="xml-schema" element="GetBagLicensePlate_Request" location="schemas/schema0-1.xsd"/>
+    </types:type>
+    <types:type name="GetBagLicensePlateWSRequest" format="xml">
+      <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="xsd/ws/GetBagLicensePlate/Request/schema0.xsd"/>
+    </types:type>
+    <types:type name="QuoteBagLogRequest" format="xml">
+      <types:shape format="xml-schema" element="QuoteBag_Request" location="schemas/schema0-2.xsd"/>
+    </types:type>
+    <types:type name="QuoteBagWSRequest" format="xml">
+      <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="xsd/ws/QuoteBag/Request/schema0.xsd"/>
+    </types:type>
+    <types:type name="QuoteBagWSResponse" format="xml">
+      <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="xsd/ws/QuoteBag/Response/schema0.xsd"/>
+    </types:type>
+    <types:type name="QuoteBagLogResponse" format="xml">
+      <types:shape format="xml-schema" element="QuoteBag_Response" location="xsd/log/QuoteBag/Response/schema0.xsd"/>
+    </types:type>
+    <types:type name="BuyAllowanceLogRequest" format="xml">
+      <types:shape format="xml-schema" element="BuyAllowance_Request" location="schemas/schema0-3.xsd"/>
+    </types:type>
+    <types:type name="BuyAllowanceWSRequest" format="xml">
+      <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="xsd/ws/BuyAllowance/Request/schema0.xsd"/>
+    </types:type>
+    <types:type name="BuyAllowanceWSResponse" format="xml">
+      <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="xsd/ws/BuyAllowance/Response/schema0.xsd"/>
+    </types:type>
+    <types:type name="BuyAllowanceLogResponse" format="xml">
+      <types:shape format="xml-schema" element="BuyAllowance_Response" location="xsd/log/BuyAllowance/Response/schema0.xsd"/>
+    </types:type>
+    <types:type name="CheckInPassengerLogRequest" format="xml">
+      <types:shape format="xml-schema" element="CheckInPassenger_Request" location="xsd/log/CheckInPassenger/Request/schema0.xsd"/>
+    </types:type>
+    <types:type name="CheckInpassengerWSRequest" format="xml">
+      <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="xsd/ws/CheckInPassenger/Request/schema0.xsd"/>
+    </types:type>
+    <types:type name="CheckInPassengerWSResponse" format="xml">
+      <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="xsd/ws/CheckInPassenger/Response/schema0.xsd"/>
+    </types:type>
+    <types:type name="CheckInPassengerLogResponse" format="xml">
+      <types:shape format="xml-schema" element="CheckInPassenger_Response" location="xsd/log/CheckInPassenger/Response/schema0.xsd"/>
+    </types:type>
   </types:catalog>
-  <types:enrichment select="#060fc1ae-0b3c-4f7b-802c-557c4ec1aa58">
-    <types:processor-declaration>
-      <types:input-event>
-        <types:message>
-          <types:payload type="SampleGetReservationByNativeRef"/>
-        </types:message>
-      </types:input-event>
-    </types:processor-declaration>
-  </types:enrichment>
   <types:enrichment select="#442222af-363b-494d-bd08-e946befaa7c4">
     <types:processor-declaration>
       <types:input-event>
@@ -51,6 +83,119 @@ type: string]]></types:shape>
         </types:message>
         <types:variables>
           <types:variable name="actualResponse" type="GetReservationByNativeReferenceLogResponse"/>
+        </types:variables>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#0af4af04-2abd-4c31-a321-526504469999">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="GetBagLicensePlateWSResponse"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="GetBagLicensePlateLogResponse"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#9c41ed1c-d8a9-416d-a753-3b73bd58cf63">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="GetBagLicensePlateLogRequest"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="GetBagLicensePlateWSRequest"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#81571efe-d025-4aa6-bb2f-4c42927342a9">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="QuoteBagLogRequest"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="QuoteBagWSRequest"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#ea1a34f2-a321-473f-8a77-a9dd6a79c3fb">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="QuoteBagWSResponse"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="QuoteBagLogResponse"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#faecf697-e8b0-4773-911c-4e2e2b40a54a">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:attributes type="BuyAllowanceLogRequest"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="BuyAllowanceWSRequest"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#f757c8c5-8194-4eef-b7ac-0bd57acf7328">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="BuyAllowanceWSResponse"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:variables>
+          <types:variable name="actualResponse" type="BuyAllowanceLogResponse"/>
+        </types:variables>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#e6b4e35d-bbfe-4a8a-b581-ca78c7304b75">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="CheckInPassengerLogRequest"/>
+          <types:attributes type="CheckInPassengerLogRequest"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="CheckInpassengerWSRequest"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#3e6101dd-4d82-4bd6-adc1-4f6cd13511c9">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="CheckInPassengerWSResponse"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:variables>
+          <types:variable name="actualResponse" type="CheckInPassengerLogResponse"/>
         </types:variables>
       </types:output-event>
     </types:processor-declaration>

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 public class ProcessInput {
 	
+	/*
 	public static HashMap setSearchParams(HashMap<String,String> inputData) {
 		HashMap<String, String> retVal = new HashMap<String, String>();
 		retVal.put("Airline", "%");
@@ -15,5 +16,5 @@ public class ProcessInput {
 		retVal.put("TableName", "FusionRequests");
 		return retVal;
 	}
-
+*/
 }

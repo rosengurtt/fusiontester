@@ -34,7 +34,7 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 	</wsc:config>
 	
 	
-	<http:request-config name="FusionWebService" doc:name="HTTP Request configuration" doc:id="2c24e0d6-5d6d-4863-b698-6f8a6baaf652" responseTimeout="90000"  >
+	<http:request-config name="FusionWebService" doc:name="HTTP Request configuration" doc:id="2c24e0d6-5d6d-4863-b698-6f8a6baaf652" responseTimeout="300000"  >
 		<http:request-connection host="local.fusion.aero" port="80" />
 	</http:request-config>
 </mule>

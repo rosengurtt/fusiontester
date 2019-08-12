@@ -8,6 +8,12 @@ import java.util.Map;
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.XMLUnit;
 
+import fusiontester.methods.BuyAllowance;
+import fusiontester.methods.CheckInPassenger;
+import fusiontester.methods.GetBagLicensePlate;
+import fusiontester.methods.GetReservationByNativeReference;
+import fusiontester.methods.QuoteBag;
+
 public class ProcessData {
 
 	// It splits the data in n arrays, so each array can be processed in parallel
@@ -53,8 +59,9 @@ public class ProcessData {
 	        }
 			return diff.toString();
 		}
-		catch (Exception ex) {}
-		return "Error comparing " + loggedResponse + " with " + actualResponse;		
+		catch (Exception ex) {
+			return ex.toString() + "Error comparing " + loggedResponse + " with " + actualResponse;	
+		}
 		
 	}
 	
@@ -76,6 +83,18 @@ public class ProcessData {
 		// RequestType dependent cleaning
 		if (requestType.toLowerCase().equals("GetReservationByNativeReference".toLowerCase())) {
 			return GetReservationByNativeReference.removeThingsWeDontCompare(xml);
+		}
+		else if (requestType.toLowerCase().equals("GetBagLicensePlate".toLowerCase())) {
+			return GetBagLicensePlate.removeThingsWeDontCompare(xml);
+		}
+		else if (requestType.toLowerCase().equals("QuoteBag".toLowerCase())) {
+			return QuoteBag.removeThingsWeDontCompare(xml);
+		}
+		else if (requestType.toLowerCase().equals("BuyAllowance".toLowerCase())) {
+			return BuyAllowance.removeThingsWeDontCompare(xml);
+		}
+		else if (requestType.toLowerCase().equals("CheckInPassenger".toLowerCase())) {
+			return CheckInPassenger.removeThingsWeDontCompare(xml);
 		}
 		return xml;
 	}
