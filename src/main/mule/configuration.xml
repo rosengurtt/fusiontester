@@ -1,22 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
 	xmlns:db="http://www.mulesoft.org/schema/mule/db"
 	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
 	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd 
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
 http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
-	    <http:listener-config name="FusionTester-httpListenerConfig" basePath="${http.basepath}" >
+
+
+	<http:listener-config name="FusionTester-httpListenerConfig" basePath="${http.basepath}" >
 		<http:listener-connection host="${http.host}" port="${http.port}" >
 		</http:listener-connection>
     </http:listener-config>
-    <apikit:config name="FusionTester-config" raml="FusionTester.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+   
+	<http:listener-config name="DCSemulator_Listener_config" doc:name="DCSemulatorListener" doc:id="5344a728-435b-4c1c-9f69-e72b56600d7d" basePath="${https.basepath}" >
+		<http:listener-connection protocol="HTTPS" host="${https.host}" port="${https.port}" >
+			<tls:context >
+				<tls:trust-store type="jceks" insecure="true" />
+				<tls:key-store type="jks" path="${certificate.keystore}" keyPassword="${certificate.password}" password="${certificate.password}" />
+			</tls:context>
+		</http:listener-connection>
+	</http:listener-config>
+   
+    <apikit:config name="FusionTester-config" raml="FusionTester.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />   
+    
+    
 	<configuration-properties doc:name="Configuration properties" doc:id="64eb1a29-ceb2-45f9-a8ee-6fcb60b71be2" file="config/configuration.yaml" />
+		  
 		  
 	<db:config name="mssql-jdbc" doc:name="mssql-jdbc" >
 
@@ -24,17 +41,18 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 			url="jdbc:sqlserver://;servername=${db.server.name};databaseName=${db.database.name};user=${db.username};password=${db.password}"
 			driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
 	</db:config>
-	
-	<http:request-config name="HTTP_Request_configuration" doc:name="Fusion Web Service" doc:id="1043b62e-abf8-491a-900d-29f2faecbb5c" >
-		<http:request-connection host="${fusion.url}" port="${fusion.port}" />
-	</http:request-config>
-	
-	<wsc:config name="FusionWebService_Config" doc:name="Fusion Service Configuration" doc:id="2cb746ab-6f4c-4894-a14b-57297fa23553" >
-		<wsc:connection wsdlLocation="http://local.fusion.aero/FusionService.svc?wsdl" service="FusionService" port="FusionServiceEndpointHttp" address="http://local.fusion.aero/FusionService.svc"/>
-	</wsc:config>
-	
+
 	
 	<http:request-config name="FusionWebService" doc:name="HTTP Request configuration" doc:id="2c24e0d6-5d6d-4863-b698-6f8a6baaf652" responseTimeout="300000"  >
-		<http:request-connection host="local.fusion.aero" port="80" />
+		<http:request-connection host="${fusion.url}" port="${fusion.port}" />
+		<http:default-headers >
+	        <http:default-header key="Content-Type" value="application/soap+xml" />
+	        <http:default-header key="charset" value="UTF-8" />
+	    </http:default-headers>
 	</http:request-config>
+	<vm:config name="JobsCoordination" doc:name="VM Config" doc:id="686d6b6b-0993-418e-9b4e-326ad6aa7dc6">
+		<vm:queues >
+			<vm:queue queueName="WaitingForJobsToFinish" />
+		</vm:queues>
+	</vm:config>
 </mule>

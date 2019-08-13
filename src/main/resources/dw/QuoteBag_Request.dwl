@@ -33,7 +33,7 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#StartTime: payload.QuoteBag_Request.Session.StartTime as String default null,
 						ns02#Status: payload.QuoteBag_Request.Session.Status,
 						ns02#UserId: payload.QuoteBag_Request.Session.UserId,
-						ns02#Weight: payload.QuoteBag_Request.Session.Weight as String
+						ns02#Weight: payload.QuoteBag_Request.Session.Weight as String default null
 					},
 					ns01#BaggageItemType: payload.QuoteBag_Request.BaggageItemType,
 					ns01#Reservation: {
@@ -70,7 +70,7 @@ ns a http://www.w3.org/2005/08/addressing
 								},
 								ns02#BaggageItems: {
 									ns02#BaggageItem: {
-										ns02#Active: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Active as String default null,
+										ns02#Active: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Active default null,
 										ns02#BaggageAllowanceId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.BaggageAllowanceId,
 										ns02#BaggageItemSubTypeId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.BaggageItemSubTypeId,
 										ns02#BaggageItemSubTypeName: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.BaggageItemSubTypeName,
@@ -84,7 +84,7 @@ ns a http://www.w3.org/2005/08/addressing
 										ns02#HasNotionalWeight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.HasNotionalWeight as String default null,
 										ns02#Id: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Id,
 										ns02#InitialWeight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.InitialWeight as String default null,
-										ns02#NativeBaggageId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.NativeBaggageId as String default null,
+										ns02#NativeBaggageId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.NativeBaggageId default null,
 										ns02#OutOfGauge: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.OutOfGauge as String default null,
 										ns02#PassengerId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.PassengerId,
 										ns02#Printed: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Printed as String default null,
@@ -93,10 +93,10 @@ ns a http://www.w3.org/2005/08/addressing
 										ns02#RegisteredTime: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.RegisteredTime as String default null,
 										ns02#SessionId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.SessionId,
 										ns02#TagNumber: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.TagNumber as String default null,
-										ns02#Weight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Weight as String
+										ns02#Weight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Weight as String default null
 									}
 								},
-								ns02#MaxSingleItemWeight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.MaxSingleItemWeight as String
+								ns02#MaxSingleItemWeight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.MaxSingleItemWeight as String default null
 							},
 							ns02#Boarded: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Boarded as String default null,
 							ns02#CheckedIn: payload.QuoteBag_Request.Reservation.Passengers.Passenger.CheckedIn as String default null,
@@ -105,7 +105,7 @@ ns a http://www.w3.org/2005/08/addressing
 							ns02#ConfirmedDga: payload.QuoteBag_Request.Reservation.Passengers.Passenger.ConfirmedDga as String default null,
 							ns02#ConfirmedIdentity: payload.QuoteBag_Request.Reservation.Passengers.Passenger.ConfirmedIdentity as String default null,
 							ns02#ConnectingFlightNumber: payload.QuoteBag_Request.Reservation.Passengers.Passenger.ConnectingFlightNumber as String default null,
-							ns02#DateOfBirth: payload.QuoteBag_Request.Reservation.Passengers.Passenger.DateOfBirth as String default null,
+							ns02#DateOfBirth: payload.QuoteBag_Request.Reservation.Passengers.Passenger.DateOfBirth default null,
 							ns02#DocumentCheckRequired: payload.QuoteBag_Request.Reservation.Passengers.Passenger.DocumentCheckRequired as String default null,
 							ns02#FirstName: payload.QuoteBag_Request.Reservation.Passengers.Passenger.FirstName,
 							ns02#Gender: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Gender,
@@ -127,7 +127,7 @@ ns a http://www.w3.org/2005/08/addressing
 								ns02#ApisRequired: payload.QuoteBag_Request.Reservation.Flights.Flight.ApisRequired as String default null,
 								ns02#ArrivalTime: payload.QuoteBag_Request.Reservation.Flights.Flight.ArrivalTime as String default null,
 								ns02#ConnectingFlight: payload.QuoteBag_Request.Reservation.Flights.Flight.ConnectingFlight as String default null,
-								ns02#DepartureTerminal: payload.QuoteBag_Request.Reservation.Flights.Flight.DepartureTerminal as String default null,
+								ns02#DepartureTerminal: payload.QuoteBag_Request.Reservation.Flights.Flight.DepartureTerminal default null,
 								ns02#DepartureTime: payload.QuoteBag_Request.Reservation.Flights.Flight.DepartureTime as String default null,
 								ns02#Destination: payload.QuoteBag_Request.Reservation.Flights.Flight.Destination,
 								ns02#FlightNumber: payload.QuoteBag_Request.Reservation.Flights.Flight.FlightNumber as String default null,
@@ -165,7 +165,7 @@ ns a http://www.w3.org/2005/08/addressing
 										ns02#InitialBags: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageAllowance.InitialBags as String default null,
 										ns02#InitialWeight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageAllowance.InitialWeight as String default null,
 										ns02#MaxSingleItemWeight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageAllowance.MaxSingleItemWeight as String default null,
-										ns02#PassengerId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageAllowance.PassengerId as String default null,
+										ns02#PassengerId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageAllowance.PassengerId default null,
 										ns02#PoolItems: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageAllowance.PoolItems as String default null,
 										ns02#PoolWeight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageAllowance.PoolWeight as String default null,
 										ns02#PurchasedBags: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageAllowance.PurchasedBags as String default null,
@@ -176,7 +176,7 @@ ns a http://www.w3.org/2005/08/addressing
 									},
 									ns02#BaggageItems: {
 										ns02#BaggageItem: {
-											ns02#Active: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Active as String default null,
+											ns02#Active: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Active  default null,
 											ns02#BaggageAllowanceId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.BaggageAllowanceId,
 											ns02#BaggageItemSubTypeId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.BaggageItemSubTypeId,
 											ns02#BaggageItemSubTypeName: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.BaggageItemSubTypeName,
@@ -190,7 +190,7 @@ ns a http://www.w3.org/2005/08/addressing
 											ns02#HasNotionalWeight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.HasNotionalWeight as String default null,
 											ns02#Id: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Id,
 											ns02#InitialWeight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.InitialWeight as String default null,
-											ns02#NativeBaggageId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.NativeBaggageId as String default null,
+											ns02#NativeBaggageId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.NativeBaggageId default null,
 											ns02#OutOfGauge: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.OutOfGauge as String default null,
 											ns02#PassengerId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.PassengerId,
 											ns02#Printed: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Printed as String default null,
@@ -199,10 +199,10 @@ ns a http://www.w3.org/2005/08/addressing
 											ns02#RegisteredTime: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.RegisteredTime as String default null,
 											ns02#SessionId: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.SessionId,
 											ns02#TagNumber: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.TagNumber as String default null,
-											ns02#Weight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Weight as String
+											ns02#Weight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.BaggageItems.BaggageItem.Weight as String default null
 										}
 									},
-									ns02#MaxSingleItemWeight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.MaxSingleItemWeight as String
+									ns02#MaxSingleItemWeight: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Baggage.MaxSingleItemWeight as String default null
 								},
 								ns02#Boarded: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Boarded as String default null,
 								ns02#CheckedIn: payload.QuoteBag_Request.Reservation.Passengers.Passenger.CheckedIn as String default null,
@@ -211,7 +211,7 @@ ns a http://www.w3.org/2005/08/addressing
 								ns02#ConfirmedDga: payload.QuoteBag_Request.Reservation.Passengers.Passenger.ConfirmedDga as String default null,
 								ns02#ConfirmedIdentity: payload.QuoteBag_Request.Reservation.Passengers.Passenger.ConfirmedIdentity as String default null,
 								ns02#ConnectingFlightNumber: payload.QuoteBag_Request.Reservation.Passengers.Passenger.ConnectingFlightNumber as String default null,
-								ns02#DateOfBirth: payload.QuoteBag_Request.Reservation.Passengers.Passenger.DateOfBirth as String default null,
+								ns02#DateOfBirth: payload.QuoteBag_Request.Reservation.Passengers.Passenger.DateOfBirth default null,
 								ns02#DocumentCheckRequired: payload.QuoteBag_Request.Reservation.Passengers.Passenger.DocumentCheckRequired as String default null,
 								ns02#FirstName: payload.QuoteBag_Request.Reservation.Passengers.Passenger.FirstName,
 								ns02#Gender: payload.QuoteBag_Request.Reservation.Passengers.Passenger.Gender,

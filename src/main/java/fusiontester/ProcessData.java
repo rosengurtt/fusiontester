@@ -15,7 +15,7 @@ import fusiontester.methods.GetReservationByNativeReference;
 import fusiontester.methods.QuoteBag;
 
 public class ProcessData {
-
+	
 	// It splits the data in n arrays, so each array can be processed in parallel
 	public static Object[] splitRowsToRun(Object data, int parallelRuns) {
 		LinkedList linkedListData = (LinkedList)data;
@@ -34,7 +34,6 @@ public class ProcessData {
 		}
 		return dataForRuns;
 	}
-	
 
 	
 	public static String getFusionRequestIdToProcess(Object mapItem) {
@@ -74,6 +73,9 @@ public class ProcessData {
 		// Remove whitespace between tags including carriage returns
 		xml = xml.replaceAll(">\\s+<", "><");
 		xml = xml.replaceAll("\r", "").replaceAll("\n", "");
+		
+		// Remove useless whitespace inside tags
+		xml = xml.replaceAll("[\\s]*>", ">");
 		
 		// Remove null nodes
 		xml = xml.replaceAll("<[a-zA-Z0-9 ]*xsi:nil=\"true\"/>","");

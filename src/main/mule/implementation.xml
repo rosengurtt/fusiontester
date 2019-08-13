@@ -10,6 +10,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
 
+
 	<flow name="post:\fusion:application\json:FusionTester-config">
 		<ee:transform doc:name="Save input in variable 'inputData'" doc:id="0735fdfa-6a38-475d-8897-eed49f911273" >
 			<ee:message >
@@ -24,8 +25,6 @@ output application/java
 	StartDate: if (payload['StartDate'] != null ) payload['StartDate'] else "1900-01-01",
 	EndDate: if (payload['EndDate'] != null ) payload['EndDate'] else "2100-01-01",
 	ParallelRuns: if (payload['ParallelRuns'] != null ) payload['ParallelRuns'] else 3,
-	DatabaseName: payload['DatabaseName'],
-	DatabaseTable: payload['DatabaseTable'],
 	DbUser: payload['DbUser'],
 	DbPassword: payload['DbPassword'],	
 	FusionServiceUrl: payload['FusionServiceUrl'],
@@ -34,44 +33,49 @@ output application/java
 			</ee:variables>
 		</ee:transform>
 		<db:stored-procedure doc:name="Get list of Fusion Request Ids to process" doc:id="676537bf-9efb-4d94-ab89-add55ebc5423" config-ref="mssql-jdbc">
-			<db:sql >{ call GetFusionRequestsToTest(:Airline, :Airport, :StartDate, :EndDate, :DatabaseName, :TableName) }</db:sql>
+			<db:sql >{ call GetFusionRequestsToTest(:Airline, :Airport, :StartDate, :EndDate) }</db:sql>
 			<db:input-parameters ><![CDATA[#[{
 						'Airline' : vars.inputData.Airline,
 						'Airport' : vars.inputData.Airport,
 						'StartDate': vars.inputData.StartDate,
-						'EndDate': vars.inputData.EndDate,
-						'DatabaseName': vars.inputData.DatabaseName,
-						'TableName': vars.inputData.DatabaseTable
+						'EndDate': vars.inputData.EndDate
 						}]]]></db:input-parameters>
 		</db:stored-procedure>
 		
 	
-		<java:invoke-static doc:name="Convert data to array" doc:id="e5854888-8e63-4060-8e37-c5ec5846f161" class="fusiontester.ProcessData" method="splitRowsToRun(Object, int)" target="FusionRequestIds">
-			<java:args ><![CDATA[#[{ 
+		<choice doc:name="Check if we find records to test" doc:id="41e17e6e-60b3-4b16-bb41-0352f1f8a06d" >
+			<when expression="#[payload['resultSet1'][0] == null]">
+				<set-payload value="#['No records found that match that criteria']" doc:name="Set Payload" doc:id="45eef4f2-59a9-4391-98db-d9e6d0d79062" />
+			</when>
+			<otherwise >
+				<java:invoke-static doc:name="Convert data to array and save it in variable 'FusionRequestIds'" doc:id="e5854888-8e63-4060-8e37-c5ec5846f161" class="fusiontester.ProcessData" method="splitRowsToRun(Object, int)" target="FusionRequestIds">
+			<java:args><![CDATA[#[{ 
 	data: payload['resultSet1'],
 	parallelRuns: vars.inputData.ParallelRuns
 }]]]></java:args>
 		</java:invoke-static>
-
-		
+				<async doc:name="Async" doc:id="c27bfb3c-b6a0-4a09-bff1-3ec3d6fd4e32">
+			<flow-ref doc:name="BackgroundWork" doc:id="61fcf2cd-2136-4644-b96a-8b701694cf16" name="BackgroundWork" />
+		</async>
+				<set-payload value="#['Test started']" doc:name="Return message to client" doc:id="dacebd1f-d3b4-4f94-9503-6fbf68b2e5a7" />
+			</otherwise>
+		</choice>
+    
+</flow>
+	<flow name="BackgroundWork" doc:id="2de0ab5c-1d6c-43e5-9bad-a69b1efefa2f" >
 		<foreach doc:name="For Each" collection="#[vars.FusionRequestIds]">
 			<async doc:name="Async">
 					<flow-ref doc:name="testJob" doc:id="8cbfc6fd-7600-494e-a798-141a3e667d6f" name="testJob" />
 				</async>
 		
 </foreach>
-		<set-payload value="#['Test started']" doc:name="Return message to client" doc:id="dacebd1f-d3b4-4f94-9503-6fbf68b2e5a7" />
-    
-</flow>
+	</flow>
 	<flow name="testJob" doc:id="38b7d936-754f-4cef-a1a0-72222d3964b6" >
+		<set-variable value="#[payload]" doc:name="Save list of Fusion Request ids" doc:id="cd1b0e74-b38d-481f-8acf-8e1ce0525b5e" variableName="FusionRequestIdsList"/>
 		<foreach doc:name="For Each" collection="#[payload]">
 			<db:stored-procedure doc:name="Get details for Fusion Request" doc:id="a090a89e-459e-48d9-8483-a6cbbed2378e" config-ref="mssql-jdbc">
-				<db:sql >{ call GetFusionRequestDetails(:FusionRequestId, :TableName, :DatabaseName) }</db:sql>
-				<db:input-parameters ><![CDATA[#[{
-	'FusionRequestId': payload[0],
-	'DatabaseName': vars.inputData.DatabaseName,
-	'TableName': vars.inputData.DatabaseTable
-}]]]></db:input-parameters>
+				<db:sql >{ call GetFusionRequestDetails(:FusionRequestId) }</db:sql>
+				<db:input-parameters ><![CDATA[#[{ 'FusionRequestId': payload[0] }]]]></db:input-parameters>
 			</db:stored-procedure>
 			<ee:transform doc:name="Save data in 'fusionItem' variable" doc:id="26c87d01-6c07-47cf-9509-24fb3240b449">
 				<ee:message>
@@ -91,38 +95,30 @@ output application/java
 			</ee:transform>
 	
 			<flow-ref doc:name="buildSoapRequest" doc:id="2071d4b0-89a7-4ac3-ab20-78e61080350f" name="buildSoapRequest"/>
-			<http:request method="POST" doc:name="Fusion WS" doc:id="8f351ffe-262c-498f-801e-66d6cdd266f7" config-ref="FusionWebService" path="/FusionService.svc">
-				<http:headers ><![CDATA[#[output application/java
----
-{
-	"Content-Type" : "application/soap+xml",
-	"charset" : "UTF-8",
-	"action" : "http://services.fusion.aero/IFusionService/GetReservationByNativeReference"
-}]]]></http:headers>
+			<try doc:name="Try" doc:id="b3c4de21-e939-4df2-a231-5094a6040522" >
+				<http:request method="POST" doc:name="Fusion WS" doc:id="8f351ffe-262c-498f-801e-66d6cdd266f7" config-ref="FusionWebService" path="/FusionService.svc">
+				<http:response-validator>
+					<http:success-status-code-validator values="200..599" />
+				</http:response-validator>
 			</http:request>
-			<!--  
-			<wsc:consume doc:name="Fusion WS" doc:id="7b1ae0b9-3fb2-490e-80c3-c7a812af46c7" config-ref="FusionWebService_Config" operation="GetReservationByNativeReference" >
-			    <wsc:message>
-        <wsc:body ><![CDATA[#[vars.soapBody]]]></wsc:body>
-					<wsc:headers><![CDATA[#[vars.soapHeader]]]></wsc:headers>
-    </wsc:message>
-			</wsc:consume>-->
-			<flow-ref doc:name="formatResponse" doc:id="ebabee6f-5948-4d52-85c0-9216bd0d3ad0" name="formatResponse"/>
-
-			
-			<java:invoke-static doc:name="Compare logged response with actual" doc:id="e4467348-009a-44b9-be6e-1bed32177923" class="fusiontester.ProcessData" method="CompareFusionResponses(String, String, String)">
+				<flow-ref doc:name="formatResponse" doc:id="ebabee6f-5948-4d52-85c0-9216bd0d3ad0" name="formatResponse" />
+				<java:invoke-static doc:name="Compare logged response with actual" doc:id="e4467348-009a-44b9-be6e-1bed32177923" class="fusiontester.ProcessData" method="CompareFusionResponses(String, String, String)">
 				<java:args><![CDATA[#[{ 
 	requestType: vars.loggedItem.FusionRequestType,
 	loggedResponse: vars.loggedItem.FusionResponseXml,
 	actualResponse: vars.actualResponse
 }]]]></java:args>
-
 			</java:invoke-static>
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="93b73c16-3c6b-4bd8-b253-921098f6596b">
+				<logger level="INFO" doc:name="Logger" doc:id="06091269-4c7b-42f3-bbeb-785eaf3481c9" message="[#payload]" />
+						<set-payload value="#['There was an error when calling Fusion: ' ++ error.description]" doc:name="Set Payload" doc:id="4377172d-9353-4dec-a7c8-3f58e6506a92" />
+			</on-error-continue>
+				</error-handler>
+			</try>
 			<db:stored-procedure doc:name="Store test result" doc:id="18e6b2e3-204d-4f82-9791-abaf9d262559" config-ref="mssql-jdbc">
-				<db:sql >{ call InsertTestResult(:DatabaseName, :TableName, :FusionRequestId, :TestResult, :TestInfo) }</db:sql>
+				<db:sql >{ call UpdateTestResult( :FusionRequestId, :TestResult, :TestInfo) }</db:sql>
 				<db:input-parameters ><![CDATA[#[{
-	'DatabaseName': vars.inputData.DatabaseName,
-	'TableName': vars.inputData.DatabaseTable,
 	'FusionRequestId': vars.loggedItem.FusionRequestId,
 	'TestResult': payload,
 	'TestInfo': vars.inputData.TestInfo
@@ -130,6 +126,7 @@ output application/java
 			</db:stored-procedure>
 		
 </foreach>
+		<logger level="INFO" doc:name="Logger" doc:id="9eb54461-a20b-442f-8156-c3a56d26e723" message="#['Finished processing requests ' + vars.FusionRequestIdsList]"/>
 	</flow>
 
 </mule>

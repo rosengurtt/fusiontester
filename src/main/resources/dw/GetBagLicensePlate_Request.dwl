@@ -90,28 +90,28 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#UTCArrivalTime: payload.GetBagLicensePlate_Request.Flight.UTCArrivalTime as String default null,
 						ns02#UTCDepartureTime: payload.GetBagLicensePlate_Request.Flight.UTCDepartureTime as String default null
 					},
-					ns01#Flights: {
-						ns02#Flight: {
-							ns02#ApisRequired: payload.GetBagLicensePlate_Request.Flights.Flight.ApisRequired as String,
-							ns02#ArrivalTime: payload.GetBagLicensePlate_Request.Flights.Flight.ArrivalTime as String default null,
-							ns02#ConnectingFlight: payload.GetBagLicensePlate_Request.Flights.Flight.ConnectingFlight as String default null,
-							ns02#DepartureTerminal: payload.GetBagLicensePlate_Request.Flights.Flight.DepartureTerminal as String default null,
-							ns02#DepartureTime: payload.GetBagLicensePlate_Request.Flights.Flight.DepartureTime as String default null,
-							ns02#Destination: payload.GetBagLicensePlate_Request.Flights.Flight.Destination,
-							ns02#FlightNumber: payload.GetBagLicensePlate_Request.Flights.Flight.FlightNumber as String default null,
-							ns02#FlightRPH: payload.GetBagLicensePlate_Request.Flights.Flight.FlightRPH as String,
-							ns02#Id: payload.GetBagLicensePlate_Request.Flights.Flight.Id,
-							ns02#JourneyRPH: payload.GetBagLicensePlate_Request.Flights.Flight.JourneyRPH as String,
-							ns02#MarketingCarrier: payload.GetBagLicensePlate_Request.Flights.Flight.MarketingCarrier,
-							ns02#NativeFlightId: payload.GetBagLicensePlate_Request.Flights.Flight.NativeFlightId as String default null,
-							ns02#OpenForBoarding: payload.GetBagLicensePlate_Request.Flights.Flight.OpenForBoarding as String default null,
-							ns02#OpenForCheckIn: payload.GetBagLicensePlate_Request.Flights.Flight.OpenForCheckIn as String default null,
-							ns02#OperatingCarrier: payload.GetBagLicensePlate_Request.Flights.Flight.OperatingCarrier,
-							ns02#Origin: payload.GetBagLicensePlate_Request.Flights.Flight.Origin,
-							ns02#RequireMultipleAPISDocuments: payload.GetBagLicensePlate_Request.Flights.Flight.RequireMultipleAPISDocuments as String default null,
-							ns02#UTCArrivalTime: payload.GetBagLicensePlate_Request.Flights.Flight.UTCArrivalTime as String default null,
-							ns02#UTCDepartureTime: payload.GetBagLicensePlate_Request.Flights.Flight.UTCDepartureTime as String default null
-						}
+					ns01#Flights:  {
+						ns02#Flight: (payload.GetBagLicensePlate_Request.Flights.*Flight map {
+							ns02#ApisRequired: $.ApisRequired as String,
+							ns02#ArrivalTime: $.ArrivalTime as String default null,
+							ns02#ConnectingFlight: $.ConnectingFlight as String default null,
+							ns02#DepartureTerminal: $.DepartureTerminal as String default null,
+							ns02#DepartureTime: $.DepartureTime as String default null,
+							ns02#Destination: $.Destination,
+							ns02#FlightNumber: $.FlightNumber as String default null,
+							ns02#FlightRPH: $.FlightRPH as String,
+							ns02#Id: $.Id,
+							ns02#JourneyRPH: $.JourneyRPH as String,
+							ns02#MarketingCarrier: $.MarketingCarrier,
+							ns02#NativeFlightId: $.NativeFlightId as String default null,
+							ns02#OpenForBoarding: $.OpenForBoarding as String default null,
+							ns02#OpenForCheckIn: $.OpenForCheckIn as String default null,
+							ns02#OperatingCarrier: $.OperatingCarrier,
+							ns02#Origin: $.Origin,
+							ns02#RequireMultipleAPISDocuments: $.RequireMultipleAPISDocuments as String default null,
+							ns02#UTCArrivalTime: $.UTCArrivalTime as String default null,
+							ns02#UTCDepartureTime: $.UTCDepartureTime as String default null
+						})
 					},
 					ns01#Passenger: {
 						ns02#Active: payload.GetBagLicensePlate_Request.Passenger.Active as String default null,
