@@ -78,4 +78,9 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 			<vm:queue queueName="TestJobQueue" />
 		</vm:queues>
 	</vm:config>
+	<vm:config name="VM_Config_SetRealTimeLoop" doc:name="VM Config" doc:id="0fada837-9d65-452b-96e2-a467b3122139" >
+		<vm:queues >
+			<vm:queue queueName="SetRealTimeQueue" />
+		</vm:queues>
+	</vm:config>
 </mule>

@@ -8,8 +8,8 @@ import java.util.Date;
 
 public class Helpers {
 
-	public static void SleepNseconds(long i) throws InterruptedException {		
-		Thread.sleep(Math.round(i/8));
+	public static void SleepNmilliSeconds(long i) throws InterruptedException {		
+		Thread.sleep(Math.round(i));
 	}
 	
 	

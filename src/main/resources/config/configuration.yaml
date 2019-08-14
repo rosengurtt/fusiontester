@@ -31,6 +31,6 @@ fusion:
 real.time.server:
   url: "http://worldtimeapi.org/api/timezone/Europe/London"
   host: "worldtimeapi.org"
-  timeout: "30000"
+  timeout: "5000"
   
 fusiontester.timeout: "80000"
