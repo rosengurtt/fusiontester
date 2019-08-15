@@ -31,10 +31,14 @@ public class InputProcessing {
 				retHashMap.put("PNR", SoapParser.getPNR(cleanedInput, confi.get(rowNumber)));
 				retHashMap.put("Airline", SoapParser.getAirline(cleanedInput, confi.get(rowNumber)));
 				retHashMap.put("Airport", SoapParser.getAirport(cleanedInput, confi.get(rowNumber)));
-				retHashMap.put("UniqueFragment", "%" + SoapParser.getUniqueFragment(originalPayload, confi.get(rowNumber)) + "%");
+				// We don't use the unique fragment in the FusionTester to avoid discarding responses that don't match too well
+				retHashMap.put("UniqueFragment", "%");
+			//	retHashMap.put("UniqueFragment", "%" + SoapParser.getUniqueFragment(originalPayload, confi.get(rowNumber)) + "%");
 			}
 		}
-		catch (Exception ex) {}
+		catch (Exception ex) {
+			int i=9;
+		}
 		return retHashMap;
 	}
 	

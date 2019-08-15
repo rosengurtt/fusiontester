@@ -105,11 +105,14 @@ output application/java
 				</error-handler>
 			</try>
 			<db:stored-procedure doc:name="Store test result" doc:id="18e6b2e3-204d-4f82-9791-abaf9d262559" config-ref="mssql-jdbc">
-				<db:sql >{ call UpdateTestResult( :FusionRequestId, :TestResult, :TestInfo) }</db:sql>
+				<db:sql >{ call UpdateTestResult( :FusionRequestId, :TestResult, :TestInfo,:ExpectedResponse,:ActualResponse,:ActualDCScalls) }</db:sql>
 				<db:input-parameters ><![CDATA[#[{
 	'FusionRequestId': vars.loggedItem.FusionRequestId,
-	'TestResult': payload,
-	'TestInfo': vars.inputData.TestInfo
+	'TestResult': payload.Message,
+	'TestInfo': vars.inputData.TestInfo,
+	'ExpectedResponse': vars.loggedItem.FusionResponseXml,
+	'ActualResponse': vars.actualResponse.^raw as String,
+	'ActualDCScalls': payload.DCScalls
 }]]]></db:input-parameters>
 			</db:stored-procedure>
 		

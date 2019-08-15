@@ -143,15 +143,13 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 							MaxSingleItemWeight: passenger.ns01#Baggage.ns01#MaxSingleItemWeight
 						},
 						SSRs: {
-							SSR: {
-								SSRCode: passenger.ns01#SSRs.ns01#SSR.ns01#SSRCode,
-								SSRDescription: {
-									"text()": passenger.ns01#SSRs.ns01#SSR.ns01#SSRDescription
-								},
-								FeeCode: passenger.ns01#SSRs.ns01#SSR.ns01#FeeCode,
-								PaxNumber: passenger.ns01#SSRs.ns01#SSR.ns01#PaxNumber,
-								Price: passenger.ns01#SSRs.ns01#SSR.ns01#Price
-							}
+							SSR: (passenger.ns01#SSRs.*ns01#SSR map {
+								SSRCode: $.ns01#SSRCode,
+								SSRDescription: $.ns01#SSRDescription,
+								FeeCode: $.ns01#FeeCode,
+								PaxNumber: $.ns01#PaxNumber,
+								Price: $.ns01#Price
+							})
 						},
 						CustomProperties: {
 							string: passenger.ns01#CustomProperties.*string

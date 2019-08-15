@@ -45,20 +45,22 @@ public class ProcessData {
 	// Compares the result of running the Fusion request agains the emulator and reports any differences
 	// It checks not only that the final Fusion response looks the same as the logged response, it also checks that the calls
 	// to the DCSs made by Fusion match the calls made originally when the data was logged
-	public static String CompareResults(String requestType, String loggedResponse, String actualResponse, Object expectedDCScalls, Object actualDCScalls) {
+	public static HashMap<String,String>  CompareResults(String requestType, String loggedResponse, String actualResponse, Object expectedDCScalls, Object actualDCScalls) {
 			Object[] expected = ((LinkedList)expectedDCScalls).toArray();
 			Object[] actual = ((LinkedList)actualDCScalls).toArray();
 			
-			String DCScallsComparation = compareDCScalls(expected, actual);
-			
-			// If the calls made to the DCSs don't match then we report a problem
-			if (DCScallsComparation != "OK") {
-				String retVal = DCScallsComparation + "\r\nFusion response was:\r\n"  + actualResponse;
-				return retVal;
+			String message = compareDCScalls(expected, actual);
+
+			if (message == "OK") {
+				message = CompareFusionResponses(requestType, loggedResponse, actualResponse);
 			}
+
+			String DCScalls = GetDCScallsInAstring(actual);
 			
-			// Otherwise we check if the fusion response is what we expected
-			return CompareFusionResponses(requestType, loggedResponse, actualResponse);
+			HashMap<String,String> retVal = new HashMap<String,String>();
+			retVal.put("Message", message);
+			retVal.put("DCScalls", DCScalls);
+			return retVal;			
 	}
 	
 	
@@ -78,9 +80,8 @@ public class ProcessData {
 	        if (stringDifference.equals("[identical]")) {
 	        	return "OK";
 	        }
-	        String retVal = "Fusion responses don't match.\r\nDifferences are:\r\n" + stringDifference +
-	        		"\r\nExpected response was:\r\n" + loggedResponse + "\r\nActual Response was:\r\n" + actualResponse;
-			return retVal;
+	        return "Fusion responses don't match.\r\nDifferences are:\r\n" + stringDifference;
+
 		}
 		catch (Exception ex) {
 			return ex.toString() + "Error comparing " + loggedResponse + " with " + actualResponse;	
@@ -112,19 +113,17 @@ public class ProcessData {
 				}
 			}
 		}
-		if (!retVal.equals("OK")) {
-				retVal = addDCSrequestsToMessage(actual, retVal);
-		}
 		return retVal;
 	}
 	
-	private static String addDCSrequestsToMessage(Object[] data, String currentMessage) {
-		currentMessage += "\r\nCalls made were:\r\n\r\n";
+
+	private static String GetDCScallsInAstring(Object[] data) {
+		String retVal = "";
 		for (int i = 0; i < data.length; i ++) {
 			Map<String,String> call = (Map<String,String>) data[i];
-			currentMessage += call.get("DcsRequestXml") + "\r\n\r\n";
+			retVal += call.get("DcsRequestXml") + "\r\n\r\n";
 		}
-		return currentMessage;
+		return retVal;
 	}
 	private static String removeThingsWeDontCompare(String requestType, String xml) {
 		

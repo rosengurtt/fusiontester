@@ -115,6 +115,9 @@
         <types:message>
           <types:payload type="GetBagLicensePlateWSRequest"/>
         </types:message>
+        <types:variables>
+          <types:variable name="actualRequest" type="GetBagLicensePlateWSRequest"/>
+        </types:variables>
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>

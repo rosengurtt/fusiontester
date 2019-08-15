@@ -3,6 +3,7 @@ output application/xml skipNullOn = "everywhere"
 ns ns0 http://www.w3.org/2003/05/soap-envelope
 ns ns01 http://services.fusion.aero
 ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
+ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 ns a http://www.w3.org/2005/08/addressing
 ---
 {
@@ -146,6 +147,9 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#ConfirmedDga: payload.GetBagLicensePlate_Request.Passenger.ConfirmedDga as String default null,
 						ns02#ConfirmedIdentity: payload.GetBagLicensePlate_Request.Passenger.ConfirmedIdentity as String default null,
 						ns02#ConnectingFlightNumber: payload.GetBagLicensePlate_Request.Passenger.ConnectingFlightNumber as String default null,
+						ns02#CustomProperties:{
+							ns03#string: payload.GetBagLicensePlate_Request.Passenger.CustomProperties.*string
+						},
 						ns02#DocumentCheckRequired: payload.GetBagLicensePlate_Request.Passenger.DocumentCheckRequired as String default null,
 						ns02#FirstName: payload.GetBagLicensePlate_Request.Passenger.FirstName,
 						ns02#Gender: payload.GetBagLicensePlate_Request.Passenger.Gender,
