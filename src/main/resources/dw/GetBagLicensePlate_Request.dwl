@@ -159,7 +159,7 @@ ns a http://www.w3.org/2005/08/addressing
 								ns02#Firstname: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.Firstname,
 								ns02#Nationality: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.Nationality,
 								ns02#Surname: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.Surname
-							}
+							} 
 						},
 						ns02#IsSelectableForBoardingPass: payload.GetBagLicensePlate_Request.Passenger.IsSelectableForBoardingPass as String default null,
 						ns02#IsSelected: payload.GetBagLicensePlate_Request.Passenger.IsSelected as String default null,

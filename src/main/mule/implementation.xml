@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
 
 
-	<flow name="post:\fusion:application\json:FusionTester-config">
+	<flow name="post:\fusiontest:application\json:FusionTester-config">
 		<ee:transform doc:name="Save input in variable 'inputData'" doc:id="0735fdfa-6a38-475d-8897-eed49f911273" >
 			<ee:message >
 			</ee:message>
@@ -96,23 +96,11 @@ output application/java
 	
 			<flow-ref doc:name="buildSoapRequest" doc:id="2071d4b0-89a7-4ac3-ab20-78e61080350f" name="buildSoapRequest"/>
 			<try doc:name="Try" doc:id="b3c4de21-e939-4df2-a231-5094a6040522" >
-				<http:request method="POST" doc:name="Fusion WS" doc:id="8f351ffe-262c-498f-801e-66d6cdd266f7" config-ref="FusionWebService" path="/FusionService.svc">
-				<http:response-validator>
-					<http:success-status-code-validator values="200..599" />
-				</http:response-validator>
-			</http:request>
-				<flow-ref doc:name="formatResponse" doc:id="ebabee6f-5948-4d52-85c0-9216bd0d3ad0" name="formatResponse" />
-				<java:invoke-static doc:name="Compare logged response with actual" doc:id="e4467348-009a-44b9-be6e-1bed32177923" class="fusiontester.ProcessData" method="CompareFusionResponses(String, String, String)">
-				<java:args><![CDATA[#[{ 
-	requestType: vars.loggedItem.FusionRequestType,
-	loggedResponse: vars.loggedItem.FusionResponseXml,
-	actualResponse: vars.actualResponse
-}]]]></java:args>
-			</java:invoke-static>
+				<flow-ref doc:name="testFusionRequest" doc:id="8778b9f7-7685-45bc-9642-892e28881532" name="testFusionRequest"/>
 				<error-handler >
 					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="93b73c16-3c6b-4bd8-b253-921098f6596b">
 				<logger level="INFO" doc:name="Logger" doc:id="06091269-4c7b-42f3-bbeb-785eaf3481c9" message="[#payload]" />
-						<set-payload value="#['There was an error when calling Fusion: ' ++ error.description]" doc:name="Set Payload" doc:id="4377172d-9353-4dec-a7c8-3f58e6506a92" />
+						<set-payload value="#['There was an error when calling Fusion: ' ++ error.description ++ '\r\nThe request was\r\n' ++ vars.actualRequest]" doc:name="Set Payload" doc:id="4377172d-9353-4dec-a7c8-3f58e6506a92" />
 			</on-error-continue>
 				</error-handler>
 			</try>
@@ -127,6 +115,38 @@ output application/java
 		
 </foreach>
 		<logger level="INFO" doc:name="Logger" doc:id="9eb54461-a20b-442f-8156-c3a56d26e723" message="#['Finished processing requests ' + vars.FusionRequestIdsList]"/>
+	</flow>
+	<flow name="testFusionRequest" doc:id="6422de27-cd6f-4c88-afce-85e270f41e58" >
+		<http:request method="POST" doc:name="Fusion WS" doc:id="8f351ffe-262c-498f-801e-66d6cdd266f7" config-ref="FusionWebService" path="/FusionService.svc">
+			<http:body ><![CDATA[#[vars.actualRequest]]]></http:body>
+			</http:request>
+		<flow-ref doc:name="formatResponse" doc:id="ebabee6f-5948-4d52-85c0-9216bd0d3ad0" name="formatResponse" />
+		<db:stored-procedure doc:name="Get DCS calls info" doc:id="1aa84446-ea2e-408e-8913-25e648b1145e" config-ref="mssql-jdbc">
+			<db:sql >{ call GetDCSCallsForFusionRequest(:FusionRequestId)}</db:sql>
+			<db:input-parameters ><![CDATA[#[{ 'FusionRequestId': vars.loggedItem.FusionRequestId }]]]></db:input-parameters>
+		</db:stored-procedure>
+		<ee:transform doc:name="Save to 'DCScalls' variable" doc:id="cfaa72d4-add7-4c0a-8b6a-c467b8f84ad8" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="DCScalls" ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	expected: payload['resultSet1'],
+	actual: payload['resultSet2']	
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<java:invoke-static doc:name="Compare logged response with actual" doc:id="e4467348-009a-44b9-be6e-1bed32177923" class="fusiontester.ProcessData" method="CompareResults(String, String, String, Object, Object)">
+				<java:args><![CDATA[#[{ 
+	requestType: vars.loggedItem.FusionRequestType,
+	loggedResponse: vars.loggedItem.FusionResponseXml,
+	actualResponse: vars.actualResponse,
+	expectedDCScalls: vars.DCScalls.expected,
+	actualDCScalls: vars.DCScalls.actual
+}]]]></java:args>
+			</java:invoke-static>
 	</flow>
 
 </mule>

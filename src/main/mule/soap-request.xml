@@ -1,38 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
-		<flow name="buildSoapRequest" doc:id="de105569-b592-4576-a2c9-c01019b551fa" >
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	<flow name="buildSoapRequest" doc:id="de105569-b592-4576-a2c9-c01019b551fa" >
 				<set-payload value="#[vars.loggedItem.FusionRequestXml]" doc:name="Copy logged request to payload" doc:id="14f4dd9c-4ea8-4d79-9d0a-db83fe64cb19" mimeType="application/xml" />
 		<choice doc:name="What request type?" doc:id="0b9c8ec4-2dc5-4ca2-be27-52786a94e249" >
 				<when expression="'getreservationbynativereference' ==vars.loggedItem.FusionRequestTypeLowerCase">
 					<ee:transform doc:name="Create SOAP request for GetReservationByNativeReference" doc:id="060fc1ae-0b3c-4f7b-802c-557c4ec1aa58">
 				<ee:message>
-						<ee:set-payload resource="dw/GetReservationByNativeReference_Request.dwl" />
 				
 </ee:message>
 				<ee:variables>
+						<ee:set-variable resource="dw/GetReservationByNativeReference_Request.dwl" variableName="actualRequest" />
+
 				</ee:variables>
 			</ee:transform>
 				</when>
 				<when expression=" 'getbaglicenseplate' == vars.loggedItem.FusionRequestTypeLowerCase">
 					<ee:transform doc:name="Create SOAP request for GetBagLicensePlate" doc:id="9c41ed1c-d8a9-416d-a753-3b73bd58cf63" >
 						<ee:message >
-						<ee:set-payload resource="dw/GetBagLicensePlate_Request.dwl" />
 						
 </ee:message>
-					</ee:transform>
-				</when>
+					<ee:variables >
+						<ee:set-variable resource="dw/GetBagLicensePlate_Request.dwl" variableName="actualRequest" />
+					</ee:variables>
+					
+</ee:transform>
+
+				<java:invoke-static method="RemoveProblematicTagsFromFusionRequest(String)" doc:name="Remove empty problematic tags" doc:id="1e3fffed-2d72-40f9-bb80-23674391407a" class="fusiontester.ProcessData" target="actualRequest">
+					<java:args ><![CDATA[#[{ FusionActualRequest: vars.actualRequest}]]]></java:args>
+				</java:invoke-static>
+				
+</when>
 				<when expression="'quotebag' == vars.loggedItem.FusionRequestTypeLowerCase">
 					<ee:transform doc:name="Create SOAP request for QuoteBag" doc:id="81571efe-d025-4aa6-bb2f-4c42927342a9" >
 						<ee:message >
-						<ee:set-payload resource="dw/QuoteBag_Request.dwl" />
 						
 </ee:message>
-					</ee:transform>
+					<ee:variables >
+						<ee:set-variable resource="dw/QuoteBag_Request.dwl" variableName="actualRequest" />
+					</ee:variables>
+					
+</ee:transform>
 				</when>
 			<when expression="'buyallowance' == vars.loggedItem.FusionRequestTypeLowerCase">
 				<ee:transform doc:name="Create SOAP request for BuyAllowance" doc:id="faecf697-e8b0-4773-911c-4e2e2b40a54a" >
@@ -44,14 +57,17 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<when expression="'checkinpassenger' == vars.loggedItem.FusionRequestTypeLowerCase">
 				<ee:transform doc:name="Create SOAP request for CheckInPassenger" doc:id="e6b4e35d-bbfe-4a8a-b581-ca78c7304b75" >
 					<ee:message >
-						<ee:set-payload resource="dw/CheckInPassenger_Request.dwl" />
 					</ee:message>
+					<ee:variables >
+						<ee:set-variable resource="dw/CheckInPassenger_Request.dwl" variableName="actualRequest" />
+					</ee:variables>
 				</ee:transform>
 			</when>
 			
 </choice>
 			
 		
-	</flow>
+	
+</flow>
 	
 	</mule>

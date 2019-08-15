@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
 	
 	<flow name="MainFlow" doc:id="dbf48fc0-d4e7-47f7-93da-0f9b7bc41cbb" >
-		<http:listener doc:name="Listener" doc:id="c03a15d6-4b85-4799-bc45-b299d8c964ed" config-ref="DCSemulator_Listener_config" path="/" />
+		<http:listener doc:name="Listener" doc:id="c03a15d6-4b85-4799-bc45-b299d8c964ed" config-ref="DCSemulator_Listener_config" path="/*" />
 		<ee:transform doc:name="Save input in 'inputData' variable" doc:id="2a575410-6fbe-4be0-a33e-bc0cf0fc5b91" >
 			<ee:message >
 			</ee:message>
@@ -86,15 +86,13 @@ payload map (d, i) ->{
 			doc:name="Extract parameters from input" 
 			doc:id="0b090005-2c4a-459c-bfd3-b05d4625eb32" 
 			class="dcsemulator.InputProcessing" 
-			method="extractSearchVariablesFromSOAP(String, HashMap, ArrayList)">
+			method="extractSearchVariablesFromSOAP(String, HashMap, ArrayList)" target="DCSrequestDetails">
 			<java:args><![CDATA[#[{
 	mainTag: vars.mainTag,
 	inputData: vars.inputData,
 	requestConfig: vars.requestConfig
 }]]]></java:args>
-			</java:invoke-static> 
-		
-
+			</java:invoke-static>
 		<flow-ref doc:name="Get Response from DB" doc:id="80798482-4c33-47ed-abd6-c84dc6c9851e" name="GetResponseFromDatabase" />
 		
 		<java:invoke-static doc:name="Edit output" 
@@ -109,7 +107,7 @@ payload map (d, i) ->{
 	
 	</flow>
 	<flow name="processREST" doc:id="9f7a1bd5-9cec-4508-a8b7-f8b8eb86b61f" >
-		<java:invoke-static doc:name="Extract parameters from input" doc:id="54a6fa63-61b3-4d19-9802-bec607a90a94" class="dcsemulator.InputProcessing" method="extractSearchVariablesFromREST(HashMap, HashMap)">
+		<java:invoke-static doc:name="Extract parameters from input" doc:id="54a6fa63-61b3-4d19-9802-bec607a90a94" class="dcsemulator.InputProcessing" method="extractSearchVariablesFromREST(HashMap, HashMap)" target="DCSrequestDetails">
 			<java:args ><![CDATA[#[{ 
 	inputData: vars.inputData,
 	requestInfo: vars.requestInfo
@@ -126,18 +124,18 @@ payload map (d, i) ->{
 </flow>
 	<flow name="GetResponseFromDatabase" doc:id="f2947de5-21e1-4896-a6db-db0e0fb87c0c" >
 		<choice doc:name="Do we need response from DB?" doc:id="99aff7aa-f6d3-4ff6-bd79-0186a7d95685">
-			<when expression="payload['Response'] == null">
+			<when expression="#[vars.DCSrequestDetails.Response == null]">
 			
 				<db:stored-procedure config-ref="mssql-jdbc" doc:name="Extract response from DB">
 				    <db:sql>
 				    	{ call GetDCSResponseXmlForRequestUnderTest(:Airline, :Airport, :PNR, :UniqueFragment, :RequestType) }
 				    </db:sql>
 					<db:input-parameters><![CDATA[#[{
-						'Airline' : payload['Airline'],
-						'Airport' : payload['Airport'],
-						'PNR': payload['PNR'],
-						'UniqueFragment': payload['UniqueFragment'],
-						'RequestType': payload['RequestType']
+						'Airline' : vars.DCSrequestDetails.Airline,
+						'Airport' : vars.DCSrequestDetails.Airport,
+						'PNR': vars.DCSrequestDetails.PNR,
+						'UniqueFragment': vars.DCSrequestDetails.UniqueFragment,
+						'RequestType': vars.DCSrequestDetails.RequestType
 						}]]]>
 					</db:input-parameters>
 			
@@ -156,12 +154,22 @@ output application/java
 	airline: payload[0].Airline[0],
 	inputData: vars.inputData,
 	requestConfig: vars.requestConfig,
-	requestInfo: vars.requestInfo
+	requestInfo: vars.requestInfo,
+	request: payload[0].DCSRequestXml[0],
+	requestType: payload[0].RequestType[0],
+	dcsRequestId: payload[0].DcsRequestId[0]
 	
 }]]></ee:set-variable>
 					</ee:variables>
 				</ee:transform>
-			</when>
+				<db:stored-procedure doc:name="Save DCS request info to DB" doc:id="470eb70b-6454-43bb-91a4-50b816487af7" config-ref="mssql-jdbc">
+			<db:sql>{ call InsertDCSrequestUnderTest(:DCSrequestType,:DcsRequestXml,:DcsRequestIdMatched) }</db:sql>
+			<db:input-parameters><![CDATA[#[{'DCSrequestType' : vars.DCSrequestDetails.RequestType,
+'DcsRequestXml' : vars.inputData.payload,
+'DcsRequestIdMatched' : vars.globalData.dcsRequestId}]]]></db:input-parameters>
+		</db:stored-procedure>
+			
+</when>
 			<otherwise >
 				<ee:transform doc:name="Save data in 'globalData' variable" doc:id="77edbff3-f11a-45da-b88a-931544882e58" >
 					<ee:message >
@@ -171,7 +179,7 @@ output application/java
 output application/java
 ---
 {
-	response: payload.Response,
+	response: vars.DCSrequestDetails.Response,
 	dcsName: "",
 	dcsVersion: "",
 	inputData: vars.inputData,
@@ -183,5 +191,6 @@ output application/java
 				</ee:transform>
 			</otherwise>
 		</choice>
-	</flow>
+	
+</flow>
 </mule>

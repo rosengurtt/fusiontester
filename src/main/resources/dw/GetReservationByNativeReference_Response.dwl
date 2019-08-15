@@ -115,30 +115,30 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 								"text()": passenger.ns01#Baggage.ns01#BaggageAllowances."text()"
 							},
 							BaggageItems: {
-								BaggageItem: {
-									Id: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Id,
-									BaggageAllowanceId: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#BaggageAllowanceId,
-									PassengerId: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#PassengerId,
-									TagNumber: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#TagNumber,
-									Weight: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Weight,
-									InitialWeight: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#InitialWeight,
-									BaggageItemType: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#BaggageItemType,
-									BaggageItemTypeId: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#BaggageItemTypeId,
-									BaggageItemTypeName: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#BaggageItemTypeName,
-									BaggageItemSubTypeId: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#BaggageItemSubTypeId,
-									HasNotionalWeight: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#HasNotionalWeight,
-									OutOfGauge: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#OutOfGauge,
-									ConsumeAllowance: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#ConsumeAllowance,
-									Registered: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Registered,
-									Printed: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Printed,
-									Dropped: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Dropped,
-									RegisteredTime: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#RegisteredTime,
-									PrintedTime: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#PrintedTime,
-									DroppedTime: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#DroppedTime,
-									CreatedOn: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#CreatedOn,
-									NativeBaggageId:  passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#NativeBaggageId,
-									Active: passenger.ns01#Baggage.ns01#BaggageItems.ns01#BaggageItem.ns01#Active
-								}
+								BaggageItem: (passenger.ns01#Baggage.ns01#BaggageItems.*ns01#BaggageItem map {
+									Id: $.ns01#Id,
+									BaggageAllowanceId: $.ns01#BaggageAllowanceId,
+									PassengerId: $.ns01#PassengerId,
+									TagNumber: $.ns01#TagNumber,
+									Weight: $.ns01#Weight,
+									InitialWeight: $.ns01#InitialWeight,
+									BaggageItemType: $.ns01#BaggageItemType,
+									BaggageItemTypeId: $.ns01#BaggageItemTypeId,
+									BaggageItemTypeName: $.ns01#BaggageItemTypeName,
+									BaggageItemSubTypeId: $.ns01#BaggageItemSubTypeId,
+									HasNotionalWeight: $.ns01#HasNotionalWeight,
+									OutOfGauge: $.ns01#OutOfGauge,
+									ConsumeAllowance: $.ns01#ConsumeAllowance,
+									Registered: $.ns01#Registered,
+									Printed: $.ns01#Printed,
+									Dropped: $.ns01#Dropped,
+									RegisteredTime: $.ns01#RegisteredTime,
+									PrintedTime: $.ns01#PrintedTime,
+									DroppedTime: $.ns01#DroppedTime,
+									CreatedOn: $.ns01#CreatedOn,
+									NativeBaggageId:  $.ns01#NativeBaggageId,
+									Active: $.ns01#Active
+								})
 							},
 							MaxSingleItemWeight: passenger.ns01#Baggage.ns01#MaxSingleItemWeight
 						},
@@ -154,7 +154,7 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 							}
 						},
 						CustomProperties: {
-							string: passenger.ns01#CustomProperties
+							string: passenger.ns01#CustomProperties.*string
 						}
 					}
 				})

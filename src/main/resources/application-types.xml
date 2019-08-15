@@ -98,6 +98,9 @@
         <types:message>
           <types:payload type="GetBagLicensePlateLogResponse"/>
         </types:message>
+        <types:variables>
+          <types:variable name="actualResponse" type="GetBagLicensePlateLogResponse"/>
+        </types:variables>
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
