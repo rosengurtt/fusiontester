@@ -121,7 +121,9 @@ public class ProcessData {
 		String retVal = "";
 		for (int i = 0; i < data.length; i ++) {
 			Map<String,String> call = (Map<String,String>) data[i];
-			retVal += call.get("DcsRequestXml") + "\r\n\r\n";
+			String callString = call.get("DcsRequestXml");
+			if (callString.length() > 0) callString += "\r\n\r\n";
+			retVal += call;
 		}
 		return retVal;
 	}
