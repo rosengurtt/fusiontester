@@ -72,8 +72,10 @@ public class ProcessData {
 	        XMLUnit.setIgnoreAttributeOrder(true);
 	        
 			loggedResponse = removeThingsWeDontCompare(requestType, loggedResponse);
+			System.out.println(loggedResponse);
 			actualResponse = removeThingsWeDontCompare(requestType, actualResponse);	        
-	
+			System.out.println(actualResponse);
+			
 	        DetailedDiff diff = new DetailedDiff(XMLUnit.compareXML(loggedResponse, actualResponse));
 	        String stringDifference = diff.toString().replace("org.custommonkey.xmlunit.DetailedDiff", "");
 	        

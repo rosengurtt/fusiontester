@@ -14,6 +14,10 @@ https:
   host: "0.0.0.0"
   basepath: "/"
 
+time.setter.web:
+  host: "localhost"
+  port: "5000"
+  
 certificate:
   keystore: "faky.keystore"
   password: "password"

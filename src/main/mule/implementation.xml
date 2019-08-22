@@ -24,9 +24,7 @@ output application/java
 	Airport: if (payload['Airport'] != null ) payload['Airport'] else "%",
 	StartDate: if (payload['StartDate'] != null ) payload['StartDate'] else "1900-01-01",
 	EndDate: if (payload['EndDate'] != null ) payload['EndDate'] else "2100-01-01",
-	ParallelRuns: if (payload['ParallelRuns'] != null ) payload['ParallelRuns'] else 3,
-	DbUser: payload['DbUser'],
-	DbPassword: payload['DbPassword'],	
+	ParallelRuns: if (payload['ParallelRuns'] != null ) payload['ParallelRuns'] else 1,
 	FusionServiceUrl: payload['FusionServiceUrl'],
 	TestInfo: payload['TestInfo']
 }]]></ee:set-variable>
@@ -89,11 +87,11 @@ output application/java
 	FusionRequestXml: payload[0].FusionRequestXml[0],
 	FusionResponseXml: payload[0].FusionResponseXml[0],
 	FusionRequestType: payload[0].RequestType[0],
-	FusionRequestTypeLowerCase: lower (payload[0].RequestType[0])
+	FusionRequestTypeLowerCase: lower (payload[0].RequestType[0]),
+	FusionRequestTime:  payload[0].RequestTime[0] as String
 }]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
-	
 			<flow-ref doc:name="buildSoapRequest" doc:id="2071d4b0-89a7-4ac3-ab20-78e61080350f" name="buildSoapRequest"/>
 			<try doc:name="Try" doc:id="b3c4de21-e939-4df2-a231-5094a6040522" >
 				<flow-ref doc:name="testFusionRequest" doc:id="8778b9f7-7685-45bc-9642-892e28881532" name="testFusionRequest"/>
@@ -120,6 +118,9 @@ output application/java
 		<logger level="INFO" doc:name="Logger" doc:id="9eb54461-a20b-442f-8156-c3a56d26e723" message="#['Finished processing requests ' + vars.FusionRequestIdsList]"/>
 	</flow>
 	<flow name="testFusionRequest" doc:id="6422de27-cd6f-4c88-afce-85e270f41e58" >
+		<http:request method="POST" doc:name="TimeSetterWeb" doc:id="96277b73-448b-4e31-b776-62795221bf15" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType='application/json' outputEncoding="UTF-8">
+			<http:body ><![CDATA[#[vars.loggedItem.FusionRequestTime]]]></http:body>
+		</http:request>
 		<http:request method="POST" doc:name="Fusion WS" doc:id="8f351ffe-262c-498f-801e-66d6cdd266f7" config-ref="FusionWebService" path="/FusionService.svc">
 			<http:body ><![CDATA[#[vars.actualRequest]]]></http:body>
 			</http:request>

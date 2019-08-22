@@ -50,9 +50,14 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 	        <http:default-header key="charset" value="UTF-8" />
 	    </http:default-headers>
 	</http:request-config>
-	<vm:config name="JobsCoordination" doc:name="VM Config" doc:id="686d6b6b-0993-418e-9b4e-326ad6aa7dc6">
-		<vm:queues >
-			<vm:queue queueName="WaitingForJobsToFinish" />
-		</vm:queues>
-	</vm:config>
+
+	
+	<http:request-config name="TimeSetterWeb_configuration" doc:name="TimeSetterWeb configuration" doc:id="a1ce70bb-6b91-479b-8d53-4874aa22eacb" 
+	responseTimeout="90000"
+	basePath="/api" >
+		<http:request-connection host="${time.setter.web.host}" port="${time.setter.web.port}" />
+		<http:default-headers>
+			<http:default-header key="Content-Type" value="application/json"/>
+		</http:default-headers>
+	</http:request-config>
 </mule>
