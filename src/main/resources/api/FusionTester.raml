@@ -9,36 +9,10 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
       application/json:
         type: object
         properties:
-          Airline:
-            type: string
-            required: false
-            default: "ALL airlines"
-            example: "FR"
-          Airport:
-            type: string
-            required: false
-            default: "ALL airports"
-            example: "MAN"
-          StartDate:
-            type: string
-            required: false
-            default: "1900-01-01"
-            example: "2019-05-08 22:17:09"
-          EndDate:
-            type: string
-            required: false
-            default: "2100-01-01"
-            example: "2019-05-08 22:17:09"
-          ParallelRuns:
+          TestId:
             type: integer
-            required: false
-            default: 3
-            example: 5
-          FusionServiceUrl:
-            type: string
             required: true
-            default: "local.pulse.aero"
-            example: "local.pulse.aero"
+            example: 25
 
     responses:
       200:

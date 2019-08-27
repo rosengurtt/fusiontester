@@ -43,7 +43,7 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 	</db:config>
 
 	
-	<http:request-config name="FusionWebService" doc:name="HTTP Request configuration" doc:id="2c24e0d6-5d6d-4863-b698-6f8a6baaf652" responseTimeout="300000"  >
+	<http:request-config name="FusionWebService" doc:name="HTTP Request configuration" doc:id="2c24e0d6-5d6d-4863-b698-6f8a6baaf652" responseTimeout="60000"  >
 		<http:request-connection host="${fusion.url}" port="${fusion.port}" />
 		<http:default-headers >
 	        <http:default-header key="Content-Type" value="application/soap+xml" />
@@ -53,11 +53,22 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 
 	
 	<http:request-config name="TimeSetterWeb_configuration" doc:name="TimeSetterWeb configuration" doc:id="a1ce70bb-6b91-479b-8d53-4874aa22eacb" 
-	responseTimeout="90000"
+	responseTimeout="20000"
 	basePath="/api" >
 		<http:request-connection host="${time.setter.web.host}" port="${time.setter.web.port}" />
 		<http:default-headers>
 			<http:default-header key="Content-Type" value="application/json"/>
 		</http:default-headers>
 	</http:request-config>
+	
+
+	<http:request-config name="RealTime_http_configuration" doc:name="HTTP Request configuration" doc:id="118f9707-895c-4a0d-b3d5-b279ccd87699">
+		<http:request-connection host="${real.time.server.host}"/>
+	</http:request-config>
+	
+		<vm:config name="VM_Config1" doc:name="VM Config" doc:id="83d333d8-ddb3-4c63-90a8-83fb2e5f0f2e" >
+		<vm:queues >
+			<vm:queue queueName="BackgroundJob" />
+		</vm:queues>
+	</vm:config>
 </mule>

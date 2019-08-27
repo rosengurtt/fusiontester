@@ -1,5 +1,6 @@
 package fusiontester;
 
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -7,6 +8,9 @@ import java.util.Map;
 
 import org.custommonkey.xmlunit.DetailedDiff;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.dom4j.DocumentHelper;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 
 import fusiontester.methods.BuyAllowance;
 import fusiontester.methods.CheckInPassenger;
@@ -51,7 +55,10 @@ public class ProcessData {
 			
 			String message = compareDCScalls(expected, actual);
 
-			if (message == "OK") {
+			loggedResponse = removeThingsWeDontCompare(requestType, loggedResponse);
+			actualResponse = removeThingsWeDontCompare(requestType, actualResponse);
+			
+			if (message == "OK") {	
 				message = CompareFusionResponses(requestType, loggedResponse, actualResponse);
 			}
 
@@ -60,21 +67,19 @@ public class ProcessData {
 			HashMap<String,String> retVal = new HashMap<String,String>();
 			retVal.put("Message", message);
 			retVal.put("DCScalls", DCScalls);
+			retVal.put("ExpectedResponseCleaned", prettyPrintXml(loggedResponse));
+			retVal.put("ActualResponseCleaned", prettyPrintXml(actualResponse));
 			return retVal;			
 	}
 	
+
 	
 	// Compares the xml of the logged response with the actual response. 
 	// It removes empty or null tags and ignores some specific tags like guids created for a specific request
 	private static String CompareFusionResponses(String requestType, String loggedResponse, String actualResponse) {
 		try {
 	        XMLUnit.setIgnoreWhitespace(true);
-	        XMLUnit.setIgnoreAttributeOrder(true);
-	        
-			loggedResponse = removeThingsWeDontCompare(requestType, loggedResponse);
-			System.out.println(loggedResponse);
-			actualResponse = removeThingsWeDontCompare(requestType, actualResponse);	        
-			System.out.println(actualResponse);
+	        XMLUnit.setIgnoreAttributeOrder(true);   
 			
 	        DetailedDiff diff = new DetailedDiff(XMLUnit.compareXML(loggedResponse, actualResponse));
 	        String stringDifference = diff.toString().replace("org.custommonkey.xmlunit.DetailedDiff", "");
@@ -129,7 +134,7 @@ public class ProcessData {
 		}
 		return retVal;
 	}
-	private static String removeThingsWeDontCompare(String requestType, String xml) {
+	private static String removeThingsWeDontCompare(String requestType, String xml) {		
 		
 		// Remove namespaces
 		xml = xml.replaceAll("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"", "");
@@ -169,4 +174,26 @@ public class ProcessData {
 		return FusionActualRequest.replaceAll("<ns02:LastAPIS/>", "");
 	}
 
+	public static String prettyPrintXml(String xml) {
+
+	    final StringWriter sw;
+
+	    try {
+	        final OutputFormat format = OutputFormat.createPrettyPrint();
+	        final org.dom4j.Document document = DocumentHelper.parseText(xml);
+	        sw = new StringWriter();
+	        final XMLWriter writer = new XMLWriter(sw, format);
+	        writer.write(document);
+	    }
+	    catch (Exception e) {
+	        throw new RuntimeException("Error pretty printing xml:\n" + xml, e);
+	    }
+	    return sw.toString();
+	}
+	
+	public static String FormatCurrentDateTime(String currentDateTime) {
+		String aux =  currentDateTime.replace("T",  " ");
+		aux = aux.substring(0,"yyyy-mm-dd ss:ss:ss".length());
+		return "\"" + aux + "\"";		
+	}
 }

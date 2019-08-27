@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+		<flow name="GetRealCurrentDateTime" doc:id="adce82b5-8ea3-43ec-8378-7cda430cef0d" >
+		<http:request method="GET" doc:name="Get real time" doc:id="ca763fa6-d6ec-49c8-8d04-6312a17fdabb" config-ref="RealTime_http_configuration" url="${real.time.server.url}" />
+		<ee:transform doc:name="Save in var 'RealCurrentDateTime'" doc:id="897beba6-14d1-4f19-83f4-9f32bd2d679e" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="RealCurrentDateTime" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.datetime as LocalDateTime as String {format: "yyyy-MM-dd hh:mm:ss"}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</flow>
+	<flow name="SetTimeToCurrentTime" doc:id="c12be2a5-7c5a-4f0b-b50b-2c29597854d9" >
+		<http:request method="GET" doc:name="Get real time" doc:id="7343f530-8d4c-4ace-b244-debdcdd0bb5c" config-ref="RealTime_http_configuration" url="${real.time.server.url}"/>
+		<ee:transform doc:name="Format request" doc:id="17c06df7-b3da-4944-94ed-edf2a48f4b85" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	datetime: payload.datetime
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+				<try doc:name="Try" doc:id="29a21e6b-df55-4364-9189-32d12ed2b3a8" >
+			<http:request method="POST" doc:name="TimeSetterWeb" doc:id="96277b73-448b-4e31-b776-62795221bf15" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
+				<http:response-validator >
+					<http:success-status-code-validator values="200..599" />
+				</http:response-validator>
+		</http:request>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="c2dfcb69-8de9-469c-9b79-4d9eb966e977" >
+					<logger level="INFO" doc:name="Error when calling TimeSetter" doc:id="1f92d279-88d6-4984-9ad5-6786254ef17d" message="Failed to set time using the TimeSetterWeb service"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+	</flow>
+	<flow name="SetTimeToEventTime" doc:id="bfec2897-7c9a-4d5b-9f90-e902eda8ce66" >
+		<ee:transform doc:name="Format request" doc:id="41a795d7-3c75-42d6-9b3b-8e8025173c6b">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	payload: vars.loggedItem.FusionRequestTime
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		<try doc:name="Try" doc:id="6a04bcc4-c524-49f9-8aaa-5735d2892b6c" >
+			<http:request method="POST" doc:name="TimeSetterWeb" doc:id="52db0346-b9d7-434b-ac5f-6df4d15591db" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8" >
+				<http:response-validator >
+					<http:success-status-code-validator values="200..599" />
+				</http:response-validator>
+			</http:request>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="09d8f84e-96e4-4aec-aaf0-5108fb06205b" >
+					<logger level="INFO" doc:name="Error when calling TimeSetter" doc:id="6cc3e427-e5f9-45bc-90c4-80426bbf1073" message="Failed to set time using the TimeSetterWeb service" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+	</flow>
+	
+	
+	</mule>

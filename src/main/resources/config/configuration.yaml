@@ -25,3 +25,7 @@ certificate:
 fusion:
   url: "local.fusion.aero"
   port: "80"
+  
+real.time.server:
+  url: "http://worldtimeapi.org/api/timezone/Europe/London"
+  host: "worldtimeapi.org"
