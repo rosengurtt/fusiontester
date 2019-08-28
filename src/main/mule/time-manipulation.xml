@@ -24,12 +24,12 @@ payload.datetime as LocalDateTime as String {format: "yyyy-MM-dd hh:mm:ss"}]]></
 		</ee:transform>
 	</flow>
 	<flow name="SetTimeToCurrentTime" doc:id="c12be2a5-7c5a-4f0b-b50b-2c29597854d9" >
-		<http:request method="GET" doc:name="Get real time" doc:id="7343f530-8d4c-4ace-b244-debdcdd0bb5c" config-ref="RealTime_http_configuration" url="${real.time.server.url}"/>
-		<ee:transform doc:name="Format request" doc:id="17c06df7-b3da-4944-94ed-edf2a48f4b85" >
-			<ee:message >
+				<http:request method="GET" doc:name="Get real time" doc:id="7343f530-8d4c-4ace-b244-debdcdd0bb5c" config-ref="RealTime_http_configuration" url="${real.time.server.url}" />
+		<ee:transform doc:name="Format request" doc:id="17c06df7-b3da-4944-94ed-edf2a48f4b85">
+			<ee:message>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="MulesoftCompadre" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="MulesoftCompadre"><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -38,7 +38,7 @@ output application/json
 
 			</ee:variables>
 		</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="88604126-a0a8-4718-ac38-50af03a6aea3" message="#[vars.MulesoftCompadre]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="88604126-a0a8-4718-ac38-50af03a6aea3" message="#[vars.MulesoftCompadre]"/>
 		<http:request method="POST" doc:name="TimeSetterWeb" doc:id="96277b73-448b-4e31-b776-62795221bf15" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
 				<http:body><![CDATA[#[vars.MulesoftCompadre]]]></http:body>
 				<http:response-validator>

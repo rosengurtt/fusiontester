@@ -41,14 +41,16 @@ output application/java
 		<flow-ref doc:name="buildSoapRequest" doc:id="2071d4b0-89a7-4ac3-ab20-78e61080350f" name="buildSoapRequest"/>
 		<flow-ref doc:name="testFusionRequest" doc:id="24d7d97d-9c34-4b94-978c-8fc72693fb4c" name="testFusionRequest" />
 			<db:stored-procedure doc:name="Store test result" doc:id="18e6b2e3-204d-4f82-9791-abaf9d262559" config-ref="mssql-jdbc">
-				<db:sql >{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult,:ExpectedResponse,:ActualResponse,:ActualDCScalls) }</db:sql>
+				<db:sql >{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult,:ExpectedResponse,:ActualResponse,:ActualDCScalls,:NumberOfDifferences,:DCScallsMatch) }</db:sql>
 				<db:input-parameters ><![CDATA[#[{
 	'TestId': vars.TestId,
 	'FusionRequestId': vars.loggedItem.FusionRequestId,
 	'TestResult': payload.Message,
 	'ExpectedResponse': payload.ExpectedResponseCleaned,
 	'ActualResponse': payload.ActualResponseCleaned,
-	'ActualDCScalls': payload.DCScalls
+	'ActualDCScalls': payload.DCScalls,
+	'NumberOfDifferences': payload.NumberOfDifferences,
+	'DCScallsMatch': payload.DCScallsMatch
 }]]]></db:input-parameters>
 			</db:stored-procedure>
 		<logger level="INFO" doc:name="Logger" doc:id="9eb54461-a20b-442f-8156-c3a56d26e723" message="#['Finished testjob']" />
@@ -60,9 +62,31 @@ output application/java
 	</flow>
 	<flow name="testFusionRequest" doc:id="6422de27-cd6f-4c88-afce-85e270f41e58" >
 		<flow-ref doc:name="SetTimeToEventTime" doc:id="10225e43-d10a-46ff-a50a-529003cf197e" name="SetTimeToEventTime"/>
-		<http:request method="POST" doc:name="Fusion WS" doc:id="8f351ffe-262c-498f-801e-66d6cdd266f7" config-ref="FusionWebService" path="/FusionService.svc">
-			<http:body ><![CDATA[#[vars.actualRequest]]]></http:body>
-			</http:request>
+		<try doc:name="Try" doc:id="06ca8f46-34a3-4300-8b4e-9d6e36d44759" >
+			<http:request method="POST" doc:name="Fusion WS" doc:id="8f351ffe-262c-498f-801e-66d6cdd266f7" config-ref="FusionWebService" path="/FusionService.svc">
+			<http:body><![CDATA[#[vars.actualRequest]]]></http:body>			
+</http:request>
+			<error-handler>
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b43e246e-6232-4ea7-a8fd-9960a658e0d8" >
+					<logger level="INFO" doc:name="Logger" doc:id="f61e3544-40bd-455a-962d-36cd2a1a5c98" message="There was an error when calling Fusion"/>
+					<db:stored-procedure doc:name="Store Test Result" doc:id="88d11474-0fc1-4806-bf69-373bcd48e834" config-ref="mssql-jdbc">
+					<db:sql >{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult,:ExpectedResponse,:ActualResponse,:ActualDCScalls,:NumberOfDifferences,:DCScallsMatch) }</db:sql>
+						<db:input-parameters ><![CDATA[#[{
+	'TestId': vars.TestId,
+	'FusionRequestId': vars.loggedItem.FusionRequestId,
+	'TestResult': 'Error happened calling Fusion',
+	'ExpectedResponse': '',
+	'ActualResponse': '',
+	'ActualDCScalls': '',
+	'NumberOfDifferences': '0',
+	'DCScallsMatch': ''
+	
+}]]]></db:input-parameters>
+					</db:stored-procedure>
+					<flow-ref doc:name="SetTimeToCurrentTime" doc:id="3bb95090-8cdc-4466-be82-da1c2efe2c31" name="SetTimeToCurrentTime" />
+				</on-error-propagate>
+			</error-handler>
+		</try>
 		<flow-ref doc:name="formatResponse" doc:id="ebabee6f-5948-4d52-85c0-9216bd0d3ad0" name="formatResponse" />
 		<flow-ref doc:name="SetTimeToCurrentTime" doc:id="8ce24fd9-d044-41a7-af28-9a2f151ce0cc" name="SetTimeToCurrentTime" />
 		<db:stored-procedure doc:name="Get DCS calls info" doc:id="1aa84446-ea2e-408e-8913-25e648b1145e" config-ref="mssql-jdbc">

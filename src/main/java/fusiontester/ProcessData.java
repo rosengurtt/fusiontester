@@ -53,22 +53,41 @@ public class ProcessData {
 			Object[] expected = ((LinkedList)expectedDCScalls).toArray();
 			Object[] actual = ((LinkedList)actualDCScalls).toArray();
 			
-			String message = compareDCScalls(expected, actual);
-
+			int NumberOfDifferences = 0;
+			int DCScallsMatch = 1;
+			String DcsComparison = compareDCScalls(expected, actual);
+			String message = "OK";
+			String DCScalls = "";
+			HashMap<String,String> retVal = new HashMap<String,String>();
+			
 			loggedResponse = removeThingsWeDontCompare(requestType, loggedResponse);
 			actualResponse = removeThingsWeDontCompare(requestType, actualResponse);
 			
-			if (message == "OK") {	
-				message = CompareFusionResponses(requestType, loggedResponse, actualResponse);
+			if (DcsComparison != "OK") {	
+				DCScallsMatch = 0;
+				message = DcsComparison;
+				DCScalls = GetDCScallsInAstring(actual);
 			}
-
-			String DCScalls = GetDCScallsInAstring(actual);
 			
-			HashMap<String,String> retVal = new HashMap<String,String>();
+			DetailedDiff diff = CompareFusionResponses(requestType, loggedResponse, actualResponse);
+			if (diff == null) {
+				message = "Error comparing " + loggedResponse + " with " + actualResponse;
+			}
+			else if (!diff.identical()) {
+				message = diff.toString().replace("org.custommonkey.xmlunit.DetailedDiff", "");
+				NumberOfDifferences = diff.getAllDifferences().size();
+				retVal.put("ExpectedResponseCleaned", prettyPrintXml(loggedResponse));
+				retVal.put("ActualResponseCleaned", prettyPrintXml(actualResponse));
+			}
+			else {
+				retVal.put("ExpectedResponseCleaned", "");
+				retVal.put("ActualResponseCleaned", "");
+			}
+			
 			retVal.put("Message", message);
 			retVal.put("DCScalls", DCScalls);
-			retVal.put("ExpectedResponseCleaned", prettyPrintXml(loggedResponse));
-			retVal.put("ActualResponseCleaned", prettyPrintXml(actualResponse));
+			retVal.put("NumberOfDifferences", Integer.toString(NumberOfDifferences));
+			retVal.put("DCScallsMatch", Integer.toString(DCScallsMatch));
 			return retVal;			
 	}
 	
@@ -76,22 +95,15 @@ public class ProcessData {
 	
 	// Compares the xml of the logged response with the actual response. 
 	// It removes empty or null tags and ignores some specific tags like guids created for a specific request
-	private static String CompareFusionResponses(String requestType, String loggedResponse, String actualResponse) {
+	private static DetailedDiff CompareFusionResponses(String requestType, String loggedResponse, String actualResponse) {
 		try {
 	        XMLUnit.setIgnoreWhitespace(true);
 	        XMLUnit.setIgnoreAttributeOrder(true);   
 			
-	        DetailedDiff diff = new DetailedDiff(XMLUnit.compareXML(loggedResponse, actualResponse));
-	        String stringDifference = diff.toString().replace("org.custommonkey.xmlunit.DetailedDiff", "");
-	        
-	        if (stringDifference.equals("[identical]")) {
-	        	return "OK";
-	        }
-	        return "Fusion responses don't match.\r\nDifferences are:\r\n" + stringDifference;
-
+	        return new DetailedDiff(XMLUnit.compareXML(loggedResponse, actualResponse));
 		}
 		catch (Exception ex) {
-			return ex.toString() + "Error comparing " + loggedResponse + " with " + actualResponse;	
+			return null;	
 		}
 	}
 	
