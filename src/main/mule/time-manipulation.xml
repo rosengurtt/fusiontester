@@ -27,28 +27,24 @@ payload.datetime as LocalDateTime as String {format: "yyyy-MM-dd hh:mm:ss"}]]></
 		<http:request method="GET" doc:name="Get real time" doc:id="7343f530-8d4c-4ace-b244-debdcdd0bb5c" config-ref="RealTime_http_configuration" url="${real.time.server.url}"/>
 		<ee:transform doc:name="Format request" doc:id="17c06df7-b3da-4944-94ed-edf2a48f4b85" >
 			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="MulesoftCompadre" ><![CDATA[%dw 2.0
 output application/json
 ---
 {
-	datetime: payload.datetime
-}]]></ee:set-payload>
-			</ee:message>
-			<ee:variables >
+	datetime: payload.datetime[0 to 19] as String
+}]]></ee:set-variable>
+
 			</ee:variables>
 		</ee:transform>
-				<try doc:name="Try" doc:id="29a21e6b-df55-4364-9189-32d12ed2b3a8" >
-			<http:request method="POST" doc:name="TimeSetterWeb" doc:id="96277b73-448b-4e31-b776-62795221bf15" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
-				<http:response-validator >
+				<logger level="INFO" doc:name="Logger" doc:id="88604126-a0a8-4718-ac38-50af03a6aea3" message="#[vars.MulesoftCompadre]"/>
+		<http:request method="POST" doc:name="TimeSetterWeb" doc:id="96277b73-448b-4e31-b776-62795221bf15" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
+				<http:body><![CDATA[#[vars.MulesoftCompadre]]]></http:body>
+				<http:response-validator>
 					<http:success-status-code-validator values="200..599" />
 				</http:response-validator>
 		</http:request>
-			<error-handler >
-				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="c2dfcb69-8de9-469c-9b79-4d9eb966e977" >
-					<logger level="INFO" doc:name="Error when calling TimeSetter" doc:id="1f92d279-88d6-4984-9ad5-6786254ef17d" message="Failed to set time using the TimeSetterWeb service"/>
-				</on-error-continue>
-			</error-handler>
-		</try>
 	</flow>
 	<flow name="SetTimeToEventTime" doc:id="bfec2897-7c9a-4d5b-9f90-e902eda8ce66" >
 		<ee:transform doc:name="Format request" doc:id="41a795d7-3c75-42d6-9b3b-8e8025173c6b">
@@ -57,22 +53,15 @@ output application/json
 output application/json
 ---
 {
-	payload: vars.loggedItem.FusionRequestTime
+	datetime: vars.loggedItem.FusionRequestTime
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-		<try doc:name="Try" doc:id="6a04bcc4-c524-49f9-8aaa-5735d2892b6c" >
-			<http:request method="POST" doc:name="TimeSetterWeb" doc:id="52db0346-b9d7-434b-ac5f-6df4d15591db" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8" >
-				<http:response-validator >
+		<http:request method="POST" doc:name="TimeSetterWeb" doc:id="52db0346-b9d7-434b-ac5f-6df4d15591db" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
+				<http:response-validator>
 					<http:success-status-code-validator values="200..599" />
 				</http:response-validator>
 			</http:request>
-			<error-handler >
-				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="09d8f84e-96e4-4aec-aaf0-5108fb06205b" >
-					<logger level="INFO" doc:name="Error when calling TimeSetter" doc:id="6cc3e427-e5f9-45bc-90c4-80426bbf1073" message="Failed to set time using the TimeSetterWeb service" />
-				</on-error-continue>
-			</error-handler>
-		</try>
 	</flow>
 	
 	

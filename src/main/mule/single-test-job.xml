@@ -11,58 +11,13 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
 
-
-	<flow name="post:\fusiontest:application\json:FusionTester-config">
-		<ee:transform doc:name="Save input in variable 'inputData'" doc:id="0735fdfa-6a38-475d-8897-eed49f911273" >
-			<ee:message >
-			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="TestId" ><![CDATA[%dw 2.0
-output application/java
----
-payload['TestId'] as Number
-]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<db:stored-procedure doc:name="Initialize tables" doc:id="676537bf-9efb-4d94-ab89-add55ebc5423" config-ref="mssql-jdbc">
-			<db:sql >{ call InitializeTest(:TestId) }</db:sql>
-			<db:input-parameters ><![CDATA[#[{ 'TestId' : vars.TestId }]]]></db:input-parameters>
-		</db:stored-procedure>
-		
 	
-		<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="81233c51-2f6f-443f-8a23-26d518b21f7c" />
-		<async doc:name="Async" doc:id="bf4531bc-0bb4-40c9-8c5c-712239a66a36">
-			<vm:publish queueName="BackgroundJob" doc:name="Publish" doc:id="8316df58-d81c-42cc-8a09-f72fed584503" config-ref="VM_Config1"/>
-				</async>
-		<set-payload value="#['Test started']" doc:name="Return message to client" doc:id="dacebd1f-d3b4-4f94-9503-6fbf68b2e5a7" />
-    
-</flow>
-	<flow name="BackgroundJob" doc:id="d3795b0c-9425-4e61-810f-ab8d3b5cc98c" >
-		<vm:listener doc:name="Listener" doc:id="044bc086-f58a-4fa4-8184-6dddfacd4e52" config-ref="VM_Config1" queueName="BackgroundJob"/>
-		<set-variable value="#[payload]" doc:name="Save TestId" doc:id="1a025aeb-d7f3-49f2-a3a6-5e31882e8cc7" variableName="TestId"/>
-		<flow-ref doc:name="GetRealCurrentDateTime" doc:id="df017b21-c655-4d00-b412-cf4577595f8d" name="GetRealCurrentDateTime"/>
-		<db:stored-procedure doc:name="Get Active Status of Testjob" doc:id="114db2a2-6a9d-49c5-852c-40d91fbb369b" config-ref="mssql-jdbc">
-			<db:sql >{ call IsBackgroundJobActive(:TestId, :CurrentDateTimeString) }</db:sql>
-			<db:input-parameters ><![CDATA[#[{ 
-'TestId': vars.TestId, 
-'CurrentDateTimeString': vars.RealCurrentDateTime
-}]]]></db:input-parameters>
-		</db:stored-procedure>
-		<choice doc:name="Check if testjob is active" doc:id="911d0f75-ba42-42b4-b7c5-882d3632a96a" >
-			<when expression="payload.resultSet1['BackgroundJobIsActive'][0] == 'FALSE'">
-				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="b6753fe5-ef0f-4785-bdb8-a2828791ec3b" />
-				<async doc:name="Async" doc:id="05899c97-b181-470b-96f4-0de874b18bf2">
-			<flow-ref doc:name="testJob" doc:id="9d87d395-50c8-4f2c-a824-12b1f1f4f8fe" name="testJob" />
-		</async>
-			</when>
-		</choice>
-		<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="386a0ff2-05c0-4434-aa67-7e0b1843f4de" />
-		<vm:publish doc:name="Publish" doc:id="72fcb67f-957d-4a33-afbb-b4f2204a80b7" config-ref="VM_Config1" queueName="BackgroundJob"/>
-	</flow>
-	<flow name="testJob" doc:id="38b7d936-754f-4cef-a1a0-72222d3964b6" >
-	<!--	<set-variable value="#[payload]" doc:name="Save list of Fusion Request ids" doc:id="cd1b0e74-b38d-481f-8acf-8e1ce0525b5e" variableName="FusionRequestIdsList"/>
-		  <foreach doc:name="For Each" collection="#[payload]">-->
-			<db:stored-procedure doc:name="Get details for Fusion Request" doc:id="a090a89e-459e-48d9-8483-a6cbbed2378e" config-ref="mssql-jdbc">
+		<flow name="TestJob" doc:id="954bc2f4-ba05-4d41-b62e-7239a32e63f2" >
+		<vm:listener doc:name="Listener" doc:id="b2ae82fd-3e56-4c15-a178-0b233fa31848" config-ref="VM_Config_TestJob" queueName="TestJobQueue"/>
+		
+			<set-variable value="#[payload]" doc:name="Save TestId" doc:id="07a13084-3712-4a51-be0c-2e20f0a51010" variableName="TestId"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7a21533c-7569-435a-b941-09a080742acc" message="Started Testjob"/>
+		<db:stored-procedure doc:name="Get details for Fusion Request" doc:id="a090a89e-459e-48d9-8483-a6cbbed2378e" config-ref="mssql-jdbc">
 				<db:sql >{ call GetNextFusionRequestToTest(:TestId) }</db:sql>
 				<db:input-parameters ><![CDATA[#[{ 'TestId': payload }]]]></db:input-parameters>
 			</db:stored-procedure>
@@ -84,30 +39,24 @@ output application/java
 				</ee:variables>
 			</ee:transform>
 		<flow-ref doc:name="buildSoapRequest" doc:id="2071d4b0-89a7-4ac3-ab20-78e61080350f" name="buildSoapRequest"/>
-			<try doc:name="Try" doc:id="b3c4de21-e939-4df2-a231-5094a6040522" >
-				<flow-ref doc:name="testFusionRequest" doc:id="24d7d97d-9c34-4b94-978c-8fc72693fb4c" name="testFusionRequest"/>
-				<error-handler >
-					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="93b73c16-3c6b-4bd8-b253-921098f6596b">
-						<logger level="INFO" doc:name="Logger" doc:id="06091269-4c7b-42f3-bbeb-785eaf3481c9" message="[#payload]" />
-						<set-payload value="#['There was an error when calling Fusion: ' ++ error.description ++ '\r\nThe request was\r\n' ++ vars.actualRequest]" doc:name="Set Payload" doc:id="4377172d-9353-4dec-a7c8-3f58e6506a92" />
-			</on-error-continue>
-				</error-handler>
-			</try>
+		<flow-ref doc:name="testFusionRequest" doc:id="24d7d97d-9c34-4b94-978c-8fc72693fb4c" name="testFusionRequest" />
 			<db:stored-procedure doc:name="Store test result" doc:id="18e6b2e3-204d-4f82-9791-abaf9d262559" config-ref="mssql-jdbc">
-				<db:sql >{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult, :TestInfo,:ExpectedResponse,:ActualResponse,:ActualDCScalls) }</db:sql>
+				<db:sql >{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult,:ExpectedResponse,:ActualResponse,:ActualDCScalls) }</db:sql>
 				<db:input-parameters ><![CDATA[#[{
 	'TestId': vars.TestId,
 	'FusionRequestId': vars.loggedItem.FusionRequestId,
 	'TestResult': payload.Message,
-	'TestInfo': vars.inputData.TestInfo,
 	'ExpectedResponse': payload.ExpectedResponseCleaned,
 	'ActualResponse': payload.ActualResponseCleaned,
 	'ActualDCScalls': payload.DCScalls
 }]]]></db:input-parameters>
 			</db:stored-procedure>
-		<logger level="INFO" doc:name="Logger" doc:id="9eb54461-a20b-442f-8156-c3a56d26e723" message="#['Finished processing request ' + vars.loggedItem.FusionRequestId]" />
-		
-<!--  </foreach>-->
+		<logger level="INFO" doc:name="Logger" doc:id="9eb54461-a20b-442f-8156-c3a56d26e723" message="#['Finished testjob']" />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="bec16869-59b7-4fc4-9970-201736c6740b" >
+				<logger level="INFO" doc:name="Logger" doc:id="694069a7-2e62-48d0-9b30-9d01e6a2e228" message="There was an error in TestJob"/>
+			</on-error-continue>
+		</error-handler>
 	</flow>
 	<flow name="testFusionRequest" doc:id="6422de27-cd6f-4c88-afce-85e270f41e58" >
 		<flow-ref doc:name="SetTimeToEventTime" doc:id="10225e43-d10a-46ff-a50a-529003cf197e" name="SetTimeToEventTime"/>
@@ -143,5 +92,5 @@ output application/java
 }]]]></java:args>
 			</java:invoke-static>
 	</flow>
-
-</mule>
+	
+	</mule>
