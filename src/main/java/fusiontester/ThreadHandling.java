@@ -2,7 +2,7 @@ package fusiontester;
 
 public class ThreadHandling {
 
-	public static void SleepNseconds(int i) throws InterruptedException {		
-		Thread.sleep(1000* i);
+	public static void SleepNseconds(long i) throws InterruptedException {		
+		Thread.sleep(Math.round(i/4));
 	}
 }

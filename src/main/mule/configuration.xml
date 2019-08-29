@@ -62,7 +62,9 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 	</http:request-config>
 	
 
-	<http:request-config name="RealTime_http_configuration" doc:name="HTTP Request configuration" doc:id="118f9707-895c-4a0d-b3d5-b279ccd87699">
+	<http:request-config name="RealTime_http_configuration" doc:name="HTTP Request configuration" 
+	responseTimeout="${real.time.server.timeout}"
+	doc:id="118f9707-895c-4a0d-b3d5-b279ccd87699">
 		<http:request-connection host="${real.time.server.host}"/>
 	</http:request-config>
 	

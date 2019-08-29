@@ -17,7 +17,7 @@ https:
 time.setter.web:
   host: "localhost"
   port: "5000"
-  timeout: "20000"
+  timeout: "10000"
   
 certificate:
   keystore: "faky.keystore"
@@ -26,10 +26,11 @@ certificate:
 fusion:
   url: "local.fusion.aero"
   port: "80"
-  timeout: "17000"
+  timeout: "42000"
   
 real.time.server:
   url: "http://worldtimeapi.org/api/timezone/Europe/London"
   host: "worldtimeapi.org"
+  timeout: "30000"
   
-delay: "20"
+fusiontester.timeout: "80000"

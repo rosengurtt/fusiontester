@@ -10,7 +10,25 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
-		<flow name="GetRealCurrentDateTime" doc:id="adce82b5-8ea3-43ec-8378-7cda430cef0d" >
+		<flow name="CheckTimeServerIsUp" doc:id="2ee5b06f-9acd-46d9-8455-e9a6436d5797" >
+		<try doc:name="Try" doc:id="9ae1c495-d26b-4069-aa33-dd981d479c4f" >
+			<flow-ref doc:name="GetRealCurrentDateTime" doc:id="def88170-4177-4001-9fbf-3b0f571eb4a8" name="GetRealCurrentDateTime" />
+			<choice doc:name="See if we can extract time" doc:id="a99ec568-1c2e-4598-9898-ab9e1c24de15">
+			<when expression="#[vars.RealCurrentDateTime != null]">
+					<set-variable value="true" doc:name="Set 'TimeServerIsAvailable' to true" doc:id="b39c6505-01a9-4881-ac21-3b923d7d7c38" variableName="TimeServerIsAvailable" />
+				</when>
+				<otherwise >
+					<set-variable value="false" doc:name="Set 'TimeServerIsAvailable' to false" doc:id="b76c6ea9-8482-4a60-9154-81de2063c973" variableName="TimeServerIsAvailable" />
+				</otherwise>
+		</choice>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="3a025f93-325d-4bba-a5b6-7c161a91b632" >
+					<set-variable value="false" doc:name="Set 'TimeServerIsAvailable' to false" doc:id="a8843d56-c4b8-40c4-a528-b9a9bf7f4cbe" variableName="TimeServerIsAvailable"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+	</flow>
+	<flow name="GetRealCurrentDateTime" doc:id="adce82b5-8ea3-43ec-8378-7cda430cef0d" >
 		<http:request method="GET" doc:name="Get real time" doc:id="ca763fa6-d6ec-49c8-8d04-6312a17fdabb" config-ref="RealTime_http_configuration" url="${real.time.server.url}" />
 		<ee:transform doc:name="Save in var 'RealCurrentDateTime'" doc:id="897beba6-14d1-4f19-83f4-9f32bd2d679e" >
 			<ee:message >
@@ -29,7 +47,7 @@ payload.datetime as LocalDateTime as String {format: "yyyy-MM-dd hh:mm:ss"}]]></
 			<ee:message>
 			</ee:message>
 			<ee:variables>
-				<ee:set-variable variableName="MulesoftCompadre"><![CDATA[%dw 2.0
+				<ee:set-variable variableName="DateTimeInCorrectFormat" ><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -38,14 +56,17 @@ output application/json
 
 			</ee:variables>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="88604126-a0a8-4718-ac38-50af03a6aea3" message="#[vars.MulesoftCompadre]"/>
 		<http:request method="POST" doc:name="TimeSetterWeb" doc:id="96277b73-448b-4e31-b776-62795221bf15" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
-				<http:body><![CDATA[#[vars.MulesoftCompadre]]]></http:body>
+				<http:body><![CDATA[#[vars.DateTimeInCorrectFormat]]]></http:body>
 				<http:response-validator>
 					<http:success-status-code-validator values="200..599" />
 				</http:response-validator>
 		</http:request>
-	</flow>
+		<logger level="INFO" doc:name="Logger" doc:id="305df0f5-e8e0-46fe-b73e-2d2afd08b4be" message="Changed time to current time"/>
+	
+</flow>
+	
+	
 	<flow name="SetTimeToEventTime" doc:id="bfec2897-7c9a-4d5b-9f90-e902eda8ce66" >
 		<ee:transform doc:name="Format request" doc:id="41a795d7-3c75-42d6-9b3b-8e8025173c6b">
 				<ee:message>
@@ -62,7 +83,9 @@ output application/json
 					<http:success-status-code-validator values="200..599" />
 				</http:response-validator>
 			</http:request>
-	</flow>
+		<logger level="INFO" doc:name="Logger" doc:id="fe082816-724a-4f78-8678-004f6a8e75e2" message="Changed time to time of event"/>
+	
+</flow>
 	
 	
 	</mule>

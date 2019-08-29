@@ -48,8 +48,8 @@ output application/java
 				<vm:publish doc:name="Send job to TestJobQueue" doc:id="01e532db-6c4a-4d23-a81e-216536561f9a" config-ref="VM_Config_TestJob" queueName="TestJobQueue" />
 			</when>
 		</choice>
-		<java:invoke-static doc:name="Sleep" doc:id="d41d9419-a9b3-4aed-b807-2aaae590989d" class="fusiontester.ThreadHandling" method="SleepNseconds(int)">
-			<java:args ><![CDATA[#[{i: vars.Delay}]]]></java:args>
+		<java:invoke-static doc:name="Sleep" doc:id="d41d9419-a9b3-4aed-b807-2aaae590989d" class="fusiontester.ThreadHandling" method="SleepNseconds(long) ">
+			<java:args ><![CDATA[#[{i: vars.FusionTesterTimeout}]]]></java:args>
 		</java:invoke-static>
 		<choice doc:name="If there are records to process continue" doc:id="ba6e4b04-d8ee-4b1b-b58e-2c1d3c722fc5" >
 			<when expression="vars.RecordsYetToProcess &gt; 0">
@@ -57,23 +57,27 @@ output application/java
 				<vm:publish doc:name="Add job to queue" doc:id="72fcb67f-957d-4a33-afbb-b4f2204a80b7" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob" />
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="#['Finished processing test ']" doc:id="1ece9f1a-6c35-44f4-9a42-e562dcfbd6d4" />
+				<db:stored-procedure doc:name="Set Test Batch as finished" doc:id="7396551e-ab66-4c5d-bad2-d9304e99fcae" config-ref="mssql-jdbc" >
+					<db:sql >{ call UpdateTestBatchAsFinished(:TestId)}</db:sql>
+					<db:input-parameters ><![CDATA[#[{ 'TestId': vars.TestId }]]]></db:input-parameters>
+				</db:stored-procedure>
+				<logger level="INFO" doc:name="Logger" doc:id="43ee44aa-8179-4c11-91e4-6ddb35230828" message="Finished batch job"/>
 			</otherwise>
 		</choice>
 	</flow>
 	<flow name="SaveState" doc:id="8dc90d60-25b1-4dfa-acde-1ebfd690f355" >
 		<logger level="INFO" doc:name="Logger" doc:id="0557d1b4-e36b-47f8-b587-bf450419fcd9" message="Entre a backgroundjob" />
 		<set-variable value="#[payload]" doc:name="Save TestId" doc:id="1a025aeb-d7f3-49f2-a3a6-5e31882e8cc7" variableName="TestId" />
-		<set-variable value="${delay}" doc:name="Set Delay" doc:id="332da731-944f-4d19-93bb-6e15d43557af" variableName="Delay" />
+		<set-variable value="${fusiontester.timeout}" doc:name="Set Timeout" doc:id="332da731-944f-4d19-93bb-6e15d43557af" variableName="FusionTesterTimeout" />
 	</flow>
 	<flow name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="367fc517-98ae-4525-ac63-f735cc96037c" >
 		<flow-ref doc:name="GetRealCurrentDateTime" doc:id="df017b21-c655-4d00-b412-cf4577595f8d" name="GetRealCurrentDateTime" />
 		<db:stored-procedure doc:name="Get Active Status of Testjob" doc:id="114db2a2-6a9d-49c5-852c-40d91fbb369b" config-ref="mssql-jdbc">
-			<db:sql>{ call IsTestJobActive(:TestId, :CurrentDateTimeString, :TimeoutInSeconds) }</db:sql>
+			<db:sql>{ call IsTestJobActive(:TestId, :CurrentDateTimeString, :TimeoutInMilliSeconds) }</db:sql>
 			<db:input-parameters><![CDATA[#[{ 
 'TestId': vars.TestId, 
 'CurrentDateTimeString': vars.RealCurrentDateTime,
-'TimeoutInSeconds': vars.Delay
+'TimeoutInMilliSeconds': vars.FusionTesterTimeout
 }]]]></db:input-parameters>
 		</db:stored-procedure>
 		<ee:transform doc:name="Save in var 'TestJobStatusActive'" doc:id="c193f4c2-6233-423c-9723-990c7bc38b40" >
@@ -90,7 +94,7 @@ payload.resultSet1['BackgroundJobIsActive'][0] ]]></ee:set-variable>
 			<db:sql >{call GetNumberOfRecordsYetToProcess(:TestId) }</db:sql>
 			<db:input-parameters ><![CDATA[#[{ 'TestId': vars.TestId }]]]></db:input-parameters>
 		</db:stored-procedure>
-		<ee:transform doc:name="Transform Message" doc:id="718aae92-3f1c-4d0b-891b-a19ed71914a1" >
+		<ee:transform doc:name="Save in var 'RecordsYetToProcess'" doc:id="718aae92-3f1c-4d0b-891b-a19ed71914a1" >
 			<ee:message >
 			</ee:message>
 			<ee:variables >

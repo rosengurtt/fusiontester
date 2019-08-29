@@ -78,6 +78,7 @@ public class ProcessData {
 				NumberOfDifferences = diff.getAllDifferences().size();
 				retVal.put("ExpectedResponseCleaned", prettyPrintXml(loggedResponse));
 				retVal.put("ActualResponseCleaned", prettyPrintXml(actualResponse));
+				DCScalls = GetDCScallsInAstring(actual);
 			}
 			else {
 				retVal.put("ExpectedResponseCleaned", "");
