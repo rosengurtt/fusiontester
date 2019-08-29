@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
 	
 	<flow name="MainFlow" doc:id="dbf48fc0-d4e7-47f7-93da-0f9b7bc41cbb" >
-		<http:listener doc:name="Listener" doc:id="c03a15d6-4b85-4799-bc45-b299d8c964ed" config-ref="DCSemulator_Listener_config" path="/*" />
+		<http:listener doc:name="DCS emulator Listener" doc:id="c03a15d6-4b85-4799-bc45-b299d8c964ed" config-ref="DCSemulator_Listener_config" path="/*" />
 		<ee:transform doc:name="Save input in 'inputData' variable" doc:id="2a575410-6fbe-4be0-a33e-bc0cf0fc5b91" >
 			<ee:message >
 			</ee:message>

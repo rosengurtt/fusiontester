@@ -35,13 +35,25 @@ output application/java
 	
 		<set-payload value="#[vars.InputData.TestId]" doc:name="Set Payload" doc:id="81233c51-2f6f-443f-8a23-26d518b21f7c" />
 		<vm:publish queueName="BackgroundJob" doc:name="Add job to queue" doc:id="8316df58-d81c-42cc-8a09-f72fed584503" config-ref="VM_Config_BackgroundJob" />
+		<logger level="INFO" doc:name="Logger" doc:id="2a43954e-0e33-4590-a7d5-b529e4b4db4f" message="Started batch test with id #[vars.TestId]"/>
 		<set-payload value="#['Test started']" doc:name="Return message to client" doc:id="dacebd1f-d3b4-4f94-9503-6fbf68b2e5a7" />
     
 </flow>
 	<flow name="BackgroundJob" doc:id="d3795b0c-9425-4e61-810f-ab8d3b5cc98c" >
 		<vm:listener doc:name="Listener" doc:id="044bc086-f58a-4fa4-8184-6dddfacd4e52" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob"/>
 		<flow-ref doc:name="SaveState" doc:id="c6cc6799-ad5b-48ed-8895-f1374201a8e1" name="SaveState"/>
-		<flow-ref doc:name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="c6209b2f-933f-4658-9eae-875defa851fc" name="GetStatusOfTestJobAndRecordsYetToProcess"/>
+		<try doc:name="Try" doc:id="9f47f8a1-34bd-48bd-92a2-7d9e684042d0" >
+			<flow-ref doc:name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="c6209b2f-933f-4658-9eae-875defa851fc" name="GetStatusOfTestJobAndRecordsYetToProcess" />
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e1fc2c49-5ac9-40af-96fb-b172cb9e9224" >
+					<java:invoke-static method="SleepNseconds(long) " doc:name="Sleep" doc:id="85d74e8c-ac6e-4ccc-95e6-57f958e23205" class="fusiontester.ThreadHandling" >
+						<java:args ><![CDATA[#[{i: vars.FusionTesterTimeout}]]]></java:args>
+					</java:invoke-static>
+					<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="0412732d-743e-4836-9a47-12d0116fcbcc" />
+					<vm:publish queueName="BackgroundJob" doc:name="Keep looping" doc:id="f1c223f3-1f7b-4655-81f7-b20407923efc" config-ref="VM_Config_BackgroundJob" />
+				</on-error-continue>
+			</error-handler>
+		</try>
 		<choice doc:name="Verify that TestJob is inactive and there are records to process" doc:id="911d0f75-ba42-42b4-b7c5-882d3632a96a" >
 			<when expression="#[(vars.TestJobStatusActive == 'FALSE') and (vars.RecordsYetToProcess &gt; 0)]">
 				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="b6753fe5-ef0f-4785-bdb8-a2828791ec3b" />
@@ -54,19 +66,19 @@ output application/java
 		<choice doc:name="If there are records to process continue" doc:id="ba6e4b04-d8ee-4b1b-b58e-2c1d3c722fc5" >
 			<when expression="vars.RecordsYetToProcess &gt; 0">
 				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="386a0ff2-05c0-4434-aa67-7e0b1843f4de" />
-				<vm:publish doc:name="Add job to queue" doc:id="72fcb67f-957d-4a33-afbb-b4f2204a80b7" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob" />
+				<vm:publish doc:name="Keep looping" doc:id="72fcb67f-957d-4a33-afbb-b4f2204a80b7" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob" />
 			</when>
 			<otherwise >
 				<db:stored-procedure doc:name="Set Test Batch as finished" doc:id="7396551e-ab66-4c5d-bad2-d9304e99fcae" config-ref="mssql-jdbc" >
 					<db:sql >{ call UpdateTestBatchAsFinished(:TestId)}</db:sql>
 					<db:input-parameters ><![CDATA[#[{ 'TestId': vars.TestId }]]]></db:input-parameters>
 				</db:stored-procedure>
-				<logger level="INFO" doc:name="Logger" doc:id="43ee44aa-8179-4c11-91e4-6ddb35230828" message="Finished batch job"/>
+				<logger level="INFO" doc:name="Logger" doc:id="43ee44aa-8179-4c11-91e4-6ddb35230828" message="Finished batch job with Testid = #[vars.TestId]"/>
 			</otherwise>
 		</choice>
 	</flow>
 	<flow name="SaveState" doc:id="8dc90d60-25b1-4dfa-acde-1ebfd690f355" >
-		<logger level="INFO" doc:name="Logger" doc:id="0557d1b4-e36b-47f8-b587-bf450419fcd9" message="Entre a backgroundjob" />
+		<logger level="INFO" doc:name="Logger" doc:id="0557d1b4-e36b-47f8-b587-bf450419fcd9" message="Started iteration of BackgroundJob" />
 		<set-variable value="#[payload]" doc:name="Save TestId" doc:id="1a025aeb-d7f3-49f2-a3a6-5e31882e8cc7" variableName="TestId" />
 		<set-variable value="${fusiontester.timeout}" doc:name="Set Timeout" doc:id="332da731-944f-4d19-93bb-6e15d43557af" variableName="FusionTesterTimeout" />
 	</flow>
@@ -104,6 +116,7 @@ output application/java
 payload.resultSet1['RemainingRecords'][0] ]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="ae83393e-cde6-43a2-bb07-1ad0eac65663" message="Found #[vars.RecordsYetToProcess] to process and active status of TestJob is #[vars.TestJobStatusActive]"/>
 	</flow>
 
 </mule>

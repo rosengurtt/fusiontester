@@ -1,5 +1,5 @@
 db:
-  server.name: "J-ROSENGURTT\\SQLEXPRESS"
+  server.name: "127.0.0.1"
   database.name: "FusionRequest"
   username: "sonic"
   password: "sonic"
@@ -26,7 +26,7 @@ certificate:
 fusion:
   url: "local.fusion.aero"
   port: "80"
-  timeout: "42000"
+  timeout: "76000"
   
 real.time.server:
   url: "http://worldtimeapi.org/api/timezone/Europe/London"
