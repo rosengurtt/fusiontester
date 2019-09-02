@@ -108,7 +108,7 @@ output application/json
 			</ee:variables>
 		</ee:transform>
 	</flow>
-	<flow name="KeepTryingToGetRealTimeUntilItSucceeds" doc:id="b8c5abd6-989d-406a-b0d8-867d0b5876ce" >
+	<flow name="KeepTryingToSetRealTimeUntilItSucceeds" doc:id="b8c5abd6-989d-406a-b0d8-867d0b5876ce" >
 		<vm:listener doc:name="SetRealTimeQueue" doc:id="5d104aea-c27b-43d0-80f7-834cdec9d3cc" config-ref="VM_Config_SetRealTimeLoop" queueName="SetRealTimeQueue"/>
 		<set-variable value="# [new java.util.Random().nextInt(59000) + 1000]" doc:name="Generate Random Variable" doc:id="c20dd54e-32a6-4770-a76a-8658688baddd" variableName="RandomNumber" />
 		<java:invoke-static method="SleepNmilliSeconds(long) " doc:name="Sleep variable time between 1 and 60 seconds" doc:id="fefd297e-d2b8-4319-8d29-afaf59e668e1" class="fusiontester.Helpers" >

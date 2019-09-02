@@ -76,16 +76,21 @@ output application/java
 			<error-handler>
 				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b43e246e-6232-4ea7-a8fd-9960a658e0d8" >
 					<set-variable value="#[error.description]" doc:name="Save error info" doc:id="190774c8-c41b-4028-a415-37d2e05e1e44" variableName="ErrorDescription"/>
-					<logger level="INFO" doc:name="Logger" doc:id="f61e3544-40bd-455a-962d-36cd2a1a5c98" message="There was an error when calling Fusion: #[vars.ErrorDescription] \n"/>
-					<flow-ref doc:name="SetTimeToCurrentTime" doc:id="3bb95090-8cdc-4466-be82-da1c2efe2c31" name="SetTimeToCurrentTime" />
-					<choice doc:name="Check if it timed out (the system time could have been reset externally)" doc:id="d38fb9b4-3db7-49ac-bf63-39da14b469ed" >
-						<when expression="#[vars.ErrorDescription == &quot;HTTP POST on resource ''http://local.fusion.aero:80/FusionService.svc'' failed: Timeout exceeded.&quot;]">
+					<logger level="INFO" doc:name="Logger" doc:id="f61e3544-40bd-455a-962d-36cd2a1a5c98" message="There was an error when calling Fusion: #[vars.ErrorDescription] #['\n']"/>
+					<java:invoke-static doc:name="Check if error is due to system time unexpected changes" doc:id="76094cf6-69af-4684-a292-92933f1969ac" class="fusiontester.Helpers" method="IsErrorWasDueToSystemTimeChanges(String, String)" target="IsErrorDueToUnexpectedSystemTimeChanges">
+			<java:args><![CDATA[#[{ errorDescription: vars.ErrorDescription,
+	eventDateTime: vars.loggedItem.FusionRequestTime
+}]]]></java:args>
+		</java:invoke-static>
+					<choice doc:name="If error was due to system time changes try again in next run" doc:id="d38fb9b4-3db7-49ac-bf63-39da14b469ed" >
+						<when expression="#[vars.IsErrorDueToUnexpectedSystemTimeChanges == true]">
 							<db:stored-procedure doc:name="Remove test record" doc:id="d6de20ff-9b76-4dd5-b8a3-580d2e151e47" config-ref="mssql-jdbc">
-								<db:sql >{ call RemoveTestRecord(:testid) }</db:sql>
-								<db:input-parameters ><![CDATA[#[{ 'TestId': vars.Testid }]]]></db:input-parameters>
+								<db:sql >{ call RemoveTestRecord(:TestId) }</db:sql>
+								<db:input-parameters ><![CDATA[#[{ 'TestId': vars.TestId }]]]></db:input-parameters>
 							</db:stored-procedure>
 						</when>
 						<otherwise >
+							<flow-ref doc:name="SetTimeToCurrentTime" doc:id="3bb95090-8cdc-4466-be82-da1c2efe2c31" name="SetTimeToCurrentTime" />
 							<ee:transform doc:name="Build error message" doc:id="500eb2e9-72b9-4474-bfbc-f9f01795fe1b">
 								<ee:message>
 								</ee:message>
@@ -146,4 +151,5 @@ output application/java
 			</java:invoke-static>
 	</flow>
 	
-	</mule>
+	
+</mule>

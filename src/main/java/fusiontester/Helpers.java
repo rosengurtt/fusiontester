@@ -84,6 +84,46 @@ public class Helpers {
 		    	cal.add(Calendar.MILLISECOND, (int)milliSeconds);
 			    return cal.getTime();
 		    }
-		  }
+	}
+	
+	public static boolean IsErrorWasDueToSystemTimeChanges(String errorDescription, String eventDateTime)  {
+		
+		String ErrorMessage = "HTTP POST on resource ''http://local.fusion.aero:80/FusionService.svc'' failed: Timeout exceeded.";
+		
+		if (errorDescription.equals(ErrorMessage)) {
+			System.out.println("Timeout calling Fusion because of system time changes");
+			return true;
+		}
+		
+		try {
+			SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			Date eventStart = simpleFormat.parse(eventDateTime.substring(0,23));
+			
+			Date now = new Date();
+			long millisecondsEllapsed = now.getTime() - eventStart.getTime();
+			long oneMinute = 60 * 1000;
+			
+			if (millisecondsEllapsed > oneMinute) {
+				System.out.println("The time when executing the Fusion request was not the time of the event and this is the likely cause for the error");
+				return true;
+			}
+		}
+		catch (Exception ex) {}
+		return false;		
+	}
+	
+	// Before starting a job, we verify that the system time was not somehow left with the value of the time of an event
+	// We know that the real current time can not be older than the time the batch started.
+	public static boolean CheckTheCurrentTimeLooksCorrect(String startBatchJobDateTime) throws ParseException {
+		SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		Date batchStart = simpleFormat.parse(startBatchJobDateTime.substring(0,23));		
+		Date now = new Date();
+
+		System.out.print("batchStart:");
+		System.out.println(batchStart);
+
+		if (now.getTime() < batchStart.getTime()) return false;
+		return true;
+	}
 	
 }

@@ -38,8 +38,8 @@ output application/java
     
 </flow>
 	<flow name="BackgroundJob" doc:id="d3795b0c-9425-4e61-810f-ab8d3b5cc98c" >
-		<vm:listener doc:name="Listener" doc:id="044bc086-f58a-4fa4-8184-6dddfacd4e52" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob"/>
-		<flow-ref doc:name="SaveState" doc:id="c6cc6799-ad5b-48ed-8895-f1374201a8e1" name="SaveState"/>
+		<vm:listener doc:name="JobsQueue" doc:id="044bc086-f58a-4fa4-8184-6dddfacd4e52" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob"/>
+		<flow-ref doc:name="InitializeJob" doc:id="c6cc6799-ad5b-48ed-8895-f1374201a8e1" name="InitializeJob"/>
 		<try doc:name="Try" doc:id="9f47f8a1-34bd-48bd-92a2-7d9e684042d0" >
 			<flow-ref doc:name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="c6209b2f-933f-4658-9eae-875defa851fc" name="GetStatusOfTestJobAndRecordsYetToProcess" />
 			<error-handler >
@@ -53,7 +53,7 @@ output application/java
 			</error-handler>
 		</try>
 		<choice doc:name="Verify that TestJob is inactive and there are records to process" doc:id="911d0f75-ba42-42b4-b7c5-882d3632a96a" >
-			<when expression="#[(vars.TestJobStatusActive == 'FALSE') and (vars.RecordsYetToProcess &gt; 0)]">
+			<when expression="#[(vars.JobInfo.TestJobStatusActive == 'FALSE') and (vars.JobInfo.RemainingRecords &gt; 0)]">
 				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="b6753fe5-ef0f-4785-bdb8-a2828791ec3b" />
 				<vm:publish doc:name="Send job to TestJobQueue" doc:id="01e532db-6c4a-4d23-a81e-216536561f9a" config-ref="VM_Config_TestJob" queueName="TestJobQueue" />
 			</when>
@@ -62,7 +62,7 @@ output application/java
 			<java:args ><![CDATA[#[{i: vars.SleepTime}]]]></java:args>
 		</java:invoke-static>
 		<choice doc:name="If there are records to process continue" doc:id="ba6e4b04-d8ee-4b1b-b58e-2c1d3c722fc5" >
-			<when expression="vars.RecordsYetToProcess &gt; 0">
+			<when expression="vars.JobInfo.RemainingRecords &gt; 0">
 				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="386a0ff2-05c0-4434-aa67-7e0b1843f4de" />
 				<vm:publish doc:name="Keep looping" doc:id="72fcb67f-957d-4a33-afbb-b4f2204a80b7" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob" />
 			</when>
@@ -75,45 +75,50 @@ output application/java
 			</otherwise>
 		</choice>
 	</flow>
-	<flow name="SaveState" doc:id="8dc90d60-25b1-4dfa-acde-1ebfd690f355" >
+	<flow name="InitializeJob" doc:id="8dc90d60-25b1-4dfa-acde-1ebfd690f355" >
 		<logger level="INFO" doc:name="Logger" doc:id="0557d1b4-e36b-47f8-b587-bf450419fcd9" message="Started iteration of BackgroundJob  #['\n']" />
 		<set-variable value="#[payload]" doc:name="Save TestId" doc:id="1a025aeb-d7f3-49f2-a3a6-5e31882e8cc7" variableName="TestId" />
 		<set-variable value="${fusiontester.timeout}" doc:name="Set Timeout" doc:id="332da731-944f-4d19-93bb-6e15d43557af" variableName="FusionTesterTimeout" />
 		<set-variable value="#[vars.FusionTesterTimeout/8]" doc:name="Set 'SleepTime'" doc:id="09b8e711-4059-426d-8dfd-fdea60121e2c" variableName="SleepTime"/>
 	</flow>
 	<flow name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="367fc517-98ae-4525-ac63-f735cc96037c" >
-		<db:stored-procedure doc:name="Get Active Status of Testjob" doc:id="114db2a2-6a9d-49c5-852c-40d91fbb369b" config-ref="mssql-jdbc">
-			<db:sql>{ call IsTestJobActive(:TestId,  :TimeoutInMilliSeconds) }</db:sql>
+		<db:stored-procedure doc:name="Get Job Info" doc:id="114db2a2-6a9d-49c5-852c-40d91fbb369b" config-ref="mssql-jdbc">
+			<db:sql>{ call GetJobInfo(:TestId,  :TimeoutInMilliSeconds) }</db:sql>
 			<db:input-parameters><![CDATA[#[{ 
 'TestId': vars.TestId, 
 'TimeoutInMilliSeconds': vars.FusionTesterTimeout
 }]]]></db:input-parameters>
 		</db:stored-procedure>
-		<ee:transform doc:name="Save in var 'TestJobStatusActive'" doc:id="c193f4c2-6233-423c-9723-990c7bc38b40" >
+		<ee:transform doc:name="Save in var 'JobInfo'" doc:id="c193f4c2-6233-423c-9723-990c7bc38b40" >
 			<ee:message >
 			</ee:message>
 			<ee:variables >
-				<ee:set-variable variableName="TestJobStatusActive" ><![CDATA[%dw 2.0
+				<ee:set-variable variableName="JobInfo" ><![CDATA[%dw 2.0
 output application/java
 ---
-payload.resultSet1['BackgroundJobIsActive'][0] ]]></ee:set-variable>
+{
+	TestJobStatusActive: payload.resultSet1['BackgroundJobIsActive'][0],
+	StartDateTime: payload.resultSet1['StartDateTime'][0],
+	RemainingRecords: payload.resultSet1['RemainingRecords'][0]
+}]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<db:stored-procedure doc:name="Get number of records yet to process" doc:id="d7aa2932-73f5-40df-9297-fdcb0ad9a0ac" config-ref="mssql-jdbc" >
-			<db:sql >{call GetNumberOfRecordsYetToProcess(:TestId) }</db:sql>
-			<db:input-parameters ><![CDATA[#[{ 'TestId': vars.TestId }]]]></db:input-parameters>
-		</db:stored-procedure>
-		<ee:transform doc:name="Save in var 'RecordsYetToProcess'" doc:id="718aae92-3f1c-4d0b-891b-a19ed71914a1" >
-			<ee:message >
-			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="RecordsYetToProcess" ><![CDATA[%dw 2.0
-output application/java
----
-payload.resultSet1['RemainingRecords'][0] ]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="ae83393e-cde6-43a2-bb07-1ad0eac65663" message="Found #[vars.RecordsYetToProcess] records to process and active status of TestJob is #[vars.TestJobStatusActive]   #['\n']"/>
+		<java:invoke-static method="CheckTheCurrentTimeLooksCorrect(String)" doc:name="Check current datetime looks correct" doc:id="ecd8da4d-a6b3-4d9b-8489-90f15b71cd10" class="fusiontester.Helpers" target="IsCurrentSystemTimeCorrect">
+			<java:args ><![CDATA[#[{ startBatchJobDateTime: vars.JobInfo.StartDateTime }]]]></java:args>
+		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="ae83393e-cde6-43a2-bb07-1ad0eac65663" message="Found #[vars.JobInfo.RemainingRecords] records to process and active status of TestJob is #[vars.JobInfo.TestJobStatusActive]   #['\n']" />
+		<choice doc:name="If system time is incorrect, fixt it and abort" doc:id="8bd3c5a9-84b4-48c2-928b-78a2607cedb1" >
+			<when expression="#[vars.IsCurrentSystemTimeCorrect == true]">
+				<logger level="INFO" doc:name="Logger" doc:id="1bc32dc9-8179-44e1-8259-29f3fb1d17eb" message="System time looks OK when starting job"/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="6224c316-7677-4288-9d42-243befbb2e06" message="Current system time looks wrong when starting Job. Will try to fix"/>
+				<vm:publish queueName="SetRealTimeQueue" doc:name="Publish in SetRealTimeQueue" doc:id="2076cfca-eda8-48b5-9985-ae72ec85efc2" config-ref="VM_Config_SetRealTimeLoop" />
+				<raise-error doc:name="Raise error" doc:id="ff89090e-3e6e-43f2-8a2a-163e73b4b5f1" type="ANY" description="The system time seems to be wrong, will try to get the right value using a time server"/>
+			
+			
+</otherwise>
+		</choice>
 	</flow>
 
 </mule>
