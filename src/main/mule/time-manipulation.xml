@@ -95,6 +95,7 @@ output application/json
 		<java:invoke-static doc:name="Get Current Time using saved info" doc:id="af43cbb7-0c2e-4f2e-aff8-6279296eb697" class="fusiontester.Helpers" method="GetCurrentTimeFromSavedInfo(String, String)" target="CalculatedCurrentDateTime">
 			<java:args><![CDATA[#[{ 'eventDateTime': vars.loggedItem.FusionRequestTime, 'savedCurrentDateTime': vars.CurrentDateTime  }]]]></java:args>
 		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="df9e61d9-fc29-4759-b968-94ce44f771e6" message="Setting time back to real time (#[vars.CalculatedCurrentDateTime]) using saved info. Saved current date time was #[vars.CurrentDateTime], event date time was #[vars.loggedItem.FusionRequestTime]  #['\n']" />
 		<ee:transform doc:name="Format request" doc:id="87adc105-4628-4538-9eb0-9c2e99395fd3">
 			<ee:message />
 			<ee:variables>
@@ -106,7 +107,6 @@ output application/json
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="df9e61d9-fc29-4759-b968-94ce44f771e6" message="Setting time back to real time (#[vars.CurrentDateTime]) using saved info \n" />
 	</flow>
 	<flow name="KeepTryingToGetRealTimeUntilItSucceeds" doc:id="b8c5abd6-989d-406a-b0d8-867d0b5876ce" >
 		<vm:listener doc:name="SetRealTimeQueue" doc:id="5d104aea-c27b-43d0-80f7-834cdec9d3cc" config-ref="VM_Config_SetRealTimeLoop" queueName="SetRealTimeQueue"/>

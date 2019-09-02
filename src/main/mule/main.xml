@@ -45,7 +45,7 @@ output application/java
 			<error-handler >
 				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e1fc2c49-5ac9-40af-96fb-b172cb9e9224" >
 					<java:invoke-static method="SleepNseconds(long) " doc:name="Sleep" doc:id="85d74e8c-ac6e-4ccc-95e6-57f958e23205" class="fusiontester.ThreadHandling" >
-						<java:args ><![CDATA[#[{i: vars.FusionTesterTimeout}]]]></java:args>
+						<java:args ><![CDATA[#[{i: vars.vars.SleepTime}]]]></java:args>
 					</java:invoke-static>
 					<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="0412732d-743e-4836-9a47-12d0116fcbcc" />
 					<vm:publish queueName="BackgroundJob" doc:name="Keep looping" doc:id="f1c223f3-1f7b-4655-81f7-b20407923efc" config-ref="VM_Config_BackgroundJob" />
