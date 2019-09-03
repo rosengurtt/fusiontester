@@ -39,7 +39,8 @@ output application/java
 }]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
-				<flow-ref doc:name="buildSoapRequest" doc:id="2071d4b0-89a7-4ac3-ab20-78e61080350f" name="buildSoapRequest" />
+				<logger level="INFO" doc:name="Logger" doc:id="ee0a16a6-29a7-4250-9fa2-d217e2b4c7bd" message="Got next record id: #[vars.loggedItem.FusionRequestId]"/>
+		<flow-ref doc:name="buildSoapRequest" doc:id="2071d4b0-89a7-4ac3-ab20-78e61080350f" name="buildSoapRequest" />
 				<flow-ref doc:name="testFusionRequest" doc:id="24d7d97d-9c34-4b94-978c-8fc72693fb4c" name="testFusionRequest" />
 				<logger level="INFO" doc:name="Logger" doc:id="69d50fdd-1b99-4344-b4c6-3808d5daef53" message="Test job run, will save result in db   #['\n']" />
 				<db:stored-procedure doc:name="Store test result" doc:id="18e6b2e3-204d-4f82-9791-abaf9d262559" config-ref="mssql-jdbc">
@@ -56,7 +57,7 @@ output application/java
 }]]]></db:input-parameters>
 		
 </db:stored-procedure>
-				<logger level="INFO" doc:name="Logger" doc:id="9eb54461-a20b-442f-8156-c3a56d26e723" message="Finished testjob   #['\n']" />
+				<logger level="INFO" doc:name="Logger" doc:id="9eb54461-a20b-442f-8156-c3a56d26e723" message="Finished testjob for record #[vars.loggedItem.FusionRequestId]  #['\n']" />
 
 		<error-handler>
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="87b206cb-6aed-4f30-9311-fa01b9b2b58f" >

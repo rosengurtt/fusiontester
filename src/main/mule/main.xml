@@ -43,20 +43,24 @@ output application/java
 		<try doc:name="Try" doc:id="9f47f8a1-34bd-48bd-92a2-7d9e684042d0" >
 			<flow-ref doc:name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="c6209b2f-933f-4658-9eae-875defa851fc" name="GetStatusOfTestJobAndRecordsYetToProcess" />
 			<error-handler >
-				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e1fc2c49-5ac9-40af-96fb-b172cb9e9224" >
-					<java:invoke-static method="SleepNseconds(long) " doc:name="Sleep" doc:id="85d74e8c-ac6e-4ccc-95e6-57f958e23205" class="fusiontester.ThreadHandling" >
-						<java:args ><![CDATA[#[{i: vars.vars.SleepTime}]]]></java:args>
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e1fc2c49-5ac9-40af-96fb-b172cb9e9224" >
+					<java:invoke-static method="SleepNmilliSeconds(long) " doc:name="Sleep" doc:id="85d74e8c-ac6e-4ccc-95e6-57f958e23205" class="fusiontester.Helpers" >
+						<java:args ><![CDATA[#[{i: vars.SleepTime}]]]></java:args>
 					</java:invoke-static>
 					<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="0412732d-743e-4836-9a47-12d0116fcbcc" />
-					<vm:publish queueName="BackgroundJob" doc:name="Keep looping" doc:id="f1c223f3-1f7b-4655-81f7-b20407923efc" config-ref="VM_Config_BackgroundJob" />
-				</on-error-continue>
+					<vm:publish queueName="BackgroundJob" doc:name="Send to JobsQueue" doc:id="f1c223f3-1f7b-4655-81f7-b20407923efc" config-ref="VM_Config_BackgroundJob" />
+				</on-error-propagate>
 			</error-handler>
 		</try>
 		<choice doc:name="Verify that TestJob is inactive and there are records to process" doc:id="911d0f75-ba42-42b4-b7c5-882d3632a96a" >
-			<when expression="#[(vars.JobInfo.TestJobStatusActive == 'FALSE') and (vars.JobInfo.RemainingRecords &gt; 0)]">
+			<when expression="#[(vars.JobInfo.IsTestJobActive == 'FALSE') and (vars.JobInfo.RemainingRecords &gt; 0)]">
+				<logger level="INFO" doc:name="Logger" doc:id="e12be65d-e769-4178-bea2-826b925b6d94" message="TestJob is not active so will queue a new job"/>
 				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="b6753fe5-ef0f-4785-bdb8-a2828791ec3b" />
 				<vm:publish doc:name="Send job to TestJobQueue" doc:id="01e532db-6c4a-4d23-a81e-216536561f9a" config-ref="VM_Config_TestJob" queueName="TestJobQueue" />
 			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="fb09c0fc-05dc-44e3-ada2-982a0fb05eb4" message="TestJob is active so will sleep in BackgroundJob for a while" />
+			</otherwise>
 		</choice>
 		<java:invoke-static doc:name="Sleep" doc:id="d41d9419-a9b3-4aed-b807-2aaae590989d" class="fusiontester.Helpers" method="SleepNmilliSeconds(long) ">
 			<java:args ><![CDATA[#[{i: vars.SleepTime}]]]></java:args>
@@ -64,7 +68,7 @@ output application/java
 		<choice doc:name="If there are records to process continue" doc:id="ba6e4b04-d8ee-4b1b-b58e-2c1d3c722fc5" >
 			<when expression="vars.JobInfo.RemainingRecords &gt; 0">
 				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="386a0ff2-05c0-4434-aa67-7e0b1843f4de" />
-				<vm:publish doc:name="Keep looping" doc:id="72fcb67f-957d-4a33-afbb-b4f2204a80b7" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob" />
+				<vm:publish doc:name="Send to Jobs Queue" doc:id="72fcb67f-957d-4a33-afbb-b4f2204a80b7" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob" />
 			</when>
 			<otherwise >
 				<db:stored-procedure doc:name="Set Test Batch as finished" doc:id="7396551e-ab66-4c5d-bad2-d9304e99fcae" config-ref="mssql-jdbc" >
@@ -74,6 +78,13 @@ output application/java
 				<logger level="INFO" doc:name="Logger" doc:id="43ee44aa-8179-4c11-91e4-6ddb35230828" message="Finished batch job with Testid = #[vars.TestId]   #['\n']"/>
 			</otherwise>
 		</choice>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1f2bbe5f-7fc2-4a4c-8367-5c940da45517" >
+				<logger level="INFO" doc:name="Logger" doc:id="b08e3c15-fcfd-46a0-86b6-6696f08b3151" message="An error occured in the background job. Error was #[error.description]"/>
+				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="0f7b0186-a314-4bd1-94fd-9ffdcffb2926" />
+				<vm:publish queueName="BackgroundJob" doc:name="Send to JobsQueue" doc:id="20bb169f-b5fa-437a-875f-404f559957a9" config-ref="VM_Config_BackgroundJob" />
+			</on-error-propagate>
+		</error-handler>
 	</flow>
 	<flow name="InitializeJob" doc:id="8dc90d60-25b1-4dfa-acde-1ebfd690f355" >
 		<logger level="INFO" doc:name="Logger" doc:id="0557d1b4-e36b-47f8-b587-bf450419fcd9" message="Started iteration of BackgroundJob  #['\n']" />
@@ -97,7 +108,7 @@ output application/java
 output application/java
 ---
 {
-	TestJobStatusActive: payload.resultSet1['BackgroundJobIsActive'][0],
+	IsTestJobActive: payload.resultSet1['IsTestJobActive'][0],
 	StartDateTime: payload.resultSet1['StartDateTime'][0],
 	RemainingRecords: payload.resultSet1['RemainingRecords'][0]
 }]]></ee:set-variable>
@@ -106,15 +117,15 @@ output application/java
 		<java:invoke-static method="CheckTheCurrentTimeLooksCorrect(String)" doc:name="Check current datetime looks correct" doc:id="ecd8da4d-a6b3-4d9b-8489-90f15b71cd10" class="fusiontester.Helpers" target="IsCurrentSystemTimeCorrect">
 			<java:args ><![CDATA[#[{ startBatchJobDateTime: vars.JobInfo.StartDateTime }]]]></java:args>
 		</java:invoke-static>
-		<logger level="INFO" doc:name="Logger" doc:id="ae83393e-cde6-43a2-bb07-1ad0eac65663" message="Found #[vars.JobInfo.RemainingRecords] records to process and active status of TestJob is #[vars.JobInfo.TestJobStatusActive]   #['\n']" />
-		<choice doc:name="If system time is incorrect, fixt it and abort" doc:id="8bd3c5a9-84b4-48c2-928b-78a2607cedb1" >
-			<when expression="#[vars.IsCurrentSystemTimeCorrect == true]">
+		<logger level="INFO" doc:name="Logger" doc:id="ae83393e-cde6-43a2-bb07-1ad0eac65663" message="Found #[vars.JobInfo.RemainingRecords] records to process and active status of TestJob is #[vars.JobInfo.IsTestJobActive]   #['\n']" />
+		<choice doc:name="If system time is incorrect and TestJob is not busy, fixt time and abort" doc:id="8bd3c5a9-84b4-48c2-928b-78a2607cedb1" >
+			<when expression="#[vars.IsCurrentSystemTimeCorrect == true or vars.JobInfo.IsTestJobActive == 'TRUE']">
 				<logger level="INFO" doc:name="Logger" doc:id="1bc32dc9-8179-44e1-8259-29f3fb1d17eb" message="System time looks OK when starting job"/>
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="6224c316-7677-4288-9d42-243befbb2e06" message="Current system time looks wrong when starting Job. Will try to fix"/>
-				<vm:publish queueName="SetRealTimeQueue" doc:name="Publish in SetRealTimeQueue" doc:id="2076cfca-eda8-48b5-9985-ae72ec85efc2" config-ref="VM_Config_SetRealTimeLoop" />
-				<raise-error doc:name="Raise error" doc:id="ff89090e-3e6e-43f2-8a2a-163e73b4b5f1" type="ANY" description="The system time seems to be wrong, will try to get the right value using a time server"/>
+				<flow-ref doc:name="SetSystemTimeUsingTimeServer" doc:id="5cc4ca86-701f-4fb6-a1c3-ef058cec9d03" name="SetSystemTimeUsingTimeServer"/>
+				<raise-error doc:name="Raise error" doc:id="ff89090e-3e6e-43f2-8a2a-163e73b4b5f1" type="ANY" description="The system time seemed to be wrong and attempt was done to correct it"/>
 			
 			
 </otherwise>

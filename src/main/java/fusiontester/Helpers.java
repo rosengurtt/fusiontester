@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 
 public class Helpers {
@@ -101,10 +102,13 @@ public class Helpers {
 			
 			Date now = new Date();
 			long millisecondsEllapsed = now.getTime() - eventStart.getTime();
-			long oneMinute = 60 * 1000;
+			// The timeout is less than a minute, but due to summer time, the difference somehow may be 1 hour
+			long oneHourPlusOneMinute = 60 * 1000 + 3600 * 1000;
 			
-			if (millisecondsEllapsed > oneMinute) {
+			if (millisecondsEllapsed > oneHourPlusOneMinute) {
 				System.out.println("The time when executing the Fusion request was not the time of the event and this is the likely cause for the error");
+				System.out.print("millisecondsEllapsed: ");
+				System.out.println(millisecondsEllapsed);
 				return true;
 			}
 		}
@@ -115,6 +119,8 @@ public class Helpers {
 	// Before starting a job, we verify that the system time was not somehow left with the value of the time of an event
 	// We know that the real current time can not be older than the time the batch started.
 	public static boolean CheckTheCurrentTimeLooksCorrect(String startBatchJobDateTime) throws ParseException {
+		System.out.println("Running CheckTheCurrentTimeLooksCorrect");
+		
 		SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		Date batchStart = simpleFormat.parse(startBatchJobDateTime.substring(0,23));		
 		Date now = new Date();
@@ -122,8 +128,21 @@ public class Helpers {
 		System.out.print("batchStart:");
 		System.out.println(batchStart);
 
-		if (now.getTime() < batchStart.getTime()) return false;
+		if (now.getTime() < batchStart.getTime()) {
+			System.out.println("CheckTheCurrentTimeLooksCorrect says time looks OK");
+			return false;
+		}
+		System.out.println("CheckTheCurrentTimeLooksCorrect says time looks wrong");
 		return true;
+	}
+	
+	public static int GenerateRandomNumber(int min, int max) {
+		Random rand = new Random();
+		return rand.nextInt(max - min + 1) + min;
+	}
+	public static void SleepVariableMilliSeconds(int min, int max) throws InterruptedException {
+		Random rand = new Random();
+		Thread.sleep(rand.nextInt(max - min + 1) + min);
 	}
 	
 }

@@ -13,6 +13,9 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 
 	<flow name="SetTimeToCurrentTime" doc:id="c12be2a5-7c5a-4f0b-b50b-2c29597854d9" >
 		<set-variable value="# [new java.util.Random().nextInt(20)]" doc:name="Generate Random Variable" doc:id="1e6e2b9a-9ddf-4422-b414-f2a4a6e065c0" variableName="RandomNumber" />
+		<java:invoke-static method="GenerateRandomNumber(int, int)" doc:name="Generate random number between 0 and 19" doc:id="f8d04f67-9ad8-4491-9429-9864307f7b78" class="fusiontester.Helpers" target="RandomNumber">
+			<java:args ><![CDATA[#[{ min: 1, max: 20}]]]></java:args>
+		</java:invoke-static>
 		<choice doc:name="5% of the time we get the time from an external source" doc:id="3dad5fee-73d7-4a1a-92a5-257357cc0d58" >
 			<when expression="vars.RandomNumber == 19">
 				<try doc:name="Try" doc:id="bf5614bd-6825-4359-ab5d-aadf56f75d74" >
@@ -20,7 +23,7 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 					<error-handler >
 						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b690856e-5575-4981-b2d4-2134369f72ee" >
 							<logger level="INFO" doc:name="Logger" doc:id="11582101-4b52-4048-9a91-b78e1dc5409f" message="Tried to get real time but failed. Error was: #[error.description]. Will use saved info instead.   #['\n']"/>
-							<flow-ref doc:name="SetCurrentTimeUsingSavedInfo" doc:id="3ec102db-4c25-42c0-8854-ec19c7d272b0" name="GetCurrentTimeUsingSavedInfo" />
+							<flow-ref doc:name="GetCurrentTimeUsingSavedInfo" doc:id="3ec102db-4c25-42c0-8854-ec19c7d272b0" name="GetCurrentTimeUsingSavedInfo" />
 						</on-error-continue>
 					</error-handler>
 				</try>
@@ -29,22 +32,16 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 				<flow-ref doc:name="SetCurrentTimeUsingSavedInfo" doc:id="ae337365-d9cd-4be6-a725-5d3e410bcef4" name="GetCurrentTimeUsingSavedInfo"/>
 			</otherwise>
 		</choice>
-		<try doc:name="Try" doc:id="0f7f850f-8bb3-4d39-8615-8d547f074c6b" >
+		<async doc:name="Async" doc:id="2a706676-297e-4e5c-be83-feec1dcc4f2c" >
 			<http:request method="POST" doc:name="TimeSetterWeb" doc:id="96277b73-448b-4e31-b776-62795221bf15" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
 				<http:body><![CDATA[#[vars.CurrentDateTime]]]></http:body>
 				<http:response-validator>
 					<http:success-status-code-validator values="200..599" />
 				</http:response-validator>
-		</http:request>
-			<logger level="INFO" doc:name="Logger" doc:id="305df0f5-e8e0-46fe-b73e-2d2afd08b4be" message="Changed time to current time successfully   #['\n']" />
-			<error-handler >
-				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="49943820-a982-49a3-989a-58cb04f1cef0" >
-					<logger level="INFO" doc:name="Logger" doc:id="26f9a60c-78e8-453f-9fa9-10396621329e" message="Failed to set current time. Error was: #[error.description]   #['\n']"/>
-					<vm:publish doc:name="Publish" doc:id="17409932-dc4e-4d0a-982d-5694c56e8a7a" config-ref="VM_Config_SetRealTimeLoop" queueName="SetRealTimeQueue"/>
-				</on-error-continue>
-			</error-handler>
-		</try>
-		<java:invoke-static method="SleepNmilliSeconds(long) " doc:name="Wait for time to change" doc:id="0b7e2b6e-d81f-47a5-ba83-91465f9c2926" class="fusiontester.Helpers">
+</http:request>
+		</async>
+		<logger level="INFO" doc:name="Logger" doc:id="305df0f5-e8e0-46fe-b73e-2d2afd08b4be" message="Changed time to current time successfully   #['\n']" />
+		<java:invoke-static method="SleepNmilliSeconds(long) " doc:name="Wait for system time to change" doc:id="0b7e2b6e-d81f-47a5-ba83-91465f9c2926" class="fusiontester.Helpers">
 			<java:args><![CDATA[#[{i: 100}]]]></java:args>
 		</java:invoke-static>
 	
@@ -63,11 +60,13 @@ output application/json
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-		<http:request method="POST" doc:name="TimeSetterWeb" doc:id="52db0346-b9d7-434b-ac5f-6df4d15591db" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
+		<async doc:name="Async" doc:id="30abd5e7-7168-4be0-a7da-ff340a864d74" >
+			<http:request method="POST" doc:name="TimeSetterWeb" doc:id="52db0346-b9d7-434b-ac5f-6df4d15591db" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
 				<http:response-validator>
 					<http:success-status-code-validator values="200..599" />
 				</http:response-validator>
 			</http:request>
+		</async>
 		<logger level="INFO" doc:name="Logger" doc:id="fe082816-724a-4f78-8678-004f6a8e75e2" message="Changed time to time of event  (#[vars.loggedItem.FusionRequestTime])    #['\n']" />
 		<java:invoke-static method="SleepNmilliSeconds(long) " doc:name="Wait for time to change" doc:id="905531c2-a500-4175-83ab-d5a31209ea83" class="fusiontester.Helpers">
 			<java:args><![CDATA[#[{i: 100}]]]></java:args>
@@ -89,13 +88,13 @@ output application/json
 
 			</ee:variables>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="b681dd95-357b-4bdc-9c50-431951771998" message="Setting time back to real time (#[vars.CurrentDateTime]) using the time server   #['\n']" />
+		<logger level="INFO" doc:name="Logger" doc:id="b681dd95-357b-4bdc-9c50-431951771998" message="Got curent time from time server: (#[vars.CurrentDateTime]) using the time server   #['\n']" />
 	</flow>
 	<flow name="GetCurrentTimeUsingSavedInfo" doc:id="768b1484-5419-4e5a-8125-b91b8670bf5d" >
 		<java:invoke-static doc:name="Get Current Time using saved info" doc:id="af43cbb7-0c2e-4f2e-aff8-6279296eb697" class="fusiontester.Helpers" method="GetCurrentTimeFromSavedInfo(String, String)" target="CalculatedCurrentDateTime">
 			<java:args><![CDATA[#[{ 'eventDateTime': vars.loggedItem.FusionRequestTime, 'savedCurrentDateTime': vars.CurrentDateTime  }]]]></java:args>
 		</java:invoke-static>
-		<logger level="INFO" doc:name="Logger" doc:id="df9e61d9-fc29-4759-b968-94ce44f771e6" message="Setting time back to real time (#[vars.CalculatedCurrentDateTime]) using saved info. Saved current date time was #[vars.CurrentDateTime], event date time was #[vars.loggedItem.FusionRequestTime]  #['\n']" />
+		<logger level="INFO" doc:name="Logger" doc:id="df9e61d9-fc29-4759-b968-94ce44f771e6" message="Current time was calculated from saved info (#[vars.CalculatedCurrentDateTime]). Saved current date time was #[vars.CurrentDateTime], event date time was #[vars.loggedItem.FusionRequestTime]  #['\n']" />
 		<ee:transform doc:name="Format request" doc:id="87adc105-4628-4538-9eb0-9c2e99395fd3">
 			<ee:message />
 			<ee:variables>
@@ -108,26 +107,17 @@ output application/json
 			</ee:variables>
 		</ee:transform>
 	</flow>
-	<flow name="KeepTryingToSetRealTimeUntilItSucceeds" doc:id="b8c5abd6-989d-406a-b0d8-867d0b5876ce" >
-		<vm:listener doc:name="SetRealTimeQueue" doc:id="5d104aea-c27b-43d0-80f7-834cdec9d3cc" config-ref="VM_Config_SetRealTimeLoop" queueName="SetRealTimeQueue"/>
-		<set-variable value="# [new java.util.Random().nextInt(59000) + 1000]" doc:name="Generate Random Variable" doc:id="c20dd54e-32a6-4770-a76a-8658688baddd" variableName="RandomNumber" />
-		<java:invoke-static method="SleepNmilliSeconds(long) " doc:name="Sleep variable time between 1 and 60 seconds" doc:id="fefd297e-d2b8-4319-8d29-afaf59e668e1" class="fusiontester.Helpers" >
-			<java:args ><![CDATA[#[{i: vars.RandomNumber}]]]></java:args>
-		</java:invoke-static>
-		<flow-ref doc:name="GetCurrentTimeUsingTimeServer" doc:id="4cabbeae-01e8-445e-a204-85d80ee4ec1e" name="GetCurrentTimeUsingTimeServer"/>
-		<try doc:name="Try" doc:id="fd96dbc4-4210-4ff6-b911-eb5271d087b6" >
+	<flow name="SetSystemTimeUsingTimeServer" doc:id="b8c5abd6-989d-406a-b0d8-867d0b5876ce">
+		<flow-ref doc:name="GetCurrentTimeUsingTimeServer" doc:id="4cabbeae-01e8-445e-a204-85d80ee4ec1e" name="GetCurrentTimeUsingTimeServer" />
+		<async doc:name="Async" doc:id="2ed9a50b-c1c1-45f7-9314-455433e1fa4d" >
 			<http:request method="POST" doc:name="TimeSetterWeb" doc:id="1bf63770-d172-4b5f-886e-717be8f6256e" config-ref="TimeSetterWeb_configuration" path="/time" outputMimeType="application/json" outputEncoding="UTF-8">
 			<http:body><![CDATA[#[vars.CurrentDateTime]]]></http:body>
 			<http:response-validator>
 				<http:success-status-code-validator values="200..599" />
 			</http:response-validator>
 		</http:request>
-			<error-handler >
-				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="fc92dc25-a6c8-4910-9eef-8f47dc50216c" >
-					<vm:publish queueName="SetRealTimeQueue" doc:name="Publish in SetRealTimeQueue" doc:id="2076cfca-eda8-48b5-9985-ae72ec85efc2" config-ref="VM_Config_SetRealTimeLoop" />
-				</on-error-continue>
-			</error-handler>
-		</try>
+		</async>
+		<logger level="INFO" doc:name="Logger" doc:id="212b89fe-ded8-449b-852b-ffb9cabd4fc9" message="System time was set to correct value using time server #['\n']"/>
 	</flow>
 	
 	
