@@ -5,6 +5,7 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
 
 /fusiontest:
   post:
+    description: Starts a test providing its idea and possibly an indication that any previous run data should be deleted
     body:
       application/json:
         type: object
@@ -26,7 +27,72 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
             properties:
               message:
                 type: string
-                #example: |
-                #  {
-                #    "message" : "Test started"
-                #  }
+                example: |
+                  {
+                    "message" : "Test started"
+                  }
+
+/fusiontest/tests:
+  get:
+    description: Returns a list of tests. The tests returned can be filtered and paged.
+    queryParameters:
+      date-from:
+        type: string
+        required: false
+        description: filters out tests done before this date
+        example: '2019-05-04'
+      date-to:
+        type: string
+        required: false
+        description: filters out tests done after this date
+        example: '2019-05-04'
+      page-size:
+        type: integer
+        description: Used for pagination. The number of records per page.
+        required: false
+        default: 10
+        example: 12
+      page:
+        type: integer
+        description: Used for pagination. The page number to return.
+        required: false
+        default: 1
+        example: 3
+        
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            properties:
+              tests:
+                type: array
+                items: !include types/test.raml
+
+/fusiontest/tests/{test-id}:
+  get:
+    description: Returns the records for test with specific TestId 
+    queryParameters:
+      page-size:
+        type: integer
+        description: Used for pagination. The number of records per page.
+        required: false
+        default: 10
+        example: 12
+      page:
+        type: integer
+        description: Used for pagination. The page number to return.
+        required: false
+        default: 1
+        example: 3
+        
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            properties:
+              records:
+                type: array
+                items: !include types/test-result.raml
+    

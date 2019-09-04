@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="get:\fusiontest\tests:FusionTester-config">
+		<db:stored-procedure doc:name="Get Tests" doc:id="68bdcc37-3941-4d2a-b639-8bc3e5ce3595" config-ref="mssql-jdbc">
+			<db:sql >{ call GetTests(:DateFrom, :DateTo, :PageSize, :Page)}</db:sql>
+			<db:input-parameters ><![CDATA[#[{ 'DateFrom': attributes.queryParams['date-from'], 
+'DateTo': attributes.queryParams['date-to'], 
+'PageSize': attributes.queryParams['page-size'], 'Page': attributes.queryParams['page'] }]]]></db:input-parameters>
+		</db:stored-procedure>
+		<ee:transform doc:name="Transform Message" doc:id="dc05197a-3887-4dd9-bae8-d81877807692" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+tests: payload.resultSet1]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+
+	</flow>
+	
+	
+	<flow name="get:\fusiontest\tests\(test-id):FusionTester-config">
+		<db:stored-procedure doc:name="Get Recors of test" doc:id="e906e8d0-32b8-40dd-baf1-66a9c954d945" config-ref="mssql-jdbc">
+			<db:sql >{ call GetTestRecords(:TestId, :PageSize, :Page)}</db:sql>
+			<db:input-parameters ><![CDATA[#[{ 'TestId': attributes.uriParams['test-id'],
+	'PageSize': attributes.queryParams['page-size'], 'Page': attributes.queryParams['page'] 
+}]]]></db:input-parameters>
+		</db:stored-procedure>
+		<ee:transform doc:name="Transform Message" doc:id="5831f5fa-d55c-4b06-b98c-28a0b668e935" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+records: payload.resultSet1]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+
+		</flow>
+		
+	</mule>

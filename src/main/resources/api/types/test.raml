@@ -1,0 +1,55 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  TestId:
+    type: integer
+    description: An integer used as the primary key in the db
+  TestName:
+    type: string
+    description: Some meaningful name given to the test
+  TestDescription:
+    type: string
+    description: Text that provides information about the test
+  CreationDateTime:
+    type: string
+    description: When the db record was created
+  StartDateTime:
+    type: string
+    description: When the test was started. Null if it hasn't started
+  LastActiveDateTime:
+    type: string
+    description: when was the last time FusionTester did work for this test
+  EndDateTime:
+    type: string
+    description: When the test was finished. Null if it hasn't finished yet
+  RecordsProcessed:
+    type: integer
+    description: The number of Fusion Request records that have been processed for the test
+  NumberOfErrors:
+    type: integer
+    description: The number of records that failed the test
+  TestCreator:
+    type: string
+    description: The name of the person that created the test
+  IncludeAirports:
+    type: string
+    description: A comma separated list of airports that should be included in the test. Empty means all airports
+  IncludeAirlines:
+    type: string
+    description: A comma separated list of airlines that should be included in the test. Empty means all airports
+  FromDate:
+    type: string
+    description: Used to filter the records to include in the test. This is the lower limit
+  ToDate:
+    type: string
+    description: Used to filter the records to include in the test. This is the upper limit
+  IncludeFusionRequestType:
+    type: string
+    description: A comma separated list of fusion request types to include in the test. Empty means include all types.
+  
+  
+  
+    
+  
+    

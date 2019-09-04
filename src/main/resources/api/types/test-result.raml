@@ -1,0 +1,35 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  FusionRequestId:
+    type: string
+    description: The original id of the Fusion Request in the FusionRequests table
+  TestResult:
+    type: string
+    description: A string with the value 'OK' when the text succeeds, or a description of the error if it fails
+  TestTime:
+    type: string
+    description: The time the record was tested
+  ExpectedResponse:
+    type: string
+    description: When the test failed, this record shows the expected response, but only containing the fields that we care. Fields like "CreatedOn" of Guids that change with every call are removed
+  ActualResponse:
+    type: string
+    description: The response we got from Fusion with fields removed as in the previous property
+  ActualDCScalls:
+    type: string
+    description: When the test fails, this field provides information about the actual calls made to the DCS by Fusion during the test
+  NumberOfDifferences:  
+    type: integer
+    description: The number of fields in the Fusion response that were different
+  DCScallsMatch:
+    type: boolean
+    description: When the test fails, it indicates if there were differences in the number or types of the DCS calls made
+  RequestType:
+    type: string
+    description: The request type of the Fusion call, for ex. 'GetReservationByNativeReference'
+  RequestTime:
+    type: string
+    description: The datetime of the original Fusion request. Records are sorted according to this field
+  
