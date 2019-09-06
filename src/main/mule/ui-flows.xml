@@ -13,16 +13,17 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 'DateTo': attributes.queryParams['date-to'], 
 'PageSize': attributes.queryParams['page-size'], 'Page': attributes.queryParams['page'] }]]]></db:input-parameters>
 		</db:stored-procedure>
-		<ee:transform doc:name="Transform Message" doc:id="dc05197a-3887-4dd9-bae8-d81877807692" >
+		<ee:transform doc:name="Format response" doc:id="dc05197a-3887-4dd9-bae8-d81877807692" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-tests: payload.resultSet1]]></ee:set-payload>
+payload.resultSet1]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-
-	</flow>
+		<flow-ref doc:name="AddCORSheader" doc:id="4d8e6765-2446-4124-8021-4a1755a04d0f" name="AddCORSheader"/>
+	
+</flow>
 	
 	
 	<flow name="get:\fusiontest\tests\(test-id):FusionTester-config">
@@ -32,15 +33,137 @@ tests: payload.resultSet1]]></ee:set-payload>
 	'PageSize': attributes.queryParams['page-size'], 'Page': attributes.queryParams['page'] 
 }]]]></db:input-parameters>
 		</db:stored-procedure>
-		<ee:transform doc:name="Transform Message" doc:id="5831f5fa-d55c-4b06-b98c-28a0b668e935" >
+		<ee:transform doc:name="Format response" doc:id="5831f5fa-d55c-4b06-b98c-28a0b668e935" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-records: payload.resultSet1]]></ee:set-payload>
+payload.resultSet1]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<flow-ref doc:name="AddCORSheader" doc:id="c055668e-a5c9-441b-8345-6cd19f61fc2e" name="AddCORSheader"/>
 
 		</flow>
+	<flow name="post:\fusiontest\tests:application\json:FusionTester-config" doc:id="b353f25c-76cc-4df1-80da-52f9411f2c62" >
+		<try doc:name="Try" doc:id="de3681d0-de41-4f98-8c9b-6e7d4de241aa" >
+			<db:stored-procedure doc:name="Insert test" doc:id="0774cd1a-09d6-427a-87e2-6ef017b4114e" config-ref="mssql-jdbc">
+			<db:sql>{ call InsertTest(:TestName, :TestDescription, :TestCreator, :IncludeAirports, :IncludeAirlines, :FromDate, :ToDate, :IncludeFusionRequestType)}</db:sql>
+			<db:input-parameters><![CDATA[#[{ 	'TestName': payload.TestName,
+	'TestDescription': payload.TestDescription,
+	'TestCreator': payload.TestCreator,
+	'IncludeAirports': payload.IncludeAirports,
+	'IncludeAirlines': payload.IncludeAirlines,
+	'FromDate': payload.FromDate,
+	'ToDate': payload.ToDate,
+	'IncludeFusionRequestType': payload.IncludeFusionRequestType
+	
+}]]]></db:input-parameters>
+		</db:stored-procedure>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="d2c392bd-730e-4cd5-a1f4-be2c32652b46" >
+					<logger level="ERROR" doc:name="Logger" doc:id="aec693ef-dea3-4f09-b2d0-b30840da330a" message="There was an error when trying to create a test: #[error.description]"/>
+					<ee:transform doc:name="Return error" doc:id="1b760523-fb85-4254-a94a-512470ab165d" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "fail",
+	data:{
+		message: error.description
+	}
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="Return TestId" doc:id="0fc08143-2115-4b09-9b6b-e4c4d782d45b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "success",
+	data:{
+		TestId: payload.resultSet1['TestId'][0]
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="AddCORSheader" doc:id="be0b2120-c08f-42fb-ad83-ed393ed3ddf2" name="AddCORSheader"/>
+	</flow>
+	<flow name="AddCORSheader" doc:id="40faf349-99e8-4c32-bfc1-09b1a6ffc7fb" >
+		<ee:transform doc:id="b50ff959-380b-4b19-b901-64b7b2a954cd" doc:name="Add Access-Control-Allow-Origin">
+  <ee:variables>
+    <ee:set-variable variableName="outboundHeaders"><![CDATA[
+       {"Access-Control-Allow-Origin": '*'}
+    ]]></ee:set-variable>
+  </ee:variables>
+</ee:transform>
+	</flow>
+	<flow name="get:\fusiontest\tests\statistics:FusionTester-config" doc:id="c46f88be-007a-41b5-bcb8-f585ea010e7d" >
+		<db:stored-procedure doc:name="Get test statiscics" doc:id="60d8a235-dd96-4eaa-b476-19a42c5c7b2e" config-ref="mssql-jdbc">
+			<db:sql >{ call GetTestsStatistics() }</db:sql>
+		</db:stored-procedure>
+		<ee:transform doc:name="Format response" doc:id="b8befcbd-c42c-4898-a39d-ba62a7a9ed19" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "success",
+	data: payload.resultSet1[0]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="AddCORSheader" doc:id="72351480-c6e0-4332-8a0b-d02bc16cbb15" name="AddCORSheader" />
+	</flow>
+	<flow name="get:\fusiontest\airlines:FusionTester-config" doc:id="e9799365-5643-485a-afcd-5394fa96d86f" >
+		<db:stored-procedure doc:name="Get airlines" doc:id="35b4411d-59ed-47b1-8f93-94c0ba2397fa" config-ref="mssql-jdbc" >
+			<db:sql >{ call GetAirlines() }</db:sql>
+		</db:stored-procedure>
+		<ee:transform doc:name="Format response" doc:id="b193e202-3075-440d-861c-813d28e913c3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv
+---
+payload.resultSet1
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="AddCORSheader" doc:id="c11195a1-436e-4a8a-a6be-56ed36a8a0cf" name="AddCORSheader" />
+	</flow>
+	<flow name="get:\fusiontest\airports:FusionTester-config" doc:id="30a0fc2e-a730-4e3e-9248-b45b0aa52823" >
+		<db:stored-procedure doc:name="Get airports" doc:id="46be3f8f-2116-40b3-831c-27eeebb20b1d" config-ref="mssql-jdbc" >
+			<db:sql >{ call GetAirports() }</db:sql>
+		</db:stored-procedure>
+		<ee:transform doc:name="Format response" doc:id="f3d9f971-39a9-4f72-81f4-1257eaee6040">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/csv
+---
+payload.resultSet1
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="AddCORSheader" doc:id="2eba9b6b-8e6e-486d-9cc8-084689abd9b0" name="AddCORSheader" />
+	</flow>
+	<flow name="get:\fusiontest\fusion-request-types:FusionTester-config" doc:id="8c207706-560e-44ec-954e-201c39758b16" >
+		<db:stored-procedure doc:name="Get Fusion Request Types" doc:id="6741ec7b-c74b-45a1-9721-dcf0e50aff6a" config-ref="mssql-jdbc" >
+			<db:sql >{ call GetFusionRequestTypes() }</db:sql>
+		</db:stored-procedure>
+		<ee:transform doc:name="Format response" doc:id="76a7dbc6-63fa-4dcd-b03b-068634800d2f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv
+---
+payload.resultSet1
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="AddCORSheader" doc:id="66087218-7d73-4db1-a6fc-caef35da679b" name="AddCORSheader" />
+	</flow>
 		
-	</mule>
+	
+</mule>

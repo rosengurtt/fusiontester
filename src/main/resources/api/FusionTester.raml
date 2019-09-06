@@ -63,13 +63,65 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
       200:
         body:
           application/json:
-            type: object
-            properties:
-              tests:
-                type: array
-                items: !include types/test.raml
+            type: array
+            items: !include types/test.raml
+  post:
+    description: Used for create new tests
+    body:
+      application/json:
+        type: object
+        properties:
+          TestName:
+            type: string
+            required: true
+            description: Some meaningful name given to the test
+            example: Regresion test for bug fix 12345
+          "TestDescription":
+            type: string
+            required: false
+            description: Text that provides information about the test
+            example: Verify that the bug fix hasn't broken boarding for Jetblue
+          "TestCreator":
+            type: string
+            description: The name of the person that created the test
+          IncludeAirports:
+            type: string
+            description: A comma separated list of airports that should be included in the test. The airport names must be surrounded by single quotes. Empty means all airports
+            example: "'LHR','STN','EDI'"
+          IncludeAirlines:
+            type: string
+            description: A comma separated list of airlines that should be included in the test. The airlines names must be surrounded by single quotes. Empty means all airports
+            example: "'FR','BE','BA','LS'"
+          FromDate:
+            type: string
+            description: Used to filter the records to include in the test. This is the lower limit
+            example: "2019-04-07 23:00:08"
+          ToDate:
+            type: string
+            description: Used to filter the records to include in the test. This is the upper limit
+            example: "2019-09-07 02:00:08"
+          IncludeFusionRequestType:
+            type: string
+            description: A comma separated list of fusion request types to include in the test. The request types must be surrounded by single quotes. Empty means include all types.
+            example: "'GetReservationByNativeReference', 'QuoteBag'"
 
-/fusiontest/tests/{test-id}:
+    responses:
+        200:
+          body:
+            application/json:
+              type: object
+              properties:
+                result:
+                  type: string
+                  example: "success"
+                data:
+                  type: object
+                  example: |
+                    {
+                        "TestId": 23
+                    }
+
+/fusiontest/tests/{TestId}:
   get:
     description: Returns the records for test with specific TestId 
     queryParameters:
@@ -90,9 +142,61 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
       200:
         body:
           application/json:
-            type: object
-            properties:
-              records:
-                type: array
-                items: !include types/test-result.raml
+            type: array
+            items: !include types/test-result.raml
+
+/fusiontest/tests/statistics:
+  get:
+    description: Returns total number of tests, total number of FusionRequest records and total number of DCSrequests records
+
+    responses:
+        200:
+          body:
+            application/json:
+              type: object
+              properties:
+                result:
+                  type: string
+                  example: "success"
+                data:
+                  type: object
+                  example: |
+                    {
+                      "Tests" : 27,
+                      "FusionRequests": 8342,
+                      "DCSRequests": 12878
+                    }
+
+/fusiontest/airlines:
+  get:
+    description: Returns an array with the 2 letter codes of the airlines for which there is data  
+          
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: string
+            
+/fusiontest/airports:
+  get:
+    description: Returns an array with the 3 letter codes of the airports for which there is data  
+          
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: string
+            
+/fusiontest/fusion-request-types:
+  get:
+    description: Returns an array of the types of fusion requests for which there is data 
+          
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: string
     
