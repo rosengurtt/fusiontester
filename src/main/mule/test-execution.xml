@@ -10,33 +10,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
-	<flow name="post:\fusiontest:application\json:FusionTester-config">
-		<ee:transform doc:name="Save input in variable 'InputData'" doc:id="0735fdfa-6a38-475d-8897-eed49f911273">
-			<ee:message>
-			</ee:message>
-			<ee:variables>
-				<ee:set-variable variableName="InputData" ><![CDATA[%dw 2.0
-output application/java
----
-{
-	TestId: payload['TestId'] as Number,
-	Clean: payload['Clean'] as Boolean
-	}
-]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<db:stored-procedure doc:name="Initialize tables" doc:id="676537bf-9efb-4d94-ab89-add55ebc5423" config-ref="mssql-jdbc">
-			<db:sql>{ call InitializeTest(:TestId,:Clean) }</db:sql>
-			<db:input-parameters><![CDATA[#[{ 'TestId' : vars.InputData.TestId,
-	'Clean' : vars.InputData.Clean
-}]]]></db:input-parameters>
-		</db:stored-procedure>
-		<set-payload value="#[vars.InputData.TestId]" doc:name="Set Payload" doc:id="81233c51-2f6f-443f-8a23-26d518b21f7c" />
-		<vm:publish queueName="BackgroundJob" doc:name="Add job to queue" doc:id="8316df58-d81c-42cc-8a09-f72fed584503" config-ref="VM_Config_BackgroundJob" />
-		<logger level="INFO" doc:name="Logger" doc:id="2a43954e-0e33-4590-a7d5-b529e4b4db4f" message="Started batch test with id #[vars.InputData.TestId]  #['\n']"/>
-		<set-payload value="#['Test started']" doc:name="Return message to client" doc:id="dacebd1f-d3b4-4f94-9503-6fbf68b2e5a7" />
-    
-</flow>
+
 	<flow name="BackgroundJob" doc:id="d3795b0c-9425-4e61-810f-ab8d3b5cc98c" >
 		<vm:listener doc:name="JobsQueue" doc:id="044bc086-f58a-4fa4-8184-6dddfacd4e52" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob"/>
 		<flow-ref doc:name="InitializeJob" doc:id="c6cc6799-ad5b-48ed-8895-f1374201a8e1" name="InitializeJob"/>
