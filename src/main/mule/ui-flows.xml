@@ -266,11 +266,50 @@ output application/java
 	'Clean' : vars.InputData.Clean
 }]]]></db:input-parameters>
 		</db:stored-procedure>
-		<set-payload value="#[vars.InputData.TestId]" doc:name="Set Payload" doc:id="81233c51-2f6f-443f-8a23-26d518b21f7c" />
-		<vm:publish queueName="BackgroundJob" doc:name="Add job to queue" doc:id="8316df58-d81c-42cc-8a09-f72fed584503" config-ref="VM_Config_BackgroundJob" />
-		<logger level="INFO" doc:name="Logger" doc:id="2a43954e-0e33-4590-a7d5-b529e4b4db4f" message="Started batch test with id #[vars.InputData.TestId]  #['\n']"/>
-		<set-payload value="#['Test started']" doc:name="Return message to client" doc:id="dacebd1f-d3b4-4f94-9503-6fbf68b2e5a7" />
+		<ee:transform doc:name="Save result in var" doc:id="3d39896c-c7b9-4397-a30c-ceff1a5200d0" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="InitializationResult" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.resultSet1[0].Result
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Initialization OK?" doc:id="9e5607a9-014b-4486-86e6-fb626ef82b76" >
+			<when expression="#[vars.InitializationResult == 'Test started']">
+				<set-payload value="#[vars.InputData.TestId]" doc:name="Set Payload" doc:id="81233c51-2f6f-443f-8a23-26d518b21f7c" />
+				<vm:publish queueName="BackgroundJob" doc:name="Add job to queue" doc:id="8316df58-d81c-42cc-8a09-f72fed584503" config-ref="VM_Config_BackgroundJob" />
+				<logger level="INFO" doc:name="Logger" doc:id="2a43954e-0e33-4590-a7d5-b529e4b4db4f" message="Started batch test with id #[vars.InputData.TestId]  #['\n']" />
+				<ee:transform doc:name="Return success" doc:id="146ce8f7-f9d6-48b0-af8b-78bd27f5b2b0">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "success"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="98a3bfb9-c9ee-4c18-ba00-d7144a047ac8" message="Failed to start test with id #[vars.InputData.TestId]  #['\n']"/>
+				<ee:transform doc:name="Return error" doc:id="537794e1-c14a-4848-85f7-38480412103f" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "error",
+	message: vars.InitializationResult
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
     
+
 </flow>
 	
 	

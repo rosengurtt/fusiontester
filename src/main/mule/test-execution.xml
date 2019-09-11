@@ -27,10 +27,13 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 			</error-handler>
 		</try>
 		<choice doc:name="Verify that TestJob is inactive and there are records to process" doc:id="911d0f75-ba42-42b4-b7c5-882d3632a96a" >
-			<when expression="#[(vars.JobInfo.IsTestJobActive == 'FALSE') and (vars.JobInfo.RemainingRecords &gt; 0)]">
+			<when expression="#[(vars.JobInfo.TestIsRunning == 'TRUE') and (vars.JobInfo.IsTestJobActive == 'FALSE') and (vars.JobInfo.RemainingRecords &gt; 0)]">
 				<logger level="INFO" doc:name="Logger" doc:id="e12be65d-e769-4178-bea2-826b925b6d94" message="TestJob is not active so will queue a new job"/>
 				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="b6753fe5-ef0f-4785-bdb8-a2828791ec3b" />
 				<vm:publish doc:name="Send job to TestJobQueue" doc:id="01e532db-6c4a-4d23-a81e-216536561f9a" config-ref="VM_Config_TestJob" queueName="TestJobQueue" />
+			</when>
+			<when expression="#[vars.JobInfo.TestIsRunning == 'FALSE']">
+				<raise-error doc:name="Raise error" doc:id="17e30e16-f48c-4e89-a759-db265154ee06" type="ANY" description="The test job is not supposed to be running"/>
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="fb09c0fc-05dc-44e3-ada2-982a0fb05eb4" message="TestJob is active so will sleep in BackgroundJob for a while" />
@@ -56,7 +59,14 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1f2bbe5f-7fc2-4a4c-8367-5c940da45517" >
 				<logger level="INFO" doc:name="Logger" doc:id="b08e3c15-fcfd-46a0-86b6-6696f08b3151" message="An error occured in the background job. Error was #[error.description]"/>
 				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="0f7b0186-a314-4bd1-94fd-9ffdcffb2926" />
-				<vm:publish queueName="BackgroundJob" doc:name="Send to JobsQueue" doc:id="20bb169f-b5fa-437a-875f-404f559957a9" config-ref="VM_Config_BackgroundJob" />
+				<choice doc:name="Check if background job should continue" doc:id="3aef34a6-8833-4f7a-a1c8-59bccf1532b7" >
+					<when expression="#[vars.JobInfo.TestIsRunning == 'FALSE']">
+						<logger level="INFO" doc:name="Logger" doc:id="b5ce5aa5-c0fd-4cb0-b469-3cad7b5141e6" message="Found that job with TestId =  #[vars.TestId] is not supposed to be running. Stopping job" />
+					</when>
+					<otherwise >
+						<vm:publish queueName="BackgroundJob" doc:name="Send to JobsQueue" doc:id="20bb169f-b5fa-437a-875f-404f559957a9" config-ref="VM_Config_BackgroundJob" />
+					</otherwise>
+				</choice>
 			</on-error-propagate>
 		</error-handler>
 	</flow>
@@ -84,7 +94,8 @@ output application/java
 {
 	IsTestJobActive: payload.resultSet1['IsTestJobActive'][0],
 	StartDateTime: payload.resultSet1['StartDateTime'][0],
-	RemainingRecords: payload.resultSet1['RemainingRecords'][0]
+	RemainingRecords: payload.resultSet1['RemainingRecords'][0],
+	TestIsRunning: payload.resultSet1['TestIsRunning'][0]
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
