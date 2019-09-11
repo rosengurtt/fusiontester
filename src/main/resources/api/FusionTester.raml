@@ -3,21 +3,17 @@ title: FusionTester
 version: v1
 description: "Reads the Fusion requests from a table that has the logs of Fusion sesions and sends the requests to a Fusion service. It then compares the response from the Fusion service and compares it with the response in the log."
 
-/fusiontester/execution:
+/fusiontester/execution/{test-id}:
   post:
-    description: Starts a test providing its idea and possibly an indication that any previous run data should be deleted
+    description: Starts/restarts/stops a test
     body:
       application/json:
         type: object
         properties:
-          TestId:
-            type: integer
+          Action:
+            enum: [start, stop]
             required: true
-            example: 25
-          Clean:
-            type: boolean
-            required: false
-            default: true
+            description: Indicates if a test has to be started or stopped
 
     responses:
       200:

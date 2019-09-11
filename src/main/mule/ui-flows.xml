@@ -60,6 +60,7 @@ payload]]></ee:set-payload>
 			<java:invoke-static doc:name="Format data for stored proc " doc:id="99090594-a6fb-4ea0-9b9a-cc6af513a086" class="fusiontester.UIhelpers" method="FormatTestForStoredProc(String)">
 				<java:args ><![CDATA[#[{ 'payload': payload}]]]></java:args>
 			</java:invoke-static>
+			<logger level="INFO" doc:name="Logger" doc:id="b0885efe-b606-44c4-a403-1cf1e1898cd6" message="Will call UpdateTest #['\n']"/>
 			<db:stored-procedure doc:name="Update test" doc:id="0774cd1a-09d6-427a-87e2-6ef017b4114e" config-ref="mssql-jdbc">
 			<db:sql>{ call UpdateTest(:TestId, :TestName, :TestDescription, :TestCreator, :IncludeAirports, :IncludeAirlines, :FromDate, :ToDate, :IncludeFusionRequestTypes)}</db:sql>
 			<db:input-parameters><![CDATA[#[{ 	
@@ -74,6 +75,19 @@ payload]]></ee:set-payload>
 	'IncludeFusionRequestTypes': payload.IncludeFusionRequestTypes	
 }]]]></db:input-parameters>
 		</db:stored-procedure>
+			<ee:transform doc:name="Return TestId" doc:id="0fc08143-2115-4b09-9b6b-e4c4d782d45b">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "success",
+	data:{
+		TestId: payload.resultSet1['TestId'][0]
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 			<error-handler >
 				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="d2c392bd-730e-4cd5-a1f4-be2c32652b46" >
 					<logger level="ERROR" doc:name="Logger" doc:id="aec693ef-dea3-4f09-b2d0-b30840da330a" message="There was an error when trying to create a test: #[error.description]"/>
@@ -93,19 +107,7 @@ output application/json
 				</on-error-propagate>
 			</error-handler>
 		</try>
-		<ee:transform doc:name="Return TestId" doc:id="0fc08143-2115-4b09-9b6b-e4c4d782d45b" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	result: "success",
-	data:{
-		TestId: payload.resultSet1['TestId'][0]
-	}
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e9d639f3-e53d-4e44-9fb6-dfdfca927b38" message="Received request to start #[vars.Testid] #['\n']"/>
 		<flow-ref doc:name="AddCORSheader" doc:id="be0b2120-c08f-42fb-ad83-ed393ed3ddf2" name="AddCORSheader"/>
 	</flow>
 	
@@ -244,42 +246,41 @@ payload.resultSet1
 		</ee:transform>
 		<flow-ref doc:name="AddCORSheader" doc:id="66087218-7d73-4db1-a6fc-caef35da679b" name="AddCORSheader" />
 	</flow>
-		
-	<flow name="post:\fusiontester\execution:application\json:FusionTester-config">
-		<ee:transform doc:name="Save input in variable 'InputData'" doc:id="0735fdfa-6a38-475d-8897-eed49f911273">
-			<ee:message>
-			</ee:message>
-			<ee:variables>
-				<ee:set-variable variableName="InputData" ><![CDATA[%dw 2.0
-output application/java
----
-{
-	TestId: payload['TestId'] as Number,
-	Clean: payload['Clean'] as Boolean
-	}
-]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<db:stored-procedure doc:name="Initialize tables" doc:id="676537bf-9efb-4d94-ab89-add55ebc5423" config-ref="mssql-jdbc">
-			<db:sql>{ call InitializeTest(:TestId,:Clean) }</db:sql>
-			<db:input-parameters><![CDATA[#[{ 'TestId' : vars.InputData.TestId,
-	'Clean' : vars.InputData.Clean
-}]]]></db:input-parameters>
-		</db:stored-procedure>
-		<ee:transform doc:name="Save result in var" doc:id="3d39896c-c7b9-4397-a30c-ceff1a5200d0" >
+	<flow name="post:\fusiontester\execution\(test-id):application\json:FusionTester-config">
+		<ee:transform doc:name="Transform Message" doc:id="bcfdc121-e999-4245-b672-3fc3d3c6a38b" >
 			<ee:message >
 			</ee:message>
 			<ee:variables >
-				<ee:set-variable variableName="InitializationResult" ><![CDATA[%dw 2.0
+				<ee:set-variable variableName="Input" ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	TestId: attributes.uriParams['test-id'],
+	Action: payload['Action']
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Start or Stop?" doc:id="7af4481a-f10d-47f5-be45-ffdaac92846d" >
+			<when expression="#[vars.Input.Action =='start']">
+				<logger level="INFO" doc:name="Logger" doc:id="79296580-997f-4779-a765-e702e936c95f" message="Will call StartTest #['\n']"/>
+				<db:stored-procedure doc:name="Start Test" doc:id="676537bf-9efb-4d94-ab89-add55ebc5423" config-ref="mssql-jdbc">
+			<db:sql>{ call StartTest(:TestId) }</db:sql>
+			<db:input-parameters><![CDATA[#[{ 'TestId' : vars.Input.TestId }]]]></db:input-parameters>
+		</db:stored-procedure>
+				<ee:transform doc:name="Save result in var" doc:id="3d39896c-c7b9-4397-a30c-ceff1a5200d0">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="InitializationResult"><![CDATA[%dw 2.0
 output application/java
 ---
 payload.resultSet1[0].Result
 ]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<choice doc:name="Initialization OK?" doc:id="9e5607a9-014b-4486-86e6-fb626ef82b76" >
+				<choice doc:name="Initialization OK?" doc:id="9e5607a9-014b-4486-86e6-fb626ef82b76">
 			<when expression="#[vars.InitializationResult == 'Test started']">
-				<set-payload value="#[vars.InputData.TestId]" doc:name="Set Payload" doc:id="81233c51-2f6f-443f-8a23-26d518b21f7c" />
+				<set-payload value="#[vars.Input.TestId]" doc:name="Set Payload" doc:id="81233c51-2f6f-443f-8a23-26d518b21f7c" />
 				<vm:publish queueName="BackgroundJob" doc:name="Add job to queue" doc:id="8316df58-d81c-42cc-8a09-f72fed584503" config-ref="VM_Config_BackgroundJob" />
 				<logger level="INFO" doc:name="Logger" doc:id="2a43954e-0e33-4590-a7d5-b529e4b4db4f" message="Started batch test with id #[vars.InputData.TestId]  #['\n']" />
 				<ee:transform doc:name="Return success" doc:id="146ce8f7-f9d6-48b0-af8b-78bd27f5b2b0">
@@ -293,11 +294,11 @@ output application/json
 			</ee:message>
 		</ee:transform>
 			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="98a3bfb9-c9ee-4c18-ba00-d7144a047ac8" message="Failed to start test with id #[vars.InputData.TestId]  #['\n']"/>
-				<ee:transform doc:name="Return error" doc:id="537794e1-c14a-4848-85f7-38480412103f" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+			<otherwise>
+				<logger level="INFO" doc:name="Logger" doc:id="98a3bfb9-c9ee-4c18-ba00-d7144a047ac8" message="Failed to start test with id #[vars.TestId]  #['\n']" />
+				<ee:transform doc:name="Return error" doc:id="537794e1-c14a-4848-85f7-38480412103f">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -306,6 +307,53 @@ output application/json
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
+			</otherwise>
+		</choice>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="3a6bd39e-00a9-46f2-8d2b-732a5521bdc4" message="Will cal StopTest #['\n']"/>
+				<db:stored-procedure doc:name="Stop Test" doc:id="d89a5a4d-6b28-47f1-a998-fd1262d0910e" config-ref="mssql-jdbc">
+					<db:sql >{ call StopTest(:TestId) }</db:sql>
+					<db:input-parameters ><![CDATA[#[{ 'TestId' : vars.Input.TestId }]]]></db:input-parameters>
+				</db:stored-procedure>
+				<ee:transform doc:name="Save result in var" doc:id="5f7f9cad-a871-412c-b531-e8b178f108a3" >
+					<ee:message />
+					<ee:variables >
+						<ee:set-variable variableName="InitializationResult" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.resultSet1[0].Result
+]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<choice doc:name="Stopped OK?" doc:id="cc1f1bf0-addd-40ff-b05f-f73fa13c4556" >
+					<when expression="#[vars.InitializationResult == 'Test stopped']">
+						<ee:transform doc:name="Return success" doc:id="2d4cca0b-3d30-4275-89a2-70fed55e148d" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "success"
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</when>
+					<otherwise >
+						<logger level="INFO" doc:name="Logger" doc:id="8d8f0d9e-d03a-4378-9ff2-9c60d673f41c" message="Failed to stop test with id #[vars.TestId]  #['\n']" />
+						<ee:transform doc:name="Return error" doc:id="fc34490b-e1fb-4f0e-a213-92bee4218ecd">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "error",
+	message: vars.InitializationResult
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+					</otherwise>
+				</choice>
 			</otherwise>
 		</choice>
     

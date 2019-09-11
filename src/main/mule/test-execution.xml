@@ -48,6 +48,7 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 				<vm:publish doc:name="Send to Jobs Queue" doc:id="72fcb67f-957d-4a33-afbb-b4f2204a80b7" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob" />
 			</when>
 			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="06396650-6dcc-472c-ac73-0fad762ce669" message="Will call UpdateTestBatchAsFinished #['\n']"/>
 				<db:stored-procedure doc:name="Set Test Batch as finished" doc:id="7396551e-ab66-4c5d-bad2-d9304e99fcae" config-ref="mssql-jdbc" >
 					<db:sql >{ call UpdateTestBatchAsFinished(:TestId)}</db:sql>
 					<db:input-parameters ><![CDATA[#[{ 'TestId': vars.TestId }]]]></db:input-parameters>
@@ -77,6 +78,7 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 		<set-variable value="#[vars.FusionTesterTimeout/8]" doc:name="Set 'SleepTime'" doc:id="09b8e711-4059-426d-8dfd-fdea60121e2c" variableName="SleepTime"/>
 	</flow>
 	<flow name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="367fc517-98ae-4525-ac63-f735cc96037c" >
+		<logger level="INFO" doc:name="Logger" doc:id="5f913e30-c339-415c-8722-80b377c90ae0" message="Will call GetJobInfo #['\n']"/>
 		<db:stored-procedure doc:name="Get Job Info" doc:id="114db2a2-6a9d-49c5-852c-40d91fbb369b" config-ref="mssql-jdbc">
 			<db:sql>{ call GetJobInfo(:TestId,  :TimeoutInMilliSeconds) }</db:sql>
 			<db:input-parameters><![CDATA[#[{ 
