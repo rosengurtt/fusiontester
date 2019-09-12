@@ -39,7 +39,7 @@ payload.resultSet1]]></ee:set-payload>
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload.resultSet1]]></ee:set-payload>
+payload.resultSet1[0]]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="AddCORSheader" doc:id="c055668e-a5c9-441b-8345-6cd19f61fc2e" name="AddCORSheader"/>
@@ -359,6 +359,43 @@ output application/json
     
 
 </flow>
-	
+<flow name="get:\fusiontester\tests\(test-id)\results\statistics:FusionTester-config"  >
+		<db:stored-procedure doc:name="Get results statiscics"  config-ref="mssql-jdbc">
+			<db:sql >{ call GetTestResultsStatistics(:TestId) }</db:sql>
+			<db:input-parameters ><![CDATA[#[{ 'TestId': attributes.uriParams['test-id'] }]]]></db:input-parameters>
+		
+</db:stored-procedure>
+		<ee:transform doc:name="Format response" doc:id="b8befcbd-c42c-4898-a39d-ba62a7a9ed19" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "success",
+	data: payload.resultSet1[0]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="AddCORSheader" doc:id="72351480-c6e0-4332-8a0b-d02bc16cbb15" name="AddCORSheader" />
+	</flow>
+
+	<flow name="get:\fusiontester\tests\(test-id)\results:FusionTester-config"  >
+		<db:stored-procedure doc:name="Get test results "  config-ref="mssql-jdbc">
+			<db:sql >{ call GetTestResults(:TestId, :PageSize, :Page) }</db:sql>
+			<db:input-parameters ><![CDATA[#[{ 'TestId': attributes.uriParams['test-id'],
+	'PageSize': attributes.queryParams['page-size'], 'Page': attributes.queryParams['page']
+}]]]></db:input-parameters>
+		
+</db:stored-procedure>
+		<ee:transform doc:name="Format response" doc:id="b8befcbd-c42c-4898-a39d-ba62a7a9ed19" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.resultSet1]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="AddCORSheader" doc:id="72351480-c6e0-4332-8a0b-d02bc16cbb15" name="AddCORSheader" />
+	</flow>
 	
 </mule>

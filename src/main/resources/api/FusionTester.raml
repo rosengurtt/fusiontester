@@ -121,27 +121,31 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
 
 /fusiontester/tests/{test-id}:
   get:
-    description: Returns the records for test with specific TestId 
-    queryParameters:
-      page-size:
-        type: integer
-        description: Used for pagination. The number of records per page.
-        required: false
-        default: 10
-        example: 12
-      page:
-        type: integer
-        description: Used for pagination. The page number to return.
-        required: false
-        default: 1
-        example: 3
-        
+    description: Returns the details of a test
+      
     responses:
       200:
         body:
           application/json:
-            type: array
-            items: !include types/test-result.raml
+            type: object
+            example: |
+              {
+                "CreationDateTime": "2019-09-11T13:35:33.1",
+                "RecordsProcessed": 18,
+                "TestName": "Bug fix 1234",
+                "NumberOfErrors": 18,
+                "FromDate": "1900-01-01T00:00:00",
+                "IncludeFusionRequestTypes": "%",
+                "ToDate": "3000-01-01T00:00:00",
+                "TestCreator": "",
+                "IncludeAirports": "%",
+                "TestDescription": "Regression test for bug fix for Easyjet",
+                "LastActiveDateTime": "2019-09-11T16:33:02.23",
+                "IncludeAirlines": "'W6'",
+                "EndDateTime": "2019-09-11T16:33:15.81",
+                "TestId": 64,
+                "StartDateTime": "2019-09-11T16:29:03.303"
+              }
 
   put:
     description: Used to update existing tests
@@ -254,4 +258,50 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
           application/json:
             type: array
             items: string
+
+/fusiontester/tests/{test-id}/results/statistics:
+  get:
+    description: Returns total number of records, total of successes and failures for the test with id test-id
+
+    responses:
+        200:
+          body:
+            application/json:
+              type: object
+              properties:
+                result:
+                  type: string
+                  example: "success"
+                data:
+                  type: object
+                  example: |
+                    {
+                      "TotalRecords" : 274,
+                      "SuccessfulRecords": 214,
+                      "FailedRecords": 60
+                    }
+
+/fusiontester/tests/{test-id}/results:
+  get:
+    description: Returns a page of results of a test
+    queryParameters:
+      page-size:
+        type: integer
+        description: Used for pagination. The number of records per page.
+        required: false
+        default: 10
+        example: 12
+      page:
+        type: integer
+        description: Used for pagination. The page number to return.
+        required: false
+        default: 1
+        example: 3
+        
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: !include types/test-result.raml
     
