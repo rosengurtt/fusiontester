@@ -1,0 +1,14 @@
+type: object
+properties:
+  TestResultId:
+    type: integer
+    description: The primary key in the db table
+  FusionRequestId:
+    type: string
+    description: The original id of the Fusion Request in the FusionRequests table
+  ExpectedResponse:
+    type: string
+    description: The response logged when the actual event originally happened
+  ActualResponse:
+    type: string
+    description: The response produced when running the test

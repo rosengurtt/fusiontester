@@ -11,15 +11,6 @@ properties:
   TestTime:
     type: string
     description: The time the record was tested
-  ExpectedResponse:
-    type: string
-    description: When the test failed, this record shows the expected response, but only containing the fields that we care. Fields like "CreatedOn" of Guids that change with every call are removed
-  ActualResponse:
-    type: string
-    description: The response we got from Fusion with fields removed as in the previous property
-  ActualDCScalls:
-    type: string
-    description: When the test fails, this field provides information about the actual calls made to the DCS by Fusion during the test
   NumberOfDifferences:  
     type: integer
     description: The number of fields in the Fusion response that were different

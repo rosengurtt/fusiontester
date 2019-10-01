@@ -282,7 +282,7 @@ payload.resultSet1[0].Result
 			<when expression="#[vars.InitializationResult == 'Test started']">
 				<set-payload value="#[vars.Input.TestId]" doc:name="Set Payload" doc:id="81233c51-2f6f-443f-8a23-26d518b21f7c" />
 				<vm:publish queueName="BackgroundJob" doc:name="Add job to queue" doc:id="8316df58-d81c-42cc-8a09-f72fed584503" config-ref="VM_Config_BackgroundJob" />
-				<logger level="INFO" doc:name="Logger" doc:id="2a43954e-0e33-4590-a7d5-b529e4b4db4f" message="Started batch test with id #[vars.InputData.TestId]  #['\n']" />
+				<logger level="INFO" doc:name="Logger" doc:id="2a43954e-0e33-4590-a7d5-b529e4b4db4f" message="Started batch test with id #[vars.Input.TestId]  #['\n']" />
 				<ee:transform doc:name="Return success" doc:id="146ce8f7-f9d6-48b0-af8b-78bd27f5b2b0">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
@@ -398,4 +398,21 @@ payload.resultSet1]]></ee:set-payload>
 		<flow-ref doc:name="AddCORSheader" doc:id="72351480-c6e0-4332-8a0b-d02bc16cbb15" name="AddCORSheader" />
 	</flow>
 	
+	
+	<flow name="get:\fusiontester\tests\results\(test-result-id):FusionTester-config"  >
+		<db:stored-procedure doc:name="Get result details"  config-ref="mssql-jdbc">
+			<db:sql >{ call GetResultDetails(:TestResultId) }</db:sql>
+			<db:input-parameters ><![CDATA[#[{ 'TestResultId': attributes.uriParams['test-result-id'] }]]]></db:input-parameters>
+		
+</db:stored-procedure>
+		<ee:transform doc:name="Format response"  doc:id="d331a92b-6785-4468-9015-e4fe7ff1eb47">
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.resultSet1]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="AddCORSheader"  name="AddCORSheader" />
+	</flow>
 </mule>

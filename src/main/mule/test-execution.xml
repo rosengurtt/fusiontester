@@ -15,6 +15,7 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 		<vm:listener doc:name="JobsQueue" doc:id="044bc086-f58a-4fa4-8184-6dddfacd4e52" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob"/>
 		<flow-ref doc:name="InitializeJob" doc:id="c6cc6799-ad5b-48ed-8895-f1374201a8e1" name="InitializeJob"/>
 		<try doc:name="Try" doc:id="9f47f8a1-34bd-48bd-92a2-7d9e684042d0" >
+			<logger level="INFO" doc:name="Logger" doc:id="bb30aace-6872-4225-9219-18a6fa3f5450" message="Entered the Try"/>
 			<flow-ref doc:name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="c6209b2f-933f-4658-9eae-875defa851fc" name="GetStatusOfTestJobAndRecordsYetToProcess" />
 			<error-handler >
 				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e1fc2c49-5ac9-40af-96fb-b172cb9e9224" >
@@ -74,8 +75,11 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 	<flow name="InitializeJob" doc:id="8dc90d60-25b1-4dfa-acde-1ebfd690f355" >
 		<logger level="INFO" doc:name="Logger" doc:id="0557d1b4-e36b-47f8-b587-bf450419fcd9" message="Started iteration of BackgroundJob  #['\n']" />
 		<set-variable value="#[payload]" doc:name="Save TestId" doc:id="1a025aeb-d7f3-49f2-a3a6-5e31882e8cc7" variableName="TestId" />
+		<logger level="INFO" doc:name="Logger" doc:id="a2fbbbf7-18d6-4e1c-9ecb-3f73dae28c7e" message="TestId saved"/>
 		<set-variable value="${fusiontester.timeout}" doc:name="Set Timeout" doc:id="332da731-944f-4d19-93bb-6e15d43557af" variableName="FusionTesterTimeout" />
+		<logger level="INFO" doc:name="Logger" doc:id="a2c5ef93-defc-4318-8828-3042f8ae75cb" message="TimeOut saved"/>
 		<set-variable value="#[vars.FusionTesterTimeout/8]" doc:name="Set 'SleepTime'" doc:id="09b8e711-4059-426d-8dfd-fdea60121e2c" variableName="SleepTime"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c671adf8-4a31-41ea-a12c-054341242e0a" message="SleepTime saved"/>
 	</flow>
 	<flow name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="367fc517-98ae-4525-ac63-f735cc96037c" >
 		<logger level="INFO" doc:name="Logger" doc:id="5f913e30-c339-415c-8722-80b377c90ae0" message="Will call GetJobInfo #['\n']"/>

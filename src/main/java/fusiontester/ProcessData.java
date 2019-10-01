@@ -142,8 +142,13 @@ public class ProcessData {
 		for (int i = 0; i < data.length; i ++) {
 			Map<String,String> call = (Map<String,String>) data[i];
 			String callString = call.get("DcsRequestXml");
-			if (callString.length() > 0) callString += "\r\n\r\n";
-			retVal += call;
+			callString = callString.replaceAll("<s:Envelope [\\s\\S]*<s:Body>", "");
+			callString = callString.replaceAll("</s:Body>[.]*</s:Envelope>", "");
+			callString = callString.replaceAll("<.:", "<");
+			callString = callString.replaceAll("</.:", "</");
+			callString = prettyPrintXml(callString);
+			callString = callString.replaceAll("<\\?xml[\\s\\S]*\\?>", "");
+			retVal += callString;
 		}
 		return retVal;
 	}
@@ -199,7 +204,8 @@ public class ProcessData {
 	        writer.write(document);
 	    }
 	    catch (Exception e) {
-	        throw new RuntimeException("Error pretty printing xml:\n" + xml, e);
+	        //throw new RuntimeException("Error pretty printing xml:\n" + xml, e);
+	    	return xml;
 	    }
 	    return sw.toString();
 	}

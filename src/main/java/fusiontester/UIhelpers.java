@@ -40,8 +40,8 @@ public class UIhelpers {
 		}
 		 private static String convertArrayToString(JsonNode jsonArray) {
 				String retVal = "";
-				for (final JsonNode airport : jsonArray) {
-					retVal += "'"+ airport.textValue() + "',";
+				for (final JsonNode item : jsonArray) {
+					retVal += "'"+ item.textValue() + "',";
 				}
 				if (retVal.length() > 0) {
 					retVal =  retVal.substring(0, retVal.length() - 1);
