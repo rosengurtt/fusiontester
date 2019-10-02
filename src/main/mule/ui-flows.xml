@@ -381,9 +381,10 @@ output application/json
 
 	<flow name="get:\fusiontester\tests\(test-id)\results:FusionTester-config"  >
 		<db:stored-procedure doc:name="Get test results "  config-ref="mssql-jdbc">
-			<db:sql >{ call GetTestResults(:TestId, :PageSize, :Page) }</db:sql>
+			<db:sql >{ call GetTestResults(:TestId, :PageSize, :Page, :ExludeOKresults) }</db:sql>
 			<db:input-parameters ><![CDATA[#[{ 'TestId': attributes.uriParams['test-id'],
-	'PageSize': attributes.queryParams['page-size'], 'Page': attributes.queryParams['page']
+	'PageSize': attributes.queryParams['page-size'], 'Page': attributes.queryParams['page'],
+	'ExludeOKresults': attributes.queryParams['exclude-ok-results']
 }]]]></db:input-parameters>
 		
 </db:stored-procedure>
