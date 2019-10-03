@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="poll-jobFlow" doc:id="a343fb6d-5468-4f8b-9454-db56981ad59a" >
+		<scheduler doc:name="Scheduler" doc:id="270617f7-f368-4553-9055-b8e40a6000ce" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="30" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<db:stored-procedure doc:name="Check queue" doc:id="21c6a220-3df4-43f4-b98d-da9e0968f9b3" config-ref="mssql-jdbc">
+			<db:sql >{ call GetNextTestFromQueue() }</db:sql>
+		</db:stored-procedure>
+		<ee:transform doc:name="Transform Message" doc:id="0f16670a-ba97-4bf1-a312-52fdda9f0418" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="Output" ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	Result: payload.resultSet1[0].Result,
+	TestId: payload.resultSet2[0].TestId
+}
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Check if test was set as started" doc:id="b62444e1-17db-422b-9bb0-8423cef6ca35" >
+			<when expression="#[vars.Output.Result == 'Test started']">
+				<set-payload value="#[vars.Output.TestId]" doc:name="Set Payload"  />
+				<vm:publish queueName="BackgroundJob" doc:name="Add job to queue"  config-ref="VM_Config_BackgroundJob" />
+				<logger level="INFO" doc:name="Logger" doc:id="b5136889-c32b-4923-888b-54771fa3e90a" message="Started queued test #[vars.Output.TestId]"/>
+				
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger" doc:id="42930767-1e72-4a9d-8763-22fca17d9af8" message="Background poll checked the queue and the result was #[vars.Output.Result]"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

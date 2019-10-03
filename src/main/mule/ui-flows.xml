@@ -262,7 +262,6 @@ output application/java
 		</ee:transform>
 		<choice doc:name="Start or Stop?" doc:id="7af4481a-f10d-47f5-be45-ffdaac92846d" >
 			<when expression="#[vars.Input.Action =='start']">
-				<logger level="INFO" doc:name="Logger" doc:id="79296580-997f-4779-a765-e702e936c95f" message="Will call StartTest #['\n']"/>
 				<db:stored-procedure doc:name="Start Test" doc:id="676537bf-9efb-4d94-ab89-add55ebc5423" config-ref="mssql-jdbc">
 			<db:sql>{ call StartTest(:TestId) }</db:sql>
 			<db:input-parameters><![CDATA[#[{ 'TestId' : vars.Input.TestId }]]]></db:input-parameters>
@@ -309,6 +308,33 @@ output application/json
 				</ee:transform>
 			</otherwise>
 		</choice>
+			</when>
+			<when expression="#[vars.Input.Action =='dequeue']">
+				<db:stored-procedure doc:name="Stored procedure" doc:id="ce67276d-7f4a-4723-88bf-fe846e8853f5" config-ref="mssql-jdbc">
+					<db:sql >{ call RemoveTestFromQueue(:TestId) }</db:sql>
+					<db:input-parameters ><![CDATA[#[{ 'TestId' : vars.Input.TestId }]]]></db:input-parameters>
+				</db:stored-procedure>
+				<ee:transform doc:name="Save result in var" doc:id="4b053631-b68e-43ac-9bb9-00adcbaaadd5" >
+					<ee:message />
+					<ee:variables >
+						<ee:set-variable variableName="Result" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.resultSet1[0].Result
+]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="6988aa4d-8d7a-4d0c-9453-4038360f91c0" message="Attempted dequeing test #[vars.Input.TestId] with result #[vars.Result]"/>
+				<ee:transform doc:name="Return success" doc:id="656a9a3c-59fd-45b0-8c6f-7abe9cce04ba" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "success"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="3a6bd39e-00a9-46f2-8d2b-732a5521bdc4" message="Will cal StopTest #['\n']"/>
