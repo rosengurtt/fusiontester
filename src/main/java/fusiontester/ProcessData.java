@@ -127,9 +127,20 @@ public class ProcessData {
 				Map<String,String> actualCall = (Map<String,String>) actual[i];
 				String expectedRequestType = expectedCall.get("RequestType");
 				String actualRequestType = actualCall.get("DCSrequestType");
+				// We compare now the request type
+				// There are cases where the actual request type is of the form 'Get%' that stands for GetBooking and GetCheckinStatus
 				if (!expectedRequestType.toLowerCase().equals(actualRequestType.toLowerCase())) {
-					if (retVal.equals("OK")) retVal = "DCS types of calls don't match.\r\n";
-					retVal += "Call #" + Integer.toString(i) + " expected request type was " + expectedRequestType + " but the actual type was " + actualRequestType + ".\r\n";
+					boolean DcsCallsMatch = false;
+					if (actualRequestType.contains("%")) {
+						int indexPercentagesign = actualRequestType.indexOf("%");
+						// We check that the first part of the strings up to the % sign match
+						if (expectedRequestType.substring(0, indexPercentagesign).toLowerCase().equals(actualRequestType.substring(0, indexPercentagesign).toLowerCase()))
+							DcsCallsMatch = true;
+					}
+					if (!DcsCallsMatch) {
+						if (retVal.equals("OK")) retVal = "DCS types of calls don't match.\r\n";
+						retVal += "Call #" + Integer.toString(i) + " expected request type was " + expectedRequestType + " but the actual type was " + actualRequestType + ".\r\n";
+					}
 				}
 			}
 		}
@@ -142,12 +153,15 @@ public class ProcessData {
 		for (int i = 0; i < data.length; i ++) {
 			Map<String,String> call = (Map<String,String>) data[i];
 			String callString = call.get("DcsRequestXml");
-			callString = callString.replaceAll("<s:Envelope [\\s\\S]*<s:Body>", "");
-			callString = callString.replaceAll("</s:Body>[.]*</s:Envelope>", "");
+			// Remove soap header
+			callString = callString.replaceAll("<[a-z]?[:]?Envelope [\\s\\S]*<[a-z]?[:]?Body[^>]*>", "");
+			callString = callString.replaceAll("</[a-z]?[:]?Body>[.]*</[a-z]?[:]?Envelope>", "");
+			// Remove namespaces
 			callString = callString.replaceAll("<.:", "<");
 			callString = callString.replaceAll("</.:", "</");
 			callString = prettyPrintXml(callString);
 			callString = callString.replaceAll("<\\?xml[\\s\\S]*\\?>", "");
+			callString = prettyPrintXml(callString) + "\n";
 			retVal += callString;
 		}
 		return retVal;

@@ -89,9 +89,12 @@ public class Helpers {
 	
 	public static boolean IsErrorWasDueToSystemTimeChanges(String errorDescription, String eventDateTime)  {
 		
-		String ErrorMessage = "HTTP POST on resource ''http://local.fusion.aero:80/FusionService.svc'' failed: Timeout exceeded.";
+		String ErrorMessage1 = "HTTP POST on resource ''http://local.fusion.aero:80/FusionService.svc'' failed: Timeout exceeded.";
+		String ErrorMessage2 = "HTTP POST on resource 'http://local.fusion.aero:80/FusionService.svc' failed: Remotely closed.";
 		
-		if (errorDescription.equals(ErrorMessage)) {
+		System.out.println("An error happened when calling Fusion. The errorDescription is:\n" + errorDescription + "\n\n");
+		
+		if (errorDescription.equals(ErrorMessage1) || errorDescription.equals(ErrorMessage2)) {
 			System.out.println("Timeout calling Fusion because of system time changes");
 			return true;
 		}

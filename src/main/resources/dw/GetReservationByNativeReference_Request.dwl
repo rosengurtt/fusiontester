@@ -54,7 +54,7 @@ ns i http://www.w3.org/2001/XMLSchema-instance
 							ns01#FlightNumber: payload.GetReservationByNativeReference_Request.BoardingPassInfo.FlightNumber,
 							ns01#IATACode: payload.GetReservationByNativeReference_Request.BoardingPassInfo.IATACode,
 							ns01#LastName: payload.GetReservationByNativeReference_Request.BoardingPassInfo.LastName,
-							ns01#Seat: payload.GetReservationByNativeReference_Request.BoardingPassInfo.Seat as String,
+							ns01#Seat: payload.GetReservationByNativeReference_Request.BoardingPassInfo.Seat,
 							ns01#SequenceNumber: payload.GetReservationByNativeReference_Request.BoardingPassInfo.SequenceNumber
 						},
 						ns0#NativeReference: payload.GetReservationByNativeReference_Request.NativeReference

@@ -14,26 +14,7 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 	<flow name="BackgroundJob" doc:id="d3795b0c-9425-4e61-810f-ab8d3b5cc98c" >
 		<vm:listener doc:name="JobsQueue" doc:id="044bc086-f58a-4fa4-8184-6dddfacd4e52" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob"/>
 		<flow-ref doc:name="InitializeJob" doc:id="c6cc6799-ad5b-48ed-8895-f1374201a8e1" name="InitializeJob"/>
-		<try doc:name="Try" doc:id="9f47f8a1-34bd-48bd-92a2-7d9e684042d0" >
-			<logger level="INFO" doc:name="Logger" doc:id="bb30aace-6872-4225-9219-18a6fa3f5450" message="Entered the Try"/>
-			<flow-ref doc:name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="c6209b2f-933f-4658-9eae-875defa851fc" name="GetStatusOfTestJobAndRecordsYetToProcess" />
-			<error-handler >
-				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e1fc2c49-5ac9-40af-96fb-b172cb9e9224" >
-					<choice doc:name="Check if job should not be running" doc:id="af75f3d7-98cd-4f17-bd7e-006acad82e78" >
-						<when expression="#[vars.JobInfo.TestIsRunning == 'FALSE']">
-							<logger level="INFO" doc:name="Logger" doc:id="1d955d51-e475-41eb-a963-1543c6b4bb4a" message="Leaving BackgroundJob because #[vars.TestId] is not supposed to be running"/>
-						</when>
-						<otherwise >
-							<java:invoke-static method="SleepNmilliSeconds(long) " doc:name="Sleep" doc:id="85d74e8c-ac6e-4ccc-95e6-57f958e23205" class="fusiontester.Helpers">
-						<java:args><![CDATA[#[{i: vars.SleepTime}]]]></java:args>
-					</java:invoke-static>
-							<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="0412732d-743e-4836-9a47-12d0116fcbcc" />
-							<vm:publish queueName="BackgroundJob" doc:name="Send to JobsQueue" doc:id="f1c223f3-1f7b-4655-81f7-b20407923efc" config-ref="VM_Config_BackgroundJob" />
-						</otherwise>
-					</choice>
-				</on-error-propagate>
-			</error-handler>
-		</try>
+		<flow-ref doc:name="GetStatusOfTestJobAndRecordsYetToProcess" doc:id="c6209b2f-933f-4658-9eae-875defa851fc" name="GetStatusOfTestJobAndRecordsYetToProcess" />
 		<choice doc:name="Verify that TestJob is inactive and there are records to process" doc:id="911d0f75-ba42-42b4-b7c5-882d3632a96a" >
 			<when expression="#[(vars.JobInfo.TestIsRunning == 'TRUE') and (vars.JobInfo.IsTestJobActive == 'FALSE') and (vars.JobInfo.RemainingRecords &gt; 0)]">
 				<logger level="INFO" doc:name="Logger" doc:id="e12be65d-e769-4178-bea2-826b925b6d94" message="TestJob is not active so will queue a new job"/>
@@ -41,7 +22,7 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 				<vm:publish doc:name="Send job to TestJobQueue" doc:id="01e532db-6c4a-4d23-a81e-216536561f9a" config-ref="VM_Config_TestJob" queueName="TestJobQueue" />
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="fb09c0fc-05dc-44e3-ada2-982a0fb05eb4" message="Leaving TestJob  because job #[vars.TestId] is not supposed to be running" />
+				<logger level="INFO" doc:name="Logger" doc:id="fb09c0fc-05dc-44e3-ada2-982a0fb05eb4" message="BackgroundJob skips this iteration because an TestJob is active" />
 			</otherwise>
 		</choice>
 		<java:invoke-static doc:name="Sleep" doc:id="d41d9419-a9b3-4aed-b807-2aaae590989d" class="fusiontester.Helpers" method="SleepNmilliSeconds(long) ">
@@ -64,13 +45,17 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1f2bbe5f-7fc2-4a4c-8367-5c940da45517" >
 				<logger level="INFO" doc:name="Logger" doc:id="b08e3c15-fcfd-46a0-86b6-6696f08b3151" message="An error occured in the background job. Error was #[error.description]"/>
-				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="0f7b0186-a314-4bd1-94fd-9ffdcffb2926" />
 				<choice doc:name="Check if background job should continue" doc:id="3aef34a6-8833-4f7a-a1c8-59bccf1532b7" >
 					<when expression="#[vars.JobInfo.TestIsRunning == 'FALSE']">
 						<logger level="INFO" doc:name="Logger" doc:id="b5ce5aa5-c0fd-4cb0-b469-3cad7b5141e6" message="Found that job with TestId =  #[vars.TestId] is not supposed to be running. Stopping job" />
 					</when>
 					<otherwise >
+						<java:invoke-static doc:name="Invoke static" doc:id="5df092e9-24ec-4614-8514-9ccc4783fa80" class="fusiontester.Helpers" method="SleepNmilliSeconds(long) ">
+					<java:args><![CDATA[#[{i: vars.SleepTime}]]]></java:args>
+				</java:invoke-static>
+						<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="0f7b0186-a314-4bd1-94fd-9ffdcffb2926" />
 						<vm:publish queueName="BackgroundJob" doc:name="Send to JobsQueue" doc:id="20bb169f-b5fa-437a-875f-404f559957a9" config-ref="VM_Config_BackgroundJob" />
+						<logger level="INFO" doc:name="Log" doc:id="8892dc57-6c2c-48d7-9aa9-cdf95f7e8095" message="Sent a message to JobsQueue from BackgroundJob in test-execution.xml so the test record is retried"/>
 					</otherwise>
 				</choice>
 			</on-error-propagate>
@@ -119,14 +104,14 @@ output application/java
 			<otherwise>
 				<logger level="INFO" doc:name="Logger" doc:id="6224c316-7677-4288-9d42-243befbb2e06" message="Current system time looks wrong when starting Job. Will try to fix" />
 				<flow-ref doc:name="SetSystemTimeUsingTimeServer" doc:id="5cc4ca86-701f-4fb6-a1c3-ef058cec9d03" name="SetSystemTimeUsingTimeServer" />
-				<raise-error doc:name="Raise error because time looks incorrect" doc:id="ff89090e-3e6e-43f2-8a2a-163e73b4b5f1" type="ANY" description="The system time seemed to be wrong and attempt was done to correct it" />
+						<raise-error doc:name="Raise error because time looks incorrect" doc:id="ff89090e-3e6e-43f2-8a2a-163e73b4b5f1" type="ANY" description="The system time seemed to be wrong and attempt was done to correct it" />
 			
 			
 </otherwise>
 		</choice>
 			</when>
 			<otherwise >
-				<raise-error doc:name="Raise error because the job should not be running" type="ANY" description="The test job is not supposed to be running"/>
+				<raise-error doc:name="Raise error because the job should not be running" type="ANY" description="The test job with testId #[TestId] is not supposed to be running"/>
 			</otherwise>
 		</choice>
 	</flow>

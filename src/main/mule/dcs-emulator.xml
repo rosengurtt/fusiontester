@@ -119,6 +119,7 @@ payload map (d, i) ->{
 	data: vars.globalData
 }]]]></java:args>
 		</java:invoke-static>
+		<logger level="DEBUG" doc:name="Logger" doc:id="45a81dfb-a852-4c53-8915-838f60e9c99a" message="#[payload]" category="DCSemulatorResponse"/>
 		<set-payload value="#[payload]" doc:name="Set Content Type" doc:id="8e10d505-1e19-4487-ab94-4a222903e208" mimeType="application/json"/>	
 	
 </flow>
