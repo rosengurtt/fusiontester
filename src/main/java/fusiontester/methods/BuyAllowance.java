@@ -6,6 +6,7 @@ public class BuyAllowance {
 		xml = xml.replaceAll("<ResponseId[\\s\\S]{38,40}ResponseId>","");
 		xml = xml.replaceAll("<RequestId[\\s\\S]{38,40}RequestId>","");
 		xml = xml.replaceAll("<CreatedOn[\\s\\S]{32,40}CreatedOn>","");
+		xml = xml.replaceAll("<guid[\\s\\S]{32,40}guid>","<guid></guid>");
 		return xml;
 	}
 }

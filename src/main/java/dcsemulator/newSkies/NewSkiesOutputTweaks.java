@@ -10,7 +10,15 @@ public class NewSkiesOutputTweaks {
 		String namespaceCommon = "http://schemas.navitaire.com/WebServices/DataContracts/Common";
 		String namespaceBooking = "http://schemas.navitaire.com/WebServices/DataContracts/Booking";
 		String namespaceOperation = "http://schemas.navitaire.com/WebServices/DataContracts/Operation";
+		String nsBookingService = "http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService";
 
+		if (text.startsWith("<AddPaymentToBookingResponseData")){
+			text = text.replaceAll("<AddPaymentToBookingResponseData[^>]*>","<AddPaymentToBookingResponse xmlns=\"" + 
+					nsBookingService + "\"><BookingPaymentResponse xmlns=\"" + namespaceBooking + "\">");
+			text = text.replaceAll("</AddPaymentToBookingResponseData>","</BookingPaymentResponse></AddPaymentToBookingResponse>" + 
+					"");
+		}
+		
 		// The space after the word 'Booking' in the next statement is important, don't remove it
 		if (text.startsWith("<Booking ")) {
 			text = addNamespaceToTag("Booking ", namespaceBooking, text); 

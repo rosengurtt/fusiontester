@@ -8,6 +8,9 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 	BuyAllowance_Response: {
 		RequestId: payload.ns0#Envelope.ns0#Body.ns01#BuyAllowanceResponse.ns01#BuyAllowanceResult.ns02#RequestId,
 		ResponseId: payload.ns0#Envelope.ns0#Body.ns01#BuyAllowanceResponse.ns01#BuyAllowanceResult.ns02#ResponseId,
+		DcsRequestsIds: {
+			guid: payload.ns0#Envelope.ns0#Body.ns01#BuyAllowanceResponse.ns01#BuyAllowanceResult.ns02#DcsRequestsIds.*guid			
+		},
 		Errors: (payload.ns0#Envelope.ns0#Body.ns01#BuyAllowanceResponse.ns01#BuyAllowanceResult.ns02#Errors.*ns02#FusionError map
 		{
 			FusionError: {

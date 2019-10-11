@@ -94,7 +94,7 @@ public class Helpers {
 		
 		System.out.println("An error happened when calling Fusion. The errorDescription is:\n" + errorDescription + "\n\n");
 		
-		if (errorDescription.equals(ErrorMessage1) || errorDescription.equals(ErrorMessage2)) {
+		if (errorDescription.equals(ErrorMessage1)) {
 			System.out.println("Timeout calling Fusion because of system time changes");
 			return true;
 		}
@@ -128,15 +128,19 @@ public class Helpers {
 		Date batchStart = simpleFormat.parse(startBatchJobDateTime.substring(0,23));		
 		Date now = new Date();
 
-		System.out.print("batchStart:");
-		System.out.println(batchStart);
+		long oneSecond = 60 * 1000;
+		long timeDif = now.getTime() - batchStart.getTime() + oneSecond;
+		System.out.println("Time difference in milliseconds:" + Long.toString(timeDif));
 
-		if (now.getTime() < batchStart.getTime()) {
+		// We add a second just in case. If the system time was sent to the time of an event, this is at least hours before the current time
+		if (timeDif > 0) {
 			System.out.println("CheckTheCurrentTimeLooksCorrect says time looks OK");
+			return true;
+		}
+		else {
+			System.out.println("CheckTheCurrentTimeLooksCorrect says time looks wrong (because now < time batch started)");
 			return false;
 		}
-		System.out.println("CheckTheCurrentTimeLooksCorrect says time looks wrong");
-		return true;
 	}
 	
 	public static int GenerateRandomNumber(int min, int max) {
