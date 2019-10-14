@@ -3,7 +3,8 @@ package dcsemulator.newSkies;
 public class NewSkiesOutputTweaks {
 
 	private static String addNamespaceToTag(String tag, String namespace, String text) {
-		return text.replaceAll("<" + tag, "<" + tag + " xmlns=\\\"" + namespace + "\\\" ");
+		text = text.replaceAll("<" + tag + " ", "<" + tag + " xmlns=\\\"" + namespace + "\\\" ");
+		return text.replaceAll("<" + tag + ">", "<" + tag + " xmlns=\\\"" + namespace + "\\\" ");
 	}
 
 	public static String fixNamespaces(String airlineCode, String text) {
@@ -11,17 +12,11 @@ public class NewSkiesOutputTweaks {
 		String namespaceBooking = "http://schemas.navitaire.com/WebServices/DataContracts/Booking";
 		String namespaceOperation = "http://schemas.navitaire.com/WebServices/DataContracts/Operation";
 		String nsBookingService = "http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService";
+		String nsOperationService = "http://schemas.navitaire.com/WebServices/ServiceContracts/OperationService";
 
-		if (text.startsWith("<AddPaymentToBookingResponseData")){
-			text = text.replaceAll("<AddPaymentToBookingResponseData[^>]*>","<AddPaymentToBookingResponse xmlns=\"" + 
-					nsBookingService + "\"><BookingPaymentResponse xmlns=\"" + namespaceBooking + "\">");
-			text = text.replaceAll("</AddPaymentToBookingResponseData>","</BookingPaymentResponse></AddPaymentToBookingResponse>" + 
-					"");
-		}
-		
 		// The space after the word 'Booking' in the next statement is important, don't remove it
 		if (text.startsWith("<Booking ")) {
-			text = addNamespaceToTag("Booking ", namespaceBooking, text); 
+			text = addNamespaceToTag("Booking", namespaceBooking, text); 
 			if (airlineCode.toLowerCase().equals("ad")){
 				text = addNamespaceToTag("State", namespaceCommon, text);
 				text = addNamespaceToTag("OtherServiceInfoList", namespaceCommon, text);
@@ -42,13 +37,26 @@ public class NewSkiesOutputTweaks {
 			String namespaceText = "xmlns=\"" + namespaceCommon + "\"";
 			text = text.replace(namespaceText + " " + namespaceText, namespaceText);
 		}
+		// These are strange cases. The xml tag in the wire doesn't match the deserialized object in C#
 		else if (text.startsWith("<CheckInBaggageResponseData")) {	
-			// This is a strange case. The xml tag in the wire doesn't match the deserialized object in C#
 			text = text.replaceAll("CheckInBaggageResponseData", "checkInBaggageRespData");
+			text = addNamespaceToTag("checkInBaggageRespData", namespaceOperation, text);
 		}
+		else if (text.startsWith("<SeatSellResponseData")) {	
+			text = text.replaceAll("SeatSellResponseData", "seatSellRespData");
+			text = addNamespaceToTag("seatSellRespData", namespaceBooking, text);
+		}
+		else if (text.startsWith("<AddPaymentToBookingResponseData")){
+			text = text.replaceAll("<AddPaymentToBookingResponseData[^>]*>","<AddPaymentToBookingResponse xmlns=\"" + 
+					nsBookingService + "\"><BookingPaymentResponse xmlns=\"" + namespaceBooking + "\">");
+			text = text.replaceAll("</AddPaymentToBookingResponseData>","</BookingPaymentResponse></AddPaymentToBookingResponse>" + 
+					"");
+		}
+		
 		text = addNamespaceToTag("BookingUpdateResponseData", namespaceBooking, text);
 		text = addNamespaceToTag("ProcessBaggageResponseData", namespaceOperation, text);
-		text = addNamespaceToTag("checkInBaggageRespData", namespaceOperation, text);
+		text = addNamespaceToTag("CheckInPassengersResponseData", namespaceOperation, text);
+		text = addNamespaceToTag("GetBarCodedBoardingPassesMultipleResponse", nsOperationService, text);
 		return text;
 	}
 }

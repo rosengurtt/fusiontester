@@ -1,6 +1,5 @@
 %dw 2.0
-output application/xml
-skipNullOn = "everywhere"
+output application/xml skipNullOn = "everywhere"
 ns a http://www.w3.org/2005/08/addressing
 ns ns0 http://www.w3.org/2003/05/soap-envelope
 ns ns01 http://services.fusion.aero
@@ -75,36 +74,37 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 							ns02#DocumentCheckRequired: $.Passenger.DocumentCheckRequired as String default null,
 							ns02#FirstName: $.Passenger.FirstName,
 							ns02#Identity: {
-								ns02#ObtainedAPIS: {						
 									ns02#LastAPIS: {
 										ns02#ContactInformation: {
-											ns02#AddressLine: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ContactInformation.AddressLine,
-											ns02#City: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ContactInformation.City,
-											ns02#CompanyName: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ContactInformation.CompanyName,
-											ns02#ContactFirstName: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ContactInformation.ContactFirstName,
-											ns02#ContactLastName: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ContactInformation.ContactLastName,
-											ns02#ContactTitle: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ContactInformation.ContactTitle,
-											ns02#Country: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ContactInformation.Country,
-											ns02#EmailAddress: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ContactInformation.EmailAddress,
-											ns02#NotificationPreference: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ContactInformation.NotificationPreference,
-											ns02#PostalCode: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ContactInformation.PostalCode,
-											ns02#TelephoneNumber: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ContactInformation.TelephoneNumber		
+											ns02#AddressLine: $.Passenger.Identity.LastAPIS.ContactInformation.AddressLine,
+											ns02#City: $.Passenger.Identity.LastAPIS.ContactInformation.City,
+											ns02#CompanyName: $.Passenger.Identity.LastAPIS.ContactInformation.CompanyName,
+											ns02#ContactFirstName: $.Passenger.Identity.LastAPIS.ContactInformation.ContactFirstName,
+											ns02#ContactLastName: $.Passenger.Identity.LastAPIS.ContactInformation.ContactLastName,
+											ns02#ContactTitle: $.Passenger.Identity.LastAPIS.ContactInformation.ContactTitle,
+											ns02#Country: $.Passenger.Identity.LastAPIS.ContactInformation.Country,
+											ns02#EmailAddress: $.Passenger.Identity.LastAPIS.ContactInformation.EmailAddress,
+											ns02#NotificationPreference: $.Passenger.Identity.LastAPIS.ContactInformation.NotificationPreference,
+											ns02#PostalCode: $.Passenger.Identity.LastAPIS.ContactInformation.PostalCode,
+											ns02#TelephoneNumber: $.Passenger.Identity.LastAPIS.ContactInformation.TelephoneNumber		
 										},
-										ns02#CountryOfIssue: $.Passenger.Identity.ObtainedAPIS.LastAPIS.CountryOfIssue,
-										ns02#CountryOfResidence: $.Passenger.Identity.ObtainedAPIS.LastAPIS.CountryOfResidence,
-										ns02#DateOfBirth: $.Passenger.Identity.ObtainedAPIS.LastAPIS.DateOfBirth as String default null,
-										ns02#DocumentExpiryDate: $.Passenger.Identity.ObtainedAPIS.LastAPIS.DocumentExpiryDate as String default null,
-										ns02#DocumentIssueDate: $.Passenger.Identity.ObtainedAPIS.LastAPIS.DocumentIssueDate as String default null,
-										ns02#DocumentNumber: $.Passenger.Identity.ObtainedAPIS.LastAPIS.DocumentNumber,
-										ns02#DocumentType: $.Passenger.Identity.ObtainedAPIS.LastAPIS.DocumentType,
-										ns02#Firstname: $.Passenger.Identity.ObtainedAPIS.LastAPIS.Firstname,
-										ns02#Forenames: $.Passenger.Identity.ObtainedAPIS.LastAPIS.Forenames,
-										ns02#Gender: $.Passenger.Identity.ObtainedAPIS.LastAPIS.Gender,
-										ns02#ImageBytes: $.Passenger.Identity.ObtainedAPIS.LastAPIS.ImageBytes,
-										ns02#Nationality: $.Passenger.Identity.ObtainedAPIS.LastAPIS.Nationality,
-										ns02#RawCodeline: $.Passenger.Identity.ObtainedAPIS.LastAPIS.RawCodeline,
-										ns02#Surname: $.Passenger.Identity.ObtainedAPIS.LastAPIS.Surname										
+										ns02#CountryOfIssue: $.Passenger.Identity.LastAPIS.CountryOfIssue,
+										ns02#CountryOfResidence: $.Passenger.Identity.LastAPIS.CountryOfResidence,
+										ns02#DateOfBirth: $.Passenger.Identity.LastAPIS.DateOfBirth as String default null,
+										ns02#DocumentExpiryDate: $.Passenger.Identity.LastAPIS.DocumentExpiryDate as String default null,
+										ns02#DocumentIssueDate: $.Passenger.Identity.LastAPIS.DocumentIssueDate as String default null,
+										ns02#DocumentNumber: $.Passenger.Identity.LastAPIS.DocumentNumber,
+										ns02#DocumentType: $.Passenger.Identity.LastAPIS.DocumentType,
+										ns02#Firstname: $.Passenger.Identity.LastAPIS.Firstname,
+										ns02#Forenames: $.Passenger.Identity.LastAPIS.Forenames,
+										ns02#Gender: $.Passenger.Identity.LastAPIS.Gender,
+										ns02#ImageBytes: $.Passenger.Identity.LastAPIS.ImageBytes,
+										ns02#Nationality: $.Passenger.Identity.LastAPIS.Nationality,
+										ns02#RawCodeline: $.Passenger.Identity.LastAPIS.RawCodeline,
+										ns02#Surname: $.Passenger.Identity.LastAPIS.Surname										
 									},
+								ns02#ObtainedAPIS: {						
+
 									ns02#ApisData: {
 										ns02#ContactInformation: {
 											ns02#AddressLine: $.Passenger.Identity.ObtainedAPIS.ApisData.ContactInformation.AddressLine,

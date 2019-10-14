@@ -166,23 +166,10 @@ public class ProcessData {
 		}
 		return retVal;
 	}
-	private static String removeThingsWeDontCompare(String requestType, String xml) {		
-		
-		// Remove namespaces
-		xml = xml.replaceAll("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"", "");
-		xml = xml.replaceAll("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "");
-		
-		// Remove whitespace between tags including carriage returns
-		xml = xml.replaceAll(">\\s+<", "><");
-		xml = xml.replaceAll("\r", "").replaceAll("\n", "");
-		
-		// Remove useless whitespace inside tags
-		xml = xml.replaceAll("[\\s]*>", ">");
-		
-		// Remove null nodes
-		xml = xml.replaceAll("<[a-zA-Z0-9 ]*xsi:nil=\"true\"/>","");
-		xml = xml.replaceAll("<[a-zA-Z0-9 ]*/>","");
-		xml = xml.replaceAll("<[A-Za-z0-9 ]*></[A-Za-z0-9 ]*>","").replaceAll("<[A-Za-z0-9 ]*></[A-Za-z0-9 ]*>","");
+	private static String removeThingsWeDontCompare(String requestType, String xml) {	
+		xml = RemoveNamespaces(xml);		
+		xml = RemoveWhitespaceBetweenTags(xml);
+		xml = RemoveNullNodes(xml);
 		
 		// RequestType dependent cleaning
 		if (requestType.toLowerCase().equals("GetReservationByNativeReference".toLowerCase())) {
@@ -202,6 +189,27 @@ public class ProcessData {
 		}
 		return xml;
 	}
+	
+	private static String RemoveNullNodes(String xml) {	
+		// We iterate, because there are cases of nodes that have inside only null nodes. So in one cycle we remove the inner node
+		// and in the next the oute one.
+		for (int i=0; i < 5; i ++) {
+			xml = xml.replaceAll("<[a-zA-Z0-9 ]*xsi:nil=\"true\"/>", "");
+			xml = xml.replaceAll("<[a-zA-Z0-9 ]*/>", "");
+			xml = xml.replaceAll("<[A-Za-z0-9 ]*></[A-Za-z0-9 ]*>", "");	
+		}
+		return xml;
+	}
+	private static String RemoveNamespaces(String xml) {
+		xml = xml.replaceAll("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"", "");
+		xml = xml.replaceAll("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "");
+		return xml;
+	}
+	private static String RemoveWhitespaceBetweenTags(String xml) {
+		xml = xml.replaceAll(">[\\s]*<", "><");
+		return  xml.replaceAll("[\\s]*>", ">");
+	}
+	
 	public static String RemoveProblematicTagsFromFusionRequest(String FusionActualRequest){
 		return FusionActualRequest.replaceAll("<ns02:LastAPIS/>", "");
 	}

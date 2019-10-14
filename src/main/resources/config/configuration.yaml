@@ -26,11 +26,11 @@ certificate:
 fusion:
   url: "local.fusion.aero"
   port: "80"
-  timeout: "4000000"
+  timeout: "40000"
   
 real.time.server:
   url: "http://worldtimeapi.org/api/timezone/Europe/London"
   host: "worldtimeapi.org"
   timeout: "5000"
   
-fusiontester.timeout: "6000000"
+fusiontester.timeout: "60000"
