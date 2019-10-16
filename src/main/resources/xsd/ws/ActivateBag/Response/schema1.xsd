@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
+<xs:schema xmlns:tns="http://services.fusion.aero" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://services.fusion.aero" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="schema2.xsd" namespace="http://schemas.datacontract.org/2004/07/Fusion.Integration" />
+  <xs:element name="ActivateBagResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ActivateBagResult">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q1:DcsRequestsIds" />
+              <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q2:Errors" />
+              <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q3:RequestId" />
+              <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q4:ResponseId" />
+              <xs:element name="BagDetails">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q5:Active" />
+                    <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q6:ArrivalAirportCode" />
+                    <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q7:BagRegistrationTime" />
+                    <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q8:BagTagNumber" />
+                    <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q9:BagWeight" />
+                    <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q10:BaggageItemId" />
+                    <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q11:DepartureAirportCode" />
+                    <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q12:Dropped" />
+                    <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q13:FirstName" />
+                    <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q14:FlightId" />
+                    <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q15:FlightNumber" />
+                    <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q16:IataAirlineCode" />
+                    <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q17:KioskName" />
+                    <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q18:LastName" />
+                    <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q19:PNR" />
+                    <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q20:PassengerId" />
+                    <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q21:ScheduledDepartureDateTime" />
+                    <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q22:SeatNumber" />
+                    <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q23:SequenceNumber" />
+                    <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q24:SessionId" />
+                    <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/Fusion.Integration" ref="q25:Title" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Status" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

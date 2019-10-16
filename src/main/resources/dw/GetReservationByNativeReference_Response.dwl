@@ -13,8 +13,8 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 		Errors: (payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#Errors.*ns01#FusionError map
 		{
 			FusionError: {
-				Code: $.ns01#Code,
 				Critical: $.ns01#Critical,
+				Code: $.ns01#Code,
 				Description: $.ns01#Description,
 				Method: $.ns01#Method,
 				Source: $.ns01#Source
@@ -91,7 +91,7 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 							}
 						},
 						Baggage: {
-							BaggageAllowance: {
+							BaggageAllowance: {	
 								Id: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#Id,
 								BaggageAllowanceTypeId: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#BaggageAllowanceTypeId,
 								BaggageItemTypeId: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#BaggageItemTypeId,
@@ -112,7 +112,26 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 								CreatedOn: passenger.ns01#Baggage.ns01#BaggageAllowance.ns01#CreatedOn
 							},
 							BaggageAllowances: {
-								"text()": passenger.ns01#Baggage.ns01#BaggageAllowances."text()"
+								BaggageAllowance: (passenger.ns01#Baggage.ns01#BaggageAllowances.*ns01#BaggageAllowance map {
+									Id: $.Id,
+									BaggageAllowanceTypeId: $.BaggageAllowanceTypeId,
+									BaggageItemTypeId: $.BaggageItemTypeId,
+									BagDropId: $.BagDropId,
+									FlightId: $.FlightId,
+									PassengerId: $.PassengerId,
+									PoolItems: $.PoolItems,
+									PoolWeight: $.PoolWeight,
+									ConsumeItemWeight: $.ConsumeItemWeight,
+									UpdateInitialAllowance: $.UpdateInitialAllowance,
+									MaxSingleItemWeight: $.MaxSingleItemWeight,
+									InitialBags: $.InitialBags,
+									InitialWeight: $.InitialWeight,
+									PurchasedBags: $.PurchasedBags,
+									PurchasedWeight: $.PurchasedWeight,
+									RemainingBags: $.RemainingBags,
+									RemainingWeight: $.RemainingWeight,
+									CreatedOn: $.CreatedOn,
+								})
 							},
 							BaggageItems: {
 								BaggageItem: (passenger.ns01#Baggage.ns01#BaggageItems.*ns01#BaggageItem map {

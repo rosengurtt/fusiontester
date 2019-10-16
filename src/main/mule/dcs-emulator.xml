@@ -126,18 +126,12 @@ payload map (d, i) ->{
 	<flow name="GetResponseFromDatabase" doc:id="f2947de5-21e1-4896-a6db-db0e0fb87c0c" >
 		<choice doc:name="Do we need response from DB?" doc:id="99aff7aa-f6d3-4ff6-bd79-0186a7d95685">
 			<when expression="#[vars.DCSrequestDetails.Response == null]">
-			
 				<db:stored-procedure config-ref="mssql-jdbc" doc:name="Extract response from DB">
-				    <db:sql>
-				    	{ call GetDCSResponseXmlForRequestUnderTest(:Airline, :Airport, :PNR, :UniqueFragment, :RequestType) }
+				    <db:sql>{ call GetDCSResponseXmlForRequestUnderTest(:Airline, :Airport, :PNR, :UniqueFragment, :RequestType) }
 				    </db:sql>
-					<db:input-parameters><![CDATA[#[{
-						'Airline' : vars.DCSrequestDetails.Airline,
-						'Airport' : vars.DCSrequestDetails.Airport,
-						'PNR': vars.DCSrequestDetails.PNR,
-						'UniqueFragment': vars.DCSrequestDetails.UniqueFragment,
-						'RequestType': vars.DCSrequestDetails.RequestType
-						}]]]>
+					<db:input-parameters><![CDATA[#[{ 'Airline' : vars.DCSrequestDetails.Airline, 'Airport' : vars.DCSrequestDetails.Airport,
+ 'PNR': vars.DCSrequestDetails.PNR, 'UniqueFragment': vars.DCSrequestDetails.UniqueFragment,
+'RequestType': vars.DCSrequestDetails.RequestType }]]]>
 					</db:input-parameters>
 			
 				</db:stored-procedure>

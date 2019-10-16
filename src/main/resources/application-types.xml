@@ -55,6 +55,18 @@
     <types:type name="CheckInPassengerLogResponse" format="xml">
       <types:shape format="xml-schema" element="CheckInPassenger_Response" location="xsd/log/CheckInPassenger/Response/schema0.xsd"/>
     </types:type>
+    <types:type name="ActivateBagRequestWS" format="xml">
+      <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="xsd/ws/ActivateBag/Request/schema0.xsd"/>
+    </types:type>
+    <types:type name="ActivateBagRequestLog" format="xml">
+      <types:shape format="xml-schema" element="ActivateBag_Request" location="xsd/log/ActivateBag/Request/schema0.xsd"/>
+    </types:type>
+    <types:type name="ActivateBagResponseWS" format="xml">
+      <types:shape format="xml-schema" element="{http://www.w3.org/2003/05/soap-envelope}Envelope" location="xsd/ws/ActivateBag/Response/schema0.xsd"/>
+    </types:type>
+    <types:type name="ActivateBagResponseLog" format="xml">
+      <types:shape format="xml-schema" element="ActivateBag_Response" location="xsd/log/ActivateBag/Response/schema0.xsd"/>
+    </types:type>
   </types:catalog>
   <types:enrichment select="#442222af-363b-494d-bd08-e946befaa7c4">
     <types:processor-declaration>
@@ -203,6 +215,34 @@
         <types:variables>
           <types:variable name="actualResponse" type="CheckInPassengerLogResponse"/>
         </types:variables>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#6835bd47-bfef-48e5-82ff-2cfe27745f6f">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="ActivateBagResponseWS"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:variables>
+          <types:variable name="actualResponse" type="ActivateBagResponseLog"/>
+        </types:variables>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#c537b97a-19bf-4ff0-ab9e-d98b19b090fc">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="ActivateBagRequestLog"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="ActivateBagRequestWS"/>
+        </types:message>
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>

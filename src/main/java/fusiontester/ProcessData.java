@@ -12,6 +12,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
+import fusiontester.methods.ActivateBag;
 import fusiontester.methods.BuyAllowance;
 import fusiontester.methods.CheckInPassenger;
 import fusiontester.methods.GetBagLicensePlate;
@@ -57,7 +58,8 @@ public class ProcessData {
 			int DCScallsMatch = 1;
 			String DcsComparison = compareDCScalls(expected, actual);
 			String message = "OK";
-			String DCScalls = "";
+			String actualDCScallsCleaned = "";
+			String expectedDCScallsCleaned = "";
 			HashMap<String,String> retVal = new HashMap<String,String>();
 			
 			loggedResponse = removeThingsWeDontCompare(requestType, loggedResponse);
@@ -66,7 +68,8 @@ public class ProcessData {
 			if (DcsComparison != "OK") {	
 				DCScallsMatch = 0;
 				message = DcsComparison;
-				DCScalls = GetDCScallsInAstring(actual);
+				actualDCScallsCleaned = GetDCScallsInAstring(actual);
+				expectedDCScallsCleaned = GetDCScallsInAstring(expected);
 			}
 			
 			DetailedDiff diff = CompareFusionResponses(requestType, loggedResponse, actualResponse);
@@ -78,7 +81,8 @@ public class ProcessData {
 				NumberOfDifferences = diff.getAllDifferences().size();
 				retVal.put("ExpectedResponseCleaned", prettyPrintXml(loggedResponse));
 				retVal.put("ActualResponseCleaned", prettyPrintXml(actualResponse));
-				DCScalls = GetDCScallsInAstring(actual);
+				actualDCScallsCleaned = GetDCScallsInAstring(actual);
+				expectedDCScallsCleaned = GetDCScallsInAstring(expected);
 			}
 			else {
 				retVal.put("ExpectedResponseCleaned", "");
@@ -86,7 +90,8 @@ public class ProcessData {
 			}
 			
 			retVal.put("Message", message);
-			retVal.put("DCScalls", DCScalls);
+			retVal.put("actualDCScallsCleaned", actualDCScallsCleaned);
+			retVal.put("expectedDCScallsCleaned", expectedDCScallsCleaned);
 			retVal.put("NumberOfDifferences", Integer.toString(NumberOfDifferences));
 			retVal.put("DCScallsMatch", Integer.toString(DCScallsMatch));
 			return retVal;			
@@ -128,19 +133,10 @@ public class ProcessData {
 				String expectedRequestType = expectedCall.get("RequestType");
 				String actualRequestType = actualCall.get("DCSrequestType");
 				// We compare now the request type
-				// There are cases where the actual request type is of the form 'Get%' that stands for GetBooking and GetCheckinStatus
-				if (!expectedRequestType.toLowerCase().equals(actualRequestType.toLowerCase())) {
-					boolean DcsCallsMatch = false;
-					if (actualRequestType.contains("%")) {
-						int indexPercentagesign = actualRequestType.indexOf("%");
-						// We check that the first part of the strings up to the % sign match
-						if (expectedRequestType.substring(0, indexPercentagesign).toLowerCase().equals(actualRequestType.substring(0, indexPercentagesign).toLowerCase()))
-							DcsCallsMatch = true;
-					}
-					if (!DcsCallsMatch) {
-						if (retVal.equals("OK")) retVal = "DCS types of calls don't match.\r\n";
-						retVal += "Call #" + Integer.toString(i) + " expected request type was " + expectedRequestType + " but the actual type was " + actualRequestType + ".\r\n";
-					}
+				// We use "contains" rather than "equals" because the actual request type may be a list of possible request types
+				if (actualRequestType == null || !actualRequestType.toLowerCase().contains(expectedRequestType.toLowerCase())) {
+					if (retVal.equals("OK")) retVal = "DCS types of calls don't match.\r\n";
+					retVal += "Call #" + Integer.toString(i) + " expected request type was " + expectedRequestType + " but the actual type was " + actualRequestType + ".\r\n";
 				}
 			}
 		}
@@ -157,11 +153,13 @@ public class ProcessData {
 			callString = callString.replaceAll("<[a-z]?[:]?Envelope [\\s\\S]*<[a-z]?[:]?Body[^>]*>", "");
 			callString = callString.replaceAll("</[a-z]?[:]?Body>[.]*</[a-z]?[:]?Envelope>", "");
 			// Remove namespaces
-			callString = callString.replaceAll("<.:", "<");
-			callString = callString.replaceAll("</.:", "</");
-			callString = prettyPrintXml(callString);
-			callString = callString.replaceAll("<\\?xml[\\s\\S]*\\?>", "");
-			callString = prettyPrintXml(callString) + "\n";
+			callString = callString.replaceAll("xmlns[:]{0,1}[a-z]*=\"[^\"]*\"", "");
+			callString = callString.replaceAll("xsi:nil", "nil");
+			callString = callString.replaceAll("<[^:^>]*:", "<");
+			callString = callString.replaceAll("</[^:^>]*:", "</");
+			// Remove line with xml version
+			callString = prettyPrintXml(callString) + "\n\n";	
+			callString = callString.replaceAll("<\\?xml[^\\?]*\\?>", "");		
 			retVal += callString;
 		}
 		return retVal;
@@ -186,6 +184,9 @@ public class ProcessData {
 		}
 		else if (requestType.toLowerCase().equals("CheckInPassenger".toLowerCase())) {
 			return CheckInPassenger.removeThingsWeDontCompare(xml);
+		}
+		else if (requestType.toLowerCase().equals("ActivateBag".toLowerCase())) {
+			return ActivateBag.removeThingsWeDontCompare(xml);
 		}
 		return xml;
 	}
@@ -215,7 +216,6 @@ public class ProcessData {
 	}
 
 	public static String prettyPrintXml(String xml) {
-
 	    final StringWriter sw;
 
 	    try {
@@ -231,6 +231,8 @@ public class ProcessData {
 	    }
 	    return sw.toString();
 	}
+	
+
 	
 	public static String FormatCurrentDateTime(String currentDateTime) {
 		String aux =  currentDateTime.replace("T",  " ");

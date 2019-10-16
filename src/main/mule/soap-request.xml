@@ -8,7 +8,17 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
 	<flow name="buildSoapRequest" doc:id="de105569-b592-4576-a2c9-c01019b551fa" >
 				<set-payload value="#[vars.loggedItem.FusionRequestXml]" doc:name="Copy logged request to payload" doc:id="14f4dd9c-4ea8-4d79-9d0a-db83fe64cb19" mimeType="application/xml" />
-		<choice doc:name="What request type?" doc:id="0b9c8ec4-2dc5-4ca2-be27-52786a94e249" >
+		<choice doc:name="What request type?" doc:id="0b9c8ec4-2dc5-4ca2-be27-52786a94e249" >		
+			<when expression="'activatebag' == vars.loggedItem.FusionRequestTypeLowerCase">
+				<ee:transform doc:name="Create SOAP request for ActivateBag" doc:id="c537b97a-19bf-4ff0-ab9e-d98b19b090fc" >
+					<ee:message >
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable resource="dw/ActivateBag_Request.dwl" variableName="actualRequest" />
+					</ee:variables>
+				</ee:transform>
+			
+</when>
 				<when expression="'getreservationbynativereference' ==vars.loggedItem.FusionRequestTypeLowerCase">
 					<ee:transform doc:name="Create SOAP request for GetReservationByNativeReference" doc:id="060fc1ae-0b3c-4f7b-802c-557c4ec1aa58">
 				<ee:message>

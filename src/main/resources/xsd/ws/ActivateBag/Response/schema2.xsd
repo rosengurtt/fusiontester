@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Fusion.Integration" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Fusion.Integration" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="schema3.xsd" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:element name="DcsRequestsIds">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" ref="q1:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Errors">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="FusionError">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Code" type="xs:string" />
+              <xs:element name="Critical" type="xs:string" />
+              <xs:element name="Description" type="xs:string" />
+              <xs:element name="Method" type="xs:string" />
+              <xs:element name="Source" type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RequestId" type="xs:string" />
+  <xs:element name="ResponseId" type="xs:string" />
+  <xs:element name="Active" type="xs:string" />
+  <xs:element name="ArrivalAirportCode" type="xs:string" />
+  <xs:element name="BagRegistrationTime" type="xs:string" />
+  <xs:element name="BagTagNumber" type="xs:string" />
+  <xs:element name="BagWeight" type="xs:string" />
+  <xs:element name="BaggageItemId" type="xs:string" />
+  <xs:element name="DepartureAirportCode" type="xs:string" />
+  <xs:element name="Dropped" type="xs:string" />
+  <xs:element name="FirstName" type="xs:string" />
+  <xs:element name="FlightId" type="xs:string" />
+  <xs:element name="FlightNumber" type="xs:string" />
+  <xs:element name="IataAirlineCode" type="xs:string" />
+  <xs:element name="KioskName" type="xs:string" />
+  <xs:element name="LastName" type="xs:string" />
+  <xs:element name="PNR" type="xs:string" />
+  <xs:element name="PassengerId" type="xs:string" />
+  <xs:element name="ScheduledDepartureDateTime" type="xs:string" />
+  <xs:element name="SeatNumber" type="xs:string" />
+  <xs:element name="SequenceNumber" type="xs:string" />
+  <xs:element name="SessionId" type="xs:string" />
+  <xs:element name="Title" type="xs:string" />
+</xs:schema>

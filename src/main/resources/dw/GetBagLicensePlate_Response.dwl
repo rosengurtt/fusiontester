@@ -66,26 +66,26 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 				}
 			},
 			Baggage: {
-				BaggageAllowance: {
-					Id: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#Id,
-					BaggageAllowanceTypeId: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#BaggageAllowanceTypeId,
-					BaggageItemTypeId: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#BaggageItemTypeId,
-					BagDropId: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#BagDropId,
-					FlightId: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#FlightId,
-					PassengerId: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PassengerId,
-					PoolItems: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PoolItems as Boolean default null,
-					PoolWeight: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PoolWeight as Boolean default null,
-					ConsumeItemWeight: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#ConsumeItemWeight as Boolean default null,
-					UpdateInitialAllowance: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#UpdateInitialAllowance as Boolean default null,
-					MaxSingleItemWeight: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#MaxSingleItemWeight,
-					InitialBags: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#InitialBags,
-					InitialWeight: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#InitialWeight,
-					PurchasedBags: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PurchasedBags,
-					PurchasedWeight: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PurchasedWeight,
-					RemainingBags: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#RemainingBags,
-					RemainingWeight: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#RemainingWeight,
-					CreatedOn: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#CreatedOn as String default null
-				},
+				BaggageAllowance: (payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.*ns02#BaggageAllowance map {
+					Id: $.ns02#Id,
+					BaggageAllowanceTypeId: $.ns02#BaggageAllowanceTypeId,
+					BaggageItemTypeId: $.ns02#BaggageItemTypeId,
+					BagDropId: $.ns02#BagDropId,
+					FlightId: $.ns02#FlightId,
+					PassengerId: $.ns02#PassengerId,
+					PoolItems: $.ns02#PoolItems,
+					PoolWeight: $.ns02#PoolWeight,
+					ConsumeItemWeight: $.ns02#ConsumeItemWeight,
+					UpdateInitialAllowance: $.ns02#UpdateInitialAllowance,
+					MaxSingleItemWeight: $.ns02#MaxSingleItemWeight,
+					InitialBags: $.ns02#InitialBags,
+					InitialWeight: $.ns02#InitialWeight,
+					PurchasedBags: $.ns02#PurchasedBags,
+					PurchasedWeight: $.ns02#PurchasedWeight,
+					RemainingBags: $.ns02#RemainingBags,
+					RemainingWeight: $.ns02#RemainingWeight,
+					CreatedOn: $.ns02#CreatedOn
+				}),
 				MaxSingleItemWeight: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Baggage.ns02#MaxSingleItemWeight
 			},
 			BaggageItems: {

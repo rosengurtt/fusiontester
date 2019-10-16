@@ -49,14 +49,15 @@ output application/java
 				<flow-ref doc:name="testFusionRequest" doc:id="24d7d97d-9c34-4b94-978c-8fc72693fb4c" name="testFusionRequest" />
 				<logger level="INFO" doc:name="Logger" doc:id="69d50fdd-1b99-4344-b4c6-3808d5daef53" message="Test job run, will save result in db   #['\n'] Will now call UpdateTestResult   #['\n'] " />
 				<db:stored-procedure doc:name="Store test result" doc:id="18e6b2e3-204d-4f82-9791-abaf9d262559" config-ref="mssql-jdbc">
-				<db:sql>{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult,:ExpectedResponse,:ActualResponse,:ActualDCScalls,:NumberOfDifferences,:DCScallsMatch) }</db:sql>
+				<db:sql>{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult,:ExpectedResponse,:ActualResponse,:ActualDCScalls,:ExpectedDCScalls,:NumberOfDifferences,:DCScallsMatch) }</db:sql>
 				<db:input-parameters><![CDATA[#[{
 	'TestId': vars.TestId,
 	'FusionRequestId': vars.loggedItem.FusionRequestId,
 	'TestResult': payload.Message,
 	'ExpectedResponse': payload.ExpectedResponseCleaned,
 	'ActualResponse': payload.ActualResponseCleaned,
-	'ActualDCScalls': payload.DCScalls,
+	'ActualDCScalls': payload.actualDCScallsCleaned,
+	'ExpectedDCScalls': payload.expectedDCScallsCleaned,
 	'NumberOfDifferences': payload.NumberOfDifferences,
 	'DCScallsMatch': payload.DCScallsMatch
 }]]]></db:input-parameters>

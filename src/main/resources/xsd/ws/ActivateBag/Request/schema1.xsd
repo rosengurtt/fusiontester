@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
+<xs:schema xmlns:tns="http://www.w3.org/2005/08/addressing" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.w3.org/2005/08/addressing" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="schema0.xsd" namespace="http://www.w3.org/2003/05/soap-envelope" />
+  <xs:element name="Action">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute xmlns:q1="http://www.w3.org/2003/05/soap-envelope" ref="q1:mustUnderstand" use="required" />
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MessageID" type="xs:string" />
+  <xs:element name="ReplyTo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Address" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="To">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute xmlns:q2="http://www.w3.org/2003/05/soap-envelope" ref="q2:mustUnderstand" use="required" />
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
