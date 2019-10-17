@@ -14,40 +14,9 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 					</ee:message>
 					<ee:variables >
 						<ee:set-variable resource="dw/ActivateBag_Response.dwl" variableName="actualResponse" />
-					</ee:variables>
-				
-</ee:transform>
-			</when>
-				<when expression="#['getreservationbynativereference' == vars.loggedItem.FusionRequestTypeLowerCase]">
-					<ee:transform doc:name="Format and save response to 'actualResponse'" doc:id="f41ab2c1-e3dd-4f4c-917c-8152cab1fca9">
-				<ee:message>
-				</ee:message>
-				<ee:variables>
-						<ee:set-variable resource="dw/GetReservationByNativeReference_Response.dwl" variableName="actualResponse" />
-				
-</ee:variables>
-			</ee:transform>
-				</when>
-				<when expression=" 'getbaglicenseplate' ==vars.loggedItem.FusionRequestTypeLowerCase">
-					<ee:transform doc:name="Format and save response to 'actualResponse'" doc:id="0af4af04-2abd-4c31-a321-526504469999" >
-						<ee:message >
-						</ee:message>
-						<ee:variables >
-						<ee:set-variable resource="dw/GetBagLicensePlate_Response.dwl" variableName="actualResponse" />
-						
-</ee:variables>
-					</ee:transform>
-				</when>
-				<when expression="'quotebag' ==vars.loggedItem.FusionRequestTypeLowerCase">
-				<ee:transform doc:name="Format and save response to 'actualResponse'" doc:id="ea1a34f2-a321-473f-8a77-a9dd6a79c3fb" >
-					<ee:message >
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable resource="dw/QuoteBag_Response.dwl" variableName="actualResponse" />
-					</ee:variables>
+					</ee:variables>				
 				</ee:transform>
-				
-</when>
+			</when>
 			<when expression="'buyallowance' ==vars.loggedItem.FusionRequestTypeLowerCase">
 				<ee:transform doc:name="Format and save response to 'actualResponse'" doc:id="f757c8c5-8194-4eef-b7ac-0bd57acf7328" >
 					<ee:message >
@@ -66,7 +35,34 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 					</ee:variables>
 				</ee:transform>
 			</when>
-			
+			<when expression=" 'getbaglicenseplate' ==vars.loggedItem.FusionRequestTypeLowerCase">
+				<ee:transform doc:name="Format and save response to 'actualResponse'" doc:id="0af4af04-2abd-4c31-a321-526504469999" >
+					<ee:message >
+					</ee:message>
+					<ee:variables >
+					<ee:set-variable resource="dw/GetBagLicensePlate_Response.dwl" variableName="actualResponse" />						
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<when expression="#['getreservationbynativereference' == vars.loggedItem.FusionRequestTypeLowerCase]">
+				<ee:transform doc:name="Format and save response to 'actualResponse'" doc:id="f41ab2c1-e3dd-4f4c-917c-8152cab1fca9">
+					<ee:message>
+					</ee:message>
+					<ee:variables>
+							<ee:set-variable resource="dw/GetReservationByNativeReference_Response.dwl" variableName="actualResponse" />				
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<when expression="'quotebag' ==vars.loggedItem.FusionRequestTypeLowerCase">
+				<ee:transform doc:name="Format and save response to 'actualResponse'" doc:id="ea1a34f2-a321-473f-8a77-a9dd6a79c3fb" >
+					<ee:message >
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable resource="dw/QuoteBag_Response.dwl" variableName="actualResponse" />
+					</ee:variables>
+				</ee:transform>				
+			</when>
+		
 </choice>
 			
 	</flow>

@@ -10,16 +10,15 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 		RequestId: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#RequestId,
 		ResponseId: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#ResponseId,
 		DcsRequestsIds: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#DcsRequestsIds.ns02#guid,
-		Errors: (payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#Errors.*ns01#FusionError map
-		{
-			FusionError: {
+		Errors: {
+			FusionError: (payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns01#Errors.*ns01#FusionError map {
 				Critical: $.ns01#Critical,
 				Code: $.ns01#Code,
 				Description: $.ns01#Description,
 				Method: $.ns01#Method,
 				Source: $.ns01#Source
-			}
-		}),
+			})
+		},
 		Reservation: {
 			NativeReference: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#NativeReference,
 			IsGroupBooking: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#IsGroupBooking,
@@ -78,16 +77,81 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 						Active: passenger.ns01#Active,
 						DocumentCheckRequired: passenger.ns01#DocumentCheckRequired,
 						Identity: {
+							ObtainedAPIS:{
+								ApisData: (passenger.ns01#Identity.ns01#ObtainedAPIS.*ns01#ApisData map (item, index) -> {
+									Surname: item.ns01#Surname,
+									Firstname: item.ns01#Firstname,
+									DateOfBirth: item.ns01#DateOfBirth,
+									CountryOfResidence: item.ns01#CountryOfResidence,
+									Nationality: item.ns01#Nationality,
+									DocumentType: item.ns01#DocumentType,
+									DocumentNumber: item.ns01#DocumentNumber,
+									DocumentIssueDate: item.ns01#DocumentIssueDate,
+									DocumentExpiryDate: item.ns01#DocumentExpiryDate,
+									CountryOfIssue: item.ns01#CountryOfIssue,
+									ContactInformation: {
+										ContactTitle: item.ns01#ContactInformation.ns01#ContactTitle,
+										ContactFirstName: item.ns01#ContactInformation.ns01#ContactFirstName,
+										ContactLastName: item.ns01#ContactInformation.ns01#ContactLastName,
+										TelephoneNumber: item.ns01#ContactInformation.ns01#TelephoneNumber,
+										EmailAddress: item.ns01#ContactInformation.ns01#EmailAddress,
+										AddressLine: item.ns01#ContactInformation.ns01#AddressLine,
+										City: item.ns01#ContactInformation.ns01#City,
+										Country: item.ns01#ContactInformation.ns01#Country,
+										PostalCode: item.ns01#ContactInformation.ns01#PostalCode,
+										CompanyName: item.ns01#ContactInformation.ns01#CompanyName,
+										NotificationPreference: item.ns01#ContactInformation.ns01#NotificationPreference								
+									},
+								})
+							},
 							LastAPIS: {
 								Surname: passenger.ns01#Identity.ns01#LastAPIS.ns01#Surname,
 								Firstname: passenger.ns01#Identity.ns01#LastAPIS.ns01#Firstname,
 								DateOfBirth: passenger.ns01#Identity.ns01#LastAPIS.ns01#DateOfBirth,
+								CountryOfResidence: passenger.ns01#Identity.ns01#LastAPIS.ns01#CountryOfResidence,
 								Nationality: passenger.ns01#Identity.ns01#LastAPIS.ns01#Nationality,
 								DocumentType: passenger.ns01#Identity.ns01#LastAPIS.ns01#DocumentType,
 								DocumentNumber: passenger.ns01#Identity.ns01#LastAPIS.ns01#DocumentNumber,
 								DocumentIssueDate: passenger.ns01#Identity.ns01#LastAPIS.ns01#DocumentIssueDate ,
-								DocumentExpiryDate: passenger.ns01#Identity.ns01#LastAPIS.ns01#DocumentExpiryDate ,
-								CountryOfIssue: passenger.ns01#Identity.LastAPIS.ns01#CountryOfIssue
+								DocumentExpiryDate: passenger.ns01#Identity.ns01#LastAPIS.ns01#DocumentExpiryDate,
+								CountryOfIssue: passenger.ns01#Identity.LastAPIS.ns01#CountryOfIssue,
+								ContactInformation: {
+									ContactTitle: passenger.ns01#Identity.ns01#LastAPIS.ns01#ContactInformation.ns01#ContactTitle,
+									ContactFirstName: passenger.ns01#Identity.ns01#LastAPIS.ns01#ContactInformation.ns01#ContactFirstName,
+									ContactLastName: passenger.ns01#Identity.ns01#LastAPIS.ns01#ContactInformation.ns01#ContactLastName,
+									TelephoneNumber: passenger.ns01#Identity.ns01#LastAPIS.ns01#ContactInformation.ns01#TelephoneNumber,
+									EmailAddress: passenger.ns01#Identity.ns01#LastAPIS.ns01#ContactInformation.ns01#EmailAddress,
+									AddressLine: passenger.ns01#Identity.ns01#LastAPIS.ns01#ContactInformation.ns01#AddressLine,
+									City: passenger.ns01#Identity.ns01#LastAPIS.ns01#ContactInformation.ns01#City,
+									Country: passenger.ns01#Identity.ns01#LastAPIS.ns01#ContactInformation.ns01#Country,
+									PostalCode: passenger.ns01#Identity.ns01#LastAPIS.ns01#ContactInformation.ns01#PostalCode,
+									CompanyName: passenger.ns01#Identity.ns01#LastAPIS.ns01#ContactInformation.ns01#CompanyName,
+									NotificationPreference: passenger.ns01#Identity.ns01#LastAPIS.ns01#ContactInformation.ns01#NotificationPreference								
+								},
+							},
+							ValidDocuments: {
+								APISDocumentSet: (passenger.ns01#Identity.ns01#ValidDocuments.*ns01#APISDocumentSet map (itemito, indexito) ->   {
+									MainDocumentType: itemito.ns01#MainDocumentType,
+									MainDocumentIssuerCountryCode: itemito.ns01#MainDocumentIssuerCountryCode,
+									APISDocuments:  {
+										DocumentDetail:(itemito.ns01#APISDocuments.*ns01#DocumentDetail map (itemon, indexon) ->  {
+											Type: itemon.ns01#Type,
+											IssuerCountryCode: itemon.ns01#IssuerCountryCode,
+											Fields:  {
+												DocumentField:(itemon.ns01#Fields.*ns01#DocumentField map (item, index) ->  {
+													Name: item.ns01#Name,
+													Required: item.ns01#Required
+												})
+											},
+											Scannable: itemon.ns01#Scannable,
+											Complete: itemon.ns01#Complete,
+											Required: itemon.ns01#Required,
+											Active: itemon.ns01#Active,
+											Order: itemon.ns01#Order
+										})
+									},
+									IsSelected: itemito.ns01#IsSelected
+								})
 							}
 						},
 						Baggage: {
@@ -160,6 +224,20 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 								})
 							},
 							MaxSingleItemWeight: passenger.ns01#Baggage.ns01#MaxSingleItemWeight
+						},
+						Infant: {
+							InfantId: passenger.ns01#Infant.ns01#InfantId,
+							AdultPassengerId: passenger.ns01#Infant.ns01#AdultPassengerId,
+							FirstName: passenger.ns01#Infant.ns01#FirstName,
+							LastName: passenger.ns01#Infant.ns01#LastName,
+							PassengerRPH: passenger.ns01#Infant.ns01#PassengerRPH,
+							AdultPassengerRPH: passenger.ns01#Infant.ns01#AdultPassengerRPH,
+							ConfirmedIdentity: passenger.ns01#Infant.ns01#ConfirmedIdentity,
+							AllowanceRetrieved: passenger.ns01#Infant.ns01#AllowanceRetrieved,
+							IsSelected: passenger.ns01#Infant.ns01#IsSelected,
+							CheckedIn: passenger.ns01#Infant.ns01#CheckedIn,
+							Boarded: passenger.ns01#Infant.ns01#Boarded,
+							
 						},
 						SSRs: {
 							SSR: (passenger.ns01#SSRs.*ns01#SSR map {

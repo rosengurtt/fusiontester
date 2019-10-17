@@ -49,58 +49,82 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 				DocumentCheckRequired: $.ns02#DocumentCheckRequired as String default null,
 				Identity: {
 					ObtainedAPIS: {
-						ApisData:{
-							Surname: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#Surname,
-							Firstname: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#Firstname,
-							Forenames: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#Forenames,
-							Gender: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#Gender,
-							DateOfBirth: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#DateOfBirth,
-							Nationality: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#Nationality,
-							DocumentType: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#DocumentType,
-							DocumentNumber: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#DocumentNumber,
-							DocumentIssueDate: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#DocumentIssueDate,
-							DocumentExpiryDate: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#DocumentExpiryDate,
-							CountryOfIssue: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#CountryOfIssue,
+						ApisData: ( $.ns02#Identity.ns02#ObtainedAPIS.*ns02#ApisData map (item, index) -> {
+							Surname: item.ns02#Surname,
+							Firstname: item.ns02#Firstname,
+							Forenames: item.ns02#Forenames,
+							Gender: item.ns02#Gender,
+							DateOfBirth: item.ns02#DateOfBirth,
+							Nationality: item.ns02#Nationality,
+							DocumentType: item.ns02#DocumentType,
+							DocumentNumber: item.ns02#DocumentNumber,
+							DocumentIssueDate: item.ns02#DocumentIssueDate,
+							DocumentExpiryDate: item.ns02#DocumentExpiryDate,
+							CountryOfIssue: item.ns02#CountryOfIssue,
 							ContactInformation:{
-								ContactTitle: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#ContactTitle,
-								ContactFirstName: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#ContactFirstName,
-								ContactLastName: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#ContactLastName,
-								TelephoneNumber: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#TelephoneNumber,
-								EmailAddress: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#EmailAddress,
-								AddressLine: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#AddressLine,
-								City: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#City,
-								Country: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#Country,
-								PostalCode: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#PostalCode,
-								CompanyName: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#CompanyName,
-								NotificationPreference: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#NotificationPreference								
+								ContactTitle: item.ns02#ContactInformation.ns02#ContactTitle,
+								ContactFirstName: item.ns02#ContactInformation.ns02#ContactFirstName,
+								ContactLastName: item.ns02#ContactInformation.ns02#ContactLastName,
+								TelephoneNumber: item.ns02#ContactInformation.ns02#TelephoneNumber,
+								EmailAddress: item.ns02#ContactInformation.ns02#EmailAddress,
+								AddressLine: item.ns02#ContactInformation.ns02#AddressLine,
+								City: item.ns02#ContactInformation.ns02#City,
+								Country: item.ns02#ContactInformation.ns02#Country,
+								PostalCode: item.ns02#ContactInformation.ns02#PostalCode,
+								CompanyName: item.ns02#ContactInformation.ns02#CompanyName,
+								NotificationPreference: item.ns02#ContactInformation.ns02#NotificationPreference								
 							}							
-						}
+						})
 					},
-					LastAPIS: {
-						Surname: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#Surname,
-							Firstname: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#Firstname,
-							Forenames: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#Forenames,
-							Gender: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#Gender,
-							DateOfBirth: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#DateOfBirth,
-							Nationality: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#Nationality,
-							DocumentType: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#DocumentType,
-							DocumentNumber: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#DocumentNumber,
-							DocumentIssueDate: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#DocumentIssueDate,
-							DocumentExpiryDate: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#DocumentExpiryDate,
-							CountryOfIssue: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#CountryOfIssue,
-							ContactInformation:{
-								ContactTitle: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#ContactTitle,
-								ContactFirstName: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#ContactFirstName,
-								ContactLastName: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#ContactLastName,
-								TelephoneNumber: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#TelephoneNumber,
-								EmailAddress: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#EmailAddress,
-								AddressLine: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#AddressLine,
-								City: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#City,
-								Country: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#Country,
-								PostalCode: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#PostalCode,
-								CompanyName: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#CompanyName,
-								NotificationPreference: $.ns02#Identity.ns02#ObtainedAPIS.ns02#ApisData.ns02#ContactInformation.ns02#NotificationPreference	
+					LastAPIS: ( $.ns02#Identity.*ns02#LastAPIS map (itemito, indexito) -> {
+						Surname: itemito.ns02#Surname,
+						Firstname: itemito.ns02#Firstname,
+						Forenames: itemito.ns02#Forenames,
+						Gender: itemito.ns02#Gender,
+						DateOfBirth: itemito.ns02#DateOfBirth,						
+						Nationality: itemito.ns02#Nationality,
+						DocumentType: itemito.ns02#DocumentType,
+						DocumentNumber: itemito.ns02#DocumentNumber,
+						DocumentIssueDate: itemito.ns02#DocumentIssueDate,
+						DocumentExpiryDate: itemito.ns02#DocumentExpiryDate,
+						CountryOfIssue: itemito.ns02#CountryOfIssue,
+						ContactInformation:{
+							ContactTitle: itemito.ns02#ContactInformation.ns02#ContactTitle,
+							ContactFirstName: itemito.ns02#ContactInformation.ns02#ContactFirstName,
+							ContactLastName: itemito.ns02#ContactInformation.ns02#ContactLastName,
+							TelephoneNumber: itemito.ns02#ContactInformation.ns02#TelephoneNumber,
+							EmailAddress: itemito.ns02#ContactInformation.ns02#EmailAddress,
+							AddressLine: itemito.ns02#ContactInformation.ns02#AddressLine,
+							City: itemito.ns02#ContactInformation.ns02#City,
+							Country: itemito.ns02#ContactInformation.ns02#Country,
+							PostalCode: itemito.ns02#ContactInformation.ns02#PostalCode,
+							CompanyName: itemito.ns02#ContactInformation.ns02#CompanyName,
+							NotificationPreference: itemito.ns02#ContactInformation.ns02#NotificationPreference	
 						}
+					}),
+					ValidDocuments: {
+						APISDocumentSet: ($.ns02#Identity.ns01#ValidDocuments.*ns01#APISDocumentSet map (itemito, indexito) ->   {
+							MainDocumentType: itemito.ns01#MainDocumentType,
+							MainDocumentIssuerCountryCode: itemito.ns01#MainDocumentIssuerCountryCode,
+							APISDocuments:  {
+								DocumentDetail:(itemito.ns01#APISDocuments.*ns01#DocumentDetail map (itemon, indexon) ->  {
+									Type: itemon.ns01#Type,
+									IssuerCountryCode: itemon.ns01#IssuerCountryCode,
+									Fields:  {
+										DocumentField:(itemon.ns01#Fields.*ns01#DocumentField map (item, index) ->  {
+											Name: item.ns01#Name,
+											Required: item.ns01#Required
+										})
+									},
+									Scannable: itemon.ns01#Scannable,
+									Complete: itemon.ns01#Complete,
+									Required: itemon.ns01#Required,
+									Active: itemon.ns01#Active,
+									Order: itemon.ns01#Order
+								})
+							},
+							IsSelected: itemito.ns01#IsSelected
+						})
 					}
 				},
 				Baggage: {
@@ -128,12 +152,12 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 					MaxSingleItemWeight: $.ns02#Baggage.MaxSingleItemWeight
 				},
 				SSRs: {
-					SSR: ($.*ns02#SSRs.*ns02#SSR  map (item, index) -> {
-						SSRCode: item.ns02#SSRCode,
-						SSRDescription: item.ns02#SSRDescription,
-						FeeCode: item.ns02#FeeCode,
-						PaxNumber: item.ns02#PaxNumber,
-						Price: item.ns02#Price						
+					SSR: ($.*ns02#SSRs.*ns02#SSR  map (itemon, indexon) -> {
+						SSRCode: itemon.ns02#SSRCode,
+						SSRDescription: itemon.ns02#SSRDescription,
+						FeeCode: itemon.ns02#FeeCode,
+						PaxNumber: itemon.ns02#PaxNumber,
+						Price: itemon.ns02#Price						
 					})
 				},
 				CustomProperties: {	

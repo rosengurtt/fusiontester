@@ -156,7 +156,8 @@ public class ProcessData {
 			callString = callString.replaceAll("xmlns[:]{0,1}[a-z]*=\"[^\"]*\"", "");
 			callString = callString.replaceAll("xsi:nil", "nil");
 			callString = callString.replaceAll("<[^:^>]*:", "<");
-			callString = callString.replaceAll("</[^:^>]*:", "</");
+			callString = callString.replaceAll("</[^:^>]*:", "</");			
+			
 			// Remove line with xml version
 			callString = prettyPrintXml(callString) + "\n\n";	
 			callString = callString.replaceAll("<\\?xml[^\\?]*\\?>", "");		
@@ -168,6 +169,9 @@ public class ProcessData {
 		xml = RemoveNamespaces(xml);		
 		xml = RemoveWhitespaceBetweenTags(xml);
 		xml = RemoveNullNodes(xml);
+		xml = RemoveEncodedCarriageReturns(xml);
+		xml = CollapseWhitespaces(xml);
+		xml = RemoveLeadingZeroes(xml);
 		
 		// RequestType dependent cleaning
 		if (requestType.toLowerCase().equals("GetReservationByNativeReference".toLowerCase())) {
@@ -190,6 +194,9 @@ public class ProcessData {
 		}
 		return xml;
 	}
+	private static String RemoveLeadingZeroes(String xml) {
+		return xml.replaceAll("([>=])[0]*([1-9]*[0-9]*)<", "$1$2<");
+	}
 	
 	private static String RemoveNullNodes(String xml) {	
 		// We iterate, because there are cases of nodes that have inside only null nodes. So in one cycle we remove the inner node
@@ -209,6 +216,14 @@ public class ProcessData {
 	private static String RemoveWhitespaceBetweenTags(String xml) {
 		xml = xml.replaceAll(">[\\s]*<", "><");
 		return  xml.replaceAll("[\\s]*>", ">");
+	}
+	private static String CollapseWhitespaces(String xml) {
+		return  xml.replaceAll("[\\s]{1,1000}", " ");
+	}
+	
+
+	private static String RemoveEncodedCarriageReturns(String xml) {
+		return xml.replaceAll("[&][#]xd[;]", "");
 	}
 	
 	public static String RemoveProblematicTagsFromFusionRequest(String FusionActualRequest){
