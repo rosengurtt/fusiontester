@@ -61,7 +61,20 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 					DocumentNumber: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#DocumentNumber,
 					DocumentIssueDate: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#DocumentIssueDate,
 					DocumentExpiryDate: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#DocumentExpiryDate,
-					CountryOfIssue: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#CountryOfIssue
+					CountryOfIssue: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#CountryOfIssue,
+					ContactInformation: {
+						ContactTitle: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns01#ContactTitle,
+						ContactFirstName: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns01#ContactFirstName,
+						ContactLastName: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns01#ContactLastName,
+						TelephoneNumber: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns01#TelephoneNumber,
+						EmailAddress: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns01#EmailAddress,
+						AddressLine: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns01#AddressLine,
+						City: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns01#City,
+						Country: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns01#Country,
+						PostalCode: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns01#PostalCode,
+						CompanyName: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns01#CompanyName,
+						NotificationPreference: payload.ns0#Envelope.ns0#Body.ns01#GetBagLicensePlateResponse.ns01#GetBagLicensePlateResult.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns01#NotificationPreference								
+					},
 				}
 			},
 			Baggage: {

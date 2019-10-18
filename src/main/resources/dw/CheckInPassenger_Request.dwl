@@ -24,57 +24,58 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 					ns02#RequestId: payload.CheckInPassenger_Request.RequestId,
 					ns02#RequestSourceName: payload.CheckInPassenger_Request.RequestSourceName,
 					ns02#RequestType: payload.CheckInPassenger_Request.RequestType,
-					ns02#TestRequest: payload.CheckInPassenger_Request.TestRequest as String default null,
+					ns02#TestRequest: payload.CheckInPassenger_Request.TestRequest,
 					ns02#Session: {
-						ns02#EndTime: payload.CheckInPassenger_Request.Session.EndTime as String default null,
+						ns02#EndTime: payload.CheckInPassenger_Request.Session.EndTime,
 						ns02#KioskId: payload.CheckInPassenger_Request.Session.KioskId,
 						ns02#PNR: payload.CheckInPassenger_Request.Session.PNR,
-						ns02#Price: payload.CheckInPassenger_Request.Session.Price as String default null,
+						ns02#Price: payload.CheckInPassenger_Request.Session.Price,
 						ns02#ServiceConfigId: payload.CheckInPassenger_Request.Session.ServiceConfigId,
 						ns02#SessionId: payload.CheckInPassenger_Request.Session.SessionId,
-						ns02#StartTime: payload.CheckInPassenger_Request.Session.StartTime as String default null,
+						ns02#StartTime: payload.CheckInPassenger_Request.Session.StartTime,
 						ns02#Status: payload.CheckInPassenger_Request.Session.Status,
 						ns02#UserId: payload.CheckInPassenger_Request.Session.UserId,
-						ns02#Weight: payload.CheckInPassenger_Request.Session.Weight as String default null
+						ns02#Weight: payload.CheckInPassenger_Request.Session.Weight
 					},
-					ns01#BagCountToCheckIn: payload.CheckInPassenger_Request.BagCountToCheckIn as String default null,
+					ns01#BagCountToCheckIn: payload.CheckInPassenger_Request.BagCountToCheckIn,
 					ns01#Flights: {
 						ns02#Flight: (payload.CheckInPassenger_Request.Flights.*Flight map {
-							ns02#ApisRequired: $.ApisRequired as String default null,
-							ns02#ArrivalTime: $.ArrivalTime as String default null,
-							ns02#ConnectingFlight: $.ConnectingFlight as String default null,
-							ns02#DepartureTime: $.DepartureTime as String default null,
+							ns02#ApisRequired: $.ApisRequired,
+							ns02#ArrivalTime: $.ArrivalTime,
+							ns02#ConnectingFlight: $.ConnectingFlight,
+							ns02#DepartureTime: $.DepartureTime,
 							ns02#Destination: $.Destination,
-							ns02#FlightNumber: $.FlightNumber as String default null,
-							ns02#FlightRPH: $.FlightRPH as String default null,
+							ns02#FlightNumber: $.FlightNumber,
+							ns02#FlightRPH: $.FlightRPH,
 							ns02#Id: $.Id,
-							ns02#JourneyRPH: $.JourneyRPH as String default null,
+							ns02#JourneyRPH: $.JourneyRPH,
 							ns02#MarketingCarrier: $.MarketingCarrier,
-							ns02#OpenForBoarding: $.OpenForBoarding as String default null,
-							ns02#OpenForCheckIn: $.OpenForCheckIn as String default null,
+							ns02#OpenForBoarding: $.OpenForBoarding,
+							ns02#OpenForCheckIn: $.OpenForCheckIn,
 							ns02#OperatingCarrier: $.OperatingCarrier,
 							ns02#Origin: $.Origin,
-							ns02#RequireMultipleAPISDocuments: $.RequireMultipleAPISDocuments as String default null,
-							ns02#UTCArrivalTime: $.UTCArrivalTime as String default null,
-							ns02#UTCDepartureTime: $.UTCDepartureTime as String default null
+							ns02#RequireMultipleAPISDocuments: $.RequireMultipleAPISDocuments,
+							ns02#UTCArrivalTime: $.UTCArrivalTime,
+							ns02#UTCDepartureTime: $.UTCDepartureTime
 						})
 					},
 					ns01#Passengers: {
 						ns02#Passenger: (payload.CheckInPassenger_Request.Passengers.*Passenger map {
-							ns02#Active: $.Active as String default null,
-							ns02#AllowanceRetrieved: $.AllowanceRetrieved as String default null,
-							ns02#Boarded: $.Boarded as String default null,
-							ns02#CheckedIn: $.CheckedIn as String default null,
-							ns02#ClearanceRequired: $.ClearanceRequired as String default null,
+							ns02#Active: $.Active,
+							ns02#AllowanceRetrieved: $.AllowanceRetrieved,
+							ns02#Boarded: $.Boarded,
+							ns02#CheckedIn: $.CheckedIn,
+							ns02#ClearanceRequired: $.ClearanceRequired,
 							ns02#ClearanceStatus: $.ClearanceStatus,
-							ns02#ConfirmedDga: $.ConfirmedDga as String default null,
-							ns02#ConfirmedIdentity: $.ConfirmedIdentity as String default null,
-							ns02#ConnectingFlightNumber: $.ConnectingFlightNumber as String default null,
-							ns02#DateOfBirth: $.DateOfBirth as String default null,
-							ns02#DocumentCheckRequired: $.DocumentCheckRequired as String default null,
+							ns02#ConfirmedDga: $.ConfirmedDga,
+							ns02#ConfirmedIdentity: $.ConfirmedIdentity,
+							ns02#ConnectingFlightNumber: $.ConnectingFlightNumber,
+							ns02#DateOfBirth: $.DateOfBirth,
+							ns02#DocumentCheckRequired: $.DocumentCheckRequired,
 							ns02#FirstName: $.FirstName,
 							ns02#Identity: {
 									ns02#LastAPIS: {
+										ns02#AddressInformation: $.Identity.LastAPIS.AddressInformation,
 										ns02#ContactInformation: {
 											ns02#AddressLine: $.Identity.LastAPIS.ContactInformation.AddressLine,
 											ns02#City: $.Identity.LastAPIS.ContactInformation.City,
@@ -90,9 +91,9 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 										},
 										ns02#CountryOfIssue: $.Identity.LastAPIS.CountryOfIssue,
 										ns02#CountryOfResidence: $.Identity.LastAPIS.CountryOfResidence,
-										ns02#DateOfBirth: $.Identity.LastAPIS.DateOfBirth as String default null,
-										ns02#DocumentExpiryDate: $.Identity.LastAPIS.DocumentExpiryDate as String default null,
-										ns02#DocumentIssueDate: $.Identity.LastAPIS.DocumentIssueDate as String default null,
+										ns02#DateOfBirth: $.Identity.LastAPIS.DateOfBirth,
+										ns02#DocumentExpiryDate: $.Identity.LastAPIS.DocumentExpiryDate,
+										ns02#DocumentIssueDate: $.Identity.LastAPIS.DocumentIssueDate,
 										ns02#DocumentNumber: $.Identity.LastAPIS.DocumentNumber,
 										ns02#DocumentType: $.Identity.LastAPIS.DocumentType,
 										ns02#Firstname: $.Identity.LastAPIS.Firstname,
@@ -103,8 +104,7 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 										ns02#RawCodeline: $.Identity.LastAPIS.RawCodeline,
 										ns02#Surname: $.Identity.LastAPIS.Surname										
 									},
-								ns02#ObtainedAPIS: {						
-
+								ns02#ObtainedAPIS: {		
 									ns02#ApisData: {
 										ns02#ContactInformation: {
 											ns02#AddressLine: $.Identity.ObtainedAPIS.ApisData.ContactInformation.AddressLine,
@@ -121,9 +121,9 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 										},
 										ns02#CountryOfIssue: $.Identity.ObtainedAPIS.ApisData.CountryOfIssue,
 										ns02#CountryOfResidence: $.Identity.ObtainedAPIS.ApisData.CountryOfResidence,
-										ns02#DateOfBirth: $.Identity.ObtainedAPIS.ApisData.DateOfBirth as String default null,
-										ns02#DocumentExpiryDate: $.Identity.ObtainedAPIS.ApisData.DocumentExpiryDate as String default null,
-										ns02#DocumentIssueDate: $.Identity.ObtainedAPIS.ApisData.DocumentIssueDate as String default null,
+										ns02#DateOfBirth: $.Identity.ObtainedAPIS.ApisData.DateOfBirth,
+										ns02#DocumentExpiryDate: $.Identity.ObtainedAPIS.ApisData.DocumentExpiryDate,
+										ns02#DocumentIssueDate: $.Identity.ObtainedAPIS.ApisData.DocumentIssueDate,
 										ns02#DocumentNumber: $.Identity.ObtainedAPIS.ApisData.DocumentNumber,
 										ns02#DocumentType: $.Identity.ObtainedAPIS.ApisData.DocumentType,
 										ns02#Firstname: $.Identity.ObtainedAPIS.ApisData.Firstname,
@@ -134,27 +134,27 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 										ns02#RawCodeline: $.Identity.ObtainedAPIS.ApisData.RawCodeline,
 										ns02#Surname: $.Identity.ObtainedAPIS.ApisData.Surname										
 									},	
-								},						
-								ns02#ValidDocuments: {
+								},				
+								ns02#ValidDocuments: if ($.Identity.ValidDocuments.APISDocumentSet != null) {
 									ns02#APISDocumentSet: {
-										ns02#IsSelected: $.Identity.ValidDocuments.APISDocumentSet.IsSelected as String default null,
-										ns02#MainDocumentIssuerCountryCode: $.Identity.ValidDocuments.APISDocumentSet.MainDocumentIssuerCountryCode default "",
+										ns02#IsSelected: $.Identity.ValidDocuments.APISDocumentSet.IsSelected,
+										ns02#MainDocumentIssuerCountryCode: $.Identity.ValidDocuments.APISDocumentSet.MainDocumentIssuerCountryCode,
 										ns02#MainDocumentType: $.Identity.ValidDocuments.APISDocumentSet.MainDocumentType
 									}
-								}
+								} else null
 							},
-							ns02#IsSelectableForBoardingPass: $.IsSelectableForBoardingPass as String default null,
-							ns02#IsSelected: $.IsSelected as String default null,
+							ns02#IsSelectableForBoardingPass: $.IsSelectableForBoardingPass,
+							ns02#IsSelected: $.IsSelected,
 							ns02#LastName: $.LastName,
 							ns02#MarketingCarrierCode: $.MarketingCarrierCode,
-							ns02#NativePassengerId: $.NativePassengerId as String default null,
+							ns02#NativePassengerId: $.NativePassengerId,
 							ns02#PassengerId: $.PassengerId,
-							ns02#PassengerRPH: $.PassengerRPH as String default null,
-							ns02#PassengerSequenceNumber: $.PassengerSequenceNumber as String default null,
+							ns02#PassengerRPH: $.PassengerRPH,
+							ns02#PassengerSequenceNumber: $.PassengerSequenceNumber,
 							ns02#PaxType: $.PaxType,
-							ns02#RequiresCheckin: $.RequiresCheckin as String default null,
+							ns02#RequiresCheckin: $.RequiresCheckin,
 							ns02#SeatNumber: $.SeatNumber,
-							ns02#SupportsCheckin: $.SupportsCheckin as String default null
+							ns02#SupportsCheckin: $.SupportsCheckin
 						})					
 					}
 				}

@@ -112,7 +112,7 @@ output application/java
 							</ee:transform>
 							<logger level="INFO" doc:name="Logger" doc:id="b98fd921-c6fb-499c-92f1-ff8185acaaf2" message="test-job: Will call UpdateTestResult #['\n']"/>
 							<db:stored-procedure doc:name="Store Test Result" doc:id="88d11474-0fc1-4806-bf69-373bcd48e834" config-ref="mssql-jdbc">
-					<db:sql>{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult,:ExpectedResponse,:ActualResponse,:ActualDCScalls,:NumberOfDifferences,:DCScallsMatch) }</db:sql>
+					<db:sql>{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult,:ExpectedResponse,:ActualResponse,:ActualDCScalls,:ExpectedDCScalls,:NumberOfDifferences,:DCScallsMatch) }</db:sql>
 						<db:input-parameters><![CDATA[#[{
 	'TestId': vars.TestId,
 	'FusionRequestId': vars.loggedItem.FusionRequestId,
@@ -120,6 +120,7 @@ output application/java
 	'ExpectedResponse': '',
 	'ActualResponse': '',
 	'ActualDCScalls': '',
+	'ExpectedDCScalls': '',
 	'NumberOfDifferences': '0',
 	'DCScallsMatch': ''
 	
