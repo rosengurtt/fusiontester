@@ -28,8 +28,10 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 					Origin: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#Origin,
 					Destination: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#Destination,
 					DepartureTime: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#DepartureTime,
+					EstimatedDepartureTime: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#EstimatedDepartureTime,
 					ArrivalTime: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#ArrivalTime,
 					UTCDepartureTime: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#UTCDepartureTime,
+					UTCEstimatedDepartureTime: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#UTCEstimatedDepartureTime,
 					UTCArrivalTime: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#UTCArrivalTime,
 					OperatingCarrier: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#OperatingCarrier,
 					MarketingCarrier: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#MarketingCarrier,
@@ -43,7 +45,7 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 					ConnectingFlight: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#ConnectingFlight,
 					JourneyRPH: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#JourneyRPH,
 					CustomProperties: {	
-						 string: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#CustomProperties.*string					
+						 string: payload.ns03#Envelope.ns03#Body.ns0#GetReservationByNativeReferenceResponse.ns0#GetReservationByNativeReferenceResult.ns0#Reservation.ns01#Flights.ns01#Flight.ns01#CustomProperties.*ns02#string					
 					},
 				}
 			},

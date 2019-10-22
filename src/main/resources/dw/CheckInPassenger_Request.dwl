@@ -4,6 +4,7 @@ ns a http://www.w3.org/2005/08/addressing
 ns ns0 http://www.w3.org/2003/05/soap-envelope
 ns ns01 http://services.fusion.aero
 ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
+ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 ---
 {
 	ns0#Envelope: {
@@ -43,7 +44,11 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 							ns02#ApisRequired: $.ApisRequired,
 							ns02#ArrivalTime: $.ArrivalTime,
 							ns02#ConnectingFlight: $.ConnectingFlight,
+							ns02#CustomProperties:{
+								ns03#string: payload.CheckInPassenger_Request.Flight.CustomProperties.*string
+							},
 							ns02#DepartureTime: $.DepartureTime,
+							ns02#EstimatedDepartureTime: $.EstimatedDepartureTime,
 							ns02#Destination: $.Destination,
 							ns02#FlightNumber: $.FlightNumber,
 							ns02#FlightRPH: $.FlightRPH,
@@ -56,13 +61,87 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 							ns02#Origin: $.Origin,
 							ns02#RequireMultipleAPISDocuments: $.RequireMultipleAPISDocuments,
 							ns02#UTCArrivalTime: $.UTCArrivalTime,
-							ns02#UTCDepartureTime: $.UTCDepartureTime
+							ns02#UTCDepartureTime: $.UTCDepartureTime,
+							ns02#UTCEstimatedDepartureTime: $.UTCEstimatedDepartureTime
 						})
 					},
 					ns01#Passengers: {
 						ns02#Passenger: (payload.CheckInPassenger_Request.Passengers.*Passenger map {
 							ns02#Active: $.Active,
-							ns02#AllowanceRetrieved: $.AllowanceRetrieved,
+							ns02#AllowanceRetrieved: $.AllowanceRetrieved,							
+							ns02#Baggage: {
+								ns02#BaggageAllowance:{
+									ns02#BagDropId: $.Baggage.BaggageAllowance.BagDropId,
+									ns02#BaggageAllowanceTypeId: $.Baggage.BaggageAllowance.BaggageAllowanceTypeId,
+									ns02#BaggageItemTypeId: $.Baggage.BaggageAllowance.BaggageItemTypeId,
+									ns02#ConsumeItemWeight: $.Baggage.BaggageAllowance.ConsumeItemWeight,
+									ns02#CreatedOn: $.Baggage.BaggageAllowance.CreatedOn,
+									ns02#FlightId: $.Baggage.BaggageAllowance.FlightId,
+									ns02#Id: $.Baggage.BaggageAllowance.Id,
+									ns02#InitialBags: $.Baggage.BaggageAllowance.InitialBags,
+									ns02#InitialWeight: $.Baggage.BaggageAllowance.InitialWeight,
+									ns02#MaxSingleItemWeight: $.Baggage.BaggageAllowance.MaxSingleItemWeight,
+									ns02#PassengerId: $.Baggage.BaggageAllowance.PassengerId,
+									ns02#PoolItems: $.Baggage.BaggageAllowance.PoolItems,
+									ns02#PoolWeight: $.Baggage.BaggageAllowance.PoolWeight,
+									ns02#PurchasedBags: $.Baggage.BaggageAllowance.PurchasedBags,
+									ns02#PurchasedWeight: $.Baggage.BaggageAllowance.PurchasedWeight,
+									ns02#RemainingBags: $.Baggage.BaggageAllowance.RemainingBags,
+									ns02#RemainingWeight: $.Baggage.BaggageAllowance.RemainingWeight,
+									ns02#UpdateInitialAllowance: $.Baggage.BaggageAllowance.UpdateInitialAllowance,									
+								},
+								BaggageAllowances: {
+									BaggageAllowance: ($.Baggage.BaggageAllowances.*BaggageAllowance map (item, index) -> {
+										ns02#BagDropId: item.BagDropId,
+										ns02#BaggageAllowanceTypeId: item.BaggageAllowanceTypeId,
+										ns02#BaggageItemTypeId: item.BaggageItemTypeId,
+										ns02#ConsumeItemWeight: item.ConsumeItemWeight,
+										ns02#CreatedOn: item.CreatedOn,
+										ns02#FlightId: item.FlightId,
+										ns02#Id: item.Id,
+										ns02#InitialBags: item.InitialBags,
+										ns02#InitialWeight: item.InitialWeight,
+										ns02#MaxSingleItemWeight: item.MaxSingleItemWeight,
+										ns02#PassengerId: item.PassengerId,
+										ns02#PoolItems: item.PoolItems,
+										ns02#PoolWeight: item.PoolWeight,
+										ns02#PurchasedBags: item.PurchasedBags,
+										ns02#PurchasedWeight: item.PurchasedWeight,
+										ns02#RemainingBags: item.RemainingBags,
+										ns02#RemainingWeight: item.RemainingWeight,
+										ns02#UpdateInitialAllowance: item.UpdateInitialAllowance,
+									})
+								},
+								ns02#BaggageItems: {
+									ns02#BaggageItem: ($.Baggage.BaggageItems.*BaggageItem map (item, index) -> {
+										ns02#Active: item.Active,
+										ns02#BaggageAllowanceId: item.BaggageAllowanceId,
+										ns02#BaggageItemSubTypeId: item.BaggageItemSubTypeId,
+										ns02#BaggageItemSubTypeName: item.BaggageItemSubTypeName,
+										ns02#BaggageItemType: item.BaggageItemType,
+										ns02#BaggageItemTypeId: item.BaggageItemTypeId,
+										ns02#BaggageItemTypeName: item.BaggageItemTypeName,
+										ns02#ConsumeAllowance: item.ConsumeAllowance,
+										ns02#CreatedOn: item.CreatedOn,		
+										ns02#Dropped: item.Dropped,		
+										ns02#DroppedTime: item.DroppedTime,		
+										ns02#HasNotionalWeight: item.HasNotionalWeight,	
+										ns02#Id: item.Id,	
+										ns02#InitialWeight: item.InitialWeight,
+										ns02#NativeBaggageId: item.NativeBaggageId,
+										ns02#OutOfGauge: item.OutOfGauge,
+										ns02#PassengerId: item.PassengerId,
+										ns02#Printed: item.Printed,
+										ns02#PrintedTime: item.PrintedTime,
+										ns02#Registered: item.Registered,
+										ns02#RegisteredTime: item.RegisteredTime,
+										ns02#SessionId: item.SessionId,
+										ns02#TagNumber: item.TagNumber,
+										ns02#Weight: item.Weight,
+									})
+								},
+								ns02#MaxSingleItemWeight: $.Baggage.MaxSingleItemWeight,
+							},
 							ns02#Boarded: $.Boarded,
 							ns02#CheckedIn: $.CheckedIn,
 							ns02#ClearanceRequired: $.ClearanceRequired,
@@ -70,9 +149,13 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 							ns02#ConfirmedDga: $.ConfirmedDga,
 							ns02#ConfirmedIdentity: $.ConfirmedIdentity,
 							ns02#ConnectingFlightNumber: $.ConnectingFlightNumber,
+							ns02#CustomProperties:{
+								ns03#string: $.CustomProperties.*string
+							},
 							ns02#DateOfBirth: $.DateOfBirth,
 							ns02#DocumentCheckRequired: $.DocumentCheckRequired,
 							ns02#FirstName: $.FirstName,
+							ns02#Gender: $.Gender,
 							ns02#Identity: {
 									ns02#LastAPIS: {
 										ns02#AddressInformation: $.Identity.LastAPIS.AddressInformation,
@@ -153,8 +236,29 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 							ns02#PassengerSequenceNumber: $.PassengerSequenceNumber,
 							ns02#PaxType: $.PaxType,
 							ns02#RequiresCheckin: $.RequiresCheckin,
+							ns02#SSRs: {
+								ns02#SSR: ($.SSRs.*SSR map (itemon, indexon) -> {
+									ns02#Currency: itemon.Currency,
+									ns02#FeeCode: itemon.FeeCode,
+									ns02#FlightNumber: itemon.FlightNumber,
+									ns02#PaxNumber: itemon.PaxNumber,
+									ns02#Price: itemon.Price,
+									ns02#SSRCode: itemon.SSRCode,
+									ns02#SSRDescription: itemon.SSRDescription,				
+								})
+							},
 							ns02#SeatNumber: $.SeatNumber,
-							ns02#SupportsCheckin: $.SupportsCheckin
+							ns02#SeatPreference: {
+								ns02#Name: $.SeatPreference.Name,
+							}, 
+													
+							ns02#RequiresCheckin: $.RequiresCheckin,
+							ns02#SeatNumber: $.SeatNumber,
+							ns02#SeatPreference: {
+								ns02#Name: $.SeatPreference.Name,
+							},
+							ns02#SupportsCheckin: $.SupportsCheckin,
+							ns02#Title: $.Title
 						})					
 					}
 				}

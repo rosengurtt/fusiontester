@@ -3,6 +3,7 @@ output application/xml skipNullOn = "everywhere"
 ns ns0 http://www.w3.org/2003/05/soap-envelope
 ns ns01 http://services.fusion.aero
 ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
+ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 ---
 {
 	CheckInPassenger_Response: {
@@ -144,15 +145,14 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 						InitialWeight: $.ns02#Baggage.ns02#BaggageAllowance.ns02#InitialWeight,
 						PurchasedBags: $.ns02#Baggage.ns02#BaggageAllowance.ns02#PurchasedBags,
 						PurchasedWeight: $.ns02#Baggage.ns02#BaggageAllowance.ns02#PurchasedWeight,
-						InitialBags: $.ns02#Baggage.ns02#BaggageAllowance.ns02#InitialBags,
 						RemainingBags: $.ns02#Baggage.ns02#BaggageAllowance.ns02#RemainingBags,
 						RemainingWeight: $.ns02#Baggage.ns02#BaggageAllowance.ns02#RemainingWeight,
 						CreatedOn: $.ns02#Baggage.ns02#BaggageAllowance.ns02#CreatedOn						
 					},
-					MaxSingleItemWeight: $.ns02#Baggage.MaxSingleItemWeight
+					MaxSingleItemWeight: $.ns02#Baggage.ns02#MaxSingleItemWeight,
 				},
 				SSRs: {
-					SSR: ($.*ns02#SSRs.*ns02#SSR  map (itemon, indexon) -> {
+					SSR: ($.ns02#SSRs.*ns02#SSR  map (itemon, indexon) -> {
 						SSRCode: itemon.ns02#SSRCode,
 						SSRDescription: itemon.ns02#SSRDescription,
 						FeeCode: itemon.ns02#FeeCode,
@@ -161,10 +161,12 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 					})
 				},
 				CustomProperties: {	
-						 string: $.ns02#CustomProperties.*string					
+						 string: $.ns02#CustomProperties.*ns03#string					
 					},
-				SeatPreference: $.ns02#SeatPreference
-			})
+				SeatPreference: {
+					Name: $.ns02#SeatPreference.ns02#Name,
+				},
+			}),
 		}
 	}
 }

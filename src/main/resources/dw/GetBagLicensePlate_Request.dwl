@@ -40,30 +40,30 @@ ns a http://www.w3.org/2005/08/addressing
 					},
 					ns01#ActivateBagTag: payload.GetBagLicensePlate_Request.ActivateBagTag,
 					ns01#BagWeight: payload.GetBagLicensePlate_Request.BagWeight as String,
-					ns01#BaggageItem: {
-						ns02#Active: payload.GetBagLicensePlate_Request.BaggageItem.Active,
-						ns02#BaggageAllowanceId: payload.GetBagLicensePlate_Request.BaggageItem.BaggageAllowanceId,
-						ns02#BaggageItemSubTypeId: payload.GetBagLicensePlate_Request.BaggageItem.BaggageItemSubTypeId,
-						ns02#BaggageItemType: payload.GetBagLicensePlate_Request.BaggageItem.BaggageItemType,
-						ns02#BaggageItemTypeId: payload.GetBagLicensePlate_Request.BaggageItem.BaggageItemTypeId,
-						ns02#BaggageItemTypeName: payload.GetBagLicensePlate_Request.BaggageItem.BaggageItemTypeName,
-						ns02#ConsumeAllowance: payload.GetBagLicensePlate_Request.BaggageItem.ConsumeAllowance,
-						ns02#CreatedOn: payload.GetBagLicensePlate_Request.BaggageItem.CreatedOn,
-						ns02#Dropped: payload.GetBagLicensePlate_Request.BaggageItem.Dropped,
-						ns02#DroppedTime: payload.GetBagLicensePlate_Request.BaggageItem.DroppedTime,
-						ns02#HasNotionalWeight: payload.GetBagLicensePlate_Request.BaggageItem.HasNotionalWeight,
-						ns02#Id: payload.GetBagLicensePlate_Request.BaggageItem.Id,
-						ns02#InitialWeight: payload.GetBagLicensePlate_Request.BaggageItem.InitialWeight,
-						ns02#NativeBaggageId: payload.GetBagLicensePlate_Request.BaggageItem.NativeBaggageId,
-						ns02#OutOfGauge: payload.GetBagLicensePlate_Request.BaggageItem.OutOfGauge,
-						ns02#PassengerId: payload.GetBagLicensePlate_Request.BaggageItem.PassengerId,
-						ns02#Printed: payload.GetBagLicensePlate_Request.BaggageItem.Printed,
-						ns02#PrintedTime: payload.GetBagLicensePlate_Request.BaggageItem.PrintedTime,
-						ns02#Registered: payload.GetBagLicensePlate_Request.BaggageItem.Registered,
-						ns02#RegisteredTime: payload.GetBagLicensePlate_Request.BaggageItem.RegisteredTime,
-						ns02#SessionId: payload.GetBagLicensePlate_Request.BaggageItem.SessionId,
-						ns02#Weight: payload.GetBagLicensePlate_Request.BaggageItem.Weight
-					},
+					ns01#BaggageItem: (payload.GetBagLicensePlate_Request.*BaggageItem map (item, index) ->  {
+						ns02#Active: item.Active,
+						ns02#BaggageAllowanceId: item.BaggageAllowanceId,
+						ns02#BaggageItemSubTypeId: item.BaggageItemSubTypeId,
+						ns02#BaggageItemType: item.BaggageItemType,
+						ns02#BaggageItemTypeId: item.BaggageItemTypeId,
+						ns02#BaggageItemTypeName: item.BaggageItemTypeName,
+						ns02#ConsumeAllowance: item.ConsumeAllowance,
+						ns02#CreatedOn: item.CreatedOn,
+						ns02#Dropped: item.Dropped,
+						ns02#DroppedTime: item.DroppedTime,
+						ns02#HasNotionalWeight: item.HasNotionalWeight,
+						ns02#Id: item.Id,
+						ns02#InitialWeight: item.InitialWeight,
+						ns02#NativeBaggageId: item.NativeBaggageId,
+						ns02#OutOfGauge: item.OutOfGauge,
+						ns02#PassengerId: item.PassengerId,
+						ns02#Printed: item.Printed,
+						ns02#PrintedTime: item.PrintedTime,
+						ns02#Registered: item.Registered,
+						ns02#RegisteredTime: item.RegisteredTime,
+						ns02#SessionId: item.SessionId,
+						ns02#Weight: item.Weight
+					}),
 					ns01#BaggageItemType: payload.GetBagLicensePlate_Request.BaggageItemType,
 					ns01#ClearVisaAlert: payload.GetBagLicensePlate_Request.ClearVisaAlert,
 					ns01#ExcessBaggageCost: {
@@ -118,7 +118,10 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#Active: payload.GetBagLicensePlate_Request.Passenger.Active,
 						ns02#AllowanceRetrieved: payload.GetBagLicensePlate_Request.Passenger.AllowanceRetrieved,
 						ns02#Baggage: {
-							ns02#BaggageAllowance: {
+							ns02#BaggageAllowance: if (payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageAllowance.RemainingWeight != '0'
+									 or payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageAllowance.InitialWeight != '0'
+									or payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageAllowance.PoolItems == 'true'
+									or payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageAllowance.PoolWeight == 'true') {
 								ns02#BagDropId: payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageAllowance.BagDropId,
 								ns02#BaggageAllowanceTypeId: payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageAllowance.BaggageAllowanceTypeId,
 								ns02#BaggageItemTypeId: payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageAllowance.BaggageItemTypeId,
@@ -137,9 +140,60 @@ ns a http://www.w3.org/2005/08/addressing
 								ns02#RemainingBags: payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageAllowance.RemainingBags,
 								ns02#RemainingWeight: payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageAllowance.RemainingWeight,
 								ns02#UpdateInitialAllowance: payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageAllowance.UpdateInitialAllowance
+							} else null,
+							ns02#BaggageAllowances: {
+								ns02#BaggageAllowance: (payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageAllowances.*BaggageAllowance map (item, index) -> {
+									ns02#BagDropId: item.BagDropId,
+									ns02#BaggageAllowanceTypeId: item.BaggageAllowanceTypeId,
+									ns02#BaggageItemTypeId: item.BaggageItemTypeId,
+									ns02#ConsumeItemWeight: item.ConsumeItemWeight,
+									ns02#CreatedOn: item.CreatedOn,
+									ns02#FlightId: item.FlightId,
+									ns02#Id: item.Id,
+									ns02#InitialBags: item.InitialBags,
+									ns02#InitialWeight: item.InitialWeight,
+									ns02#MaxSingleItemWeight: item.MaxSingleItemWeight,
+									ns02#PassengerId: item.PassengerId,
+									ns02#PoolItems: item.PoolItems,
+									ns02#PoolWeight: item.PoolWeight,
+									ns02#PurchasedBags: item.PurchasedBags,
+									ns02#PurchasedWeight: item.PurchasedWeight,
+									ns02#RemainingBags: item.RemainingBags,
+									ns02#RemainingWeight: item.RemainingWeight,
+									ns02#UpdateInitialAllowance: item.UpdateInitialAllowance,
+								})
+							},
+							ns02#BaggageItems: {
+								ns02#BaggageItem: (payload.GetBagLicensePlate_Request.Passenger.Baggage.BaggageItems.*BaggageItem map (item, index) -> {
+									ns02#Active: item.Active,
+									ns02#BaggageAllowanceId: item.BaggageAllowanceId,
+									ns02#BaggageItemSubTypeId: item.BaggageItemSubTypeId,
+									ns02#BaggageItemSubTypeName: item.BaggageItemSubTypeName,
+									ns02#BaggageItemType: item.BaggageItemType,
+									ns02#BaggageItemTypeId: item.BaggageItemTypeId,
+									ns02#BaggageItemTypeName: item.BaggageItemTypeName,
+									ns02#ConsumeAllowance: item.ConsumeAllowance,
+									ns02#CreatedOn: item.CreatedOn,		
+									ns02#Dropped: item.Dropped,		
+									ns02#DroppedTime: item.DroppedTime,		
+									ns02#HasNotionalWeight: item.HasNotionalWeight,	
+									ns02#Id: item.Id,	
+									ns02#InitialWeight: item.InitialWeight,
+									ns02#NativeBaggageId: item.NativeBaggageId,
+									ns02#OutOfGauge: item.OutOfGauge,
+									ns02#PassengerId: item.PassengerId,
+									ns02#Printed: item.Printed,
+									ns02#PrintedTime: item.PrintedTime,
+									ns02#Registered: item.Registered,
+									ns02#RegisteredTime: item.RegisteredTime,
+									ns02#SessionId: item.SessionId,
+									ns02#TagNumber: item.TagNumber,
+									ns02#Weight: item.Weight,
+								})
 							},
 							ns02#MaxSingleItemWeight: payload.GetBagLicensePlate_Request.Passenger.Baggage.MaxSingleItemWeight
 						},
+						ns02#Barcode: payload.GetBagLicensePlate_Request.Passenger.Barcode,
 						ns02#Boarded: payload.GetBagLicensePlate_Request.Passenger.Boarded,
 						ns02#CheckedIn: payload.GetBagLicensePlate_Request.Passenger.CheckedIn,
 						ns02#ClearanceRequired: payload.GetBagLicensePlate_Request.Passenger.ClearanceRequired,
@@ -150,13 +204,14 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#CustomProperties:{
 							ns03#string: payload.GetBagLicensePlate_Request.Passenger.CustomProperties.*string
 						},
+						ns02#DateOfBirth: payload.GetBagLicensePlate_Request.Passenger.DateOfBirth,
 						ns02#DocumentCheckRequired: payload.GetBagLicensePlate_Request.Passenger.DocumentCheckRequired,
 						ns02#FirstName: payload.GetBagLicensePlate_Request.Passenger.FirstName,
 						ns02#Gender: payload.GetBagLicensePlate_Request.Passenger.Gender,
-						ns02#Identity: {
+						ns02#Identity: if (payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS != null) {
 							ns02#LastAPIS: {	
 								ns02#AddressInformation: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.AddressInformation,	
-								ns02#ContactInformation: {
+								ns02#ContactInformation: if (payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.ContactInformation.ContactLastName != null) {
 									ns02#AddressLine: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.ContactInformation.AddressLine,
 									ns02#City: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.ContactInformation.City,
 									ns02#CompanyName: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.ContactInformation.CompanyName,
@@ -168,7 +223,7 @@ ns a http://www.w3.org/2005/08/addressing
 									ns02#NotificationPreference: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.ContactInformation.NotificationPreference,
 									ns02#PostalCode: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.ContactInformation.PostalCode,
 									ns02#TelephoneNumber: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.ContactInformation.TelephoneNumber,									
-								},
+								} else null,
 								ns02#CountryOfIssue: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.CountryOfIssue,
 								ns02#CountryOfResidence: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.CountryOfResidence,								
 								ns02#DateOfBirth: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.DateOfBirth,		
@@ -182,7 +237,7 @@ ns a http://www.w3.org/2005/08/addressing
 								ns02#Nationality: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.Nationality,
 								ns02#Surname: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.Surname
 							} 
-						},
+						} else null,
 						ns02#IsSelectableForBoardingPass: payload.GetBagLicensePlate_Request.Passenger.IsSelectableForBoardingPass,
 						ns02#IsSelected: payload.GetBagLicensePlate_Request.Passenger.IsSelected,
 						ns02#LastName: payload.GetBagLicensePlate_Request.Passenger.LastName,
@@ -191,8 +246,24 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#PassengerId: payload.GetBagLicensePlate_Request.Passenger.PassengerId,
 						ns02#PassengerRPH: payload.GetBagLicensePlate_Request.Passenger.PassengerRPH,
 						ns02#PassengerSequenceNumber: payload.GetBagLicensePlate_Request.Passenger.PassengerSequenceNumber,
+						ns02#PaxType: payload.GetBagLicensePlate_Request.Passenger.PaxType,
+						ns02#SSRs:{
+							ns02#SSR: (payload.GetBagLicensePlate_Request.Passenger.SSRs.*SSR  map (itemon, indexon) -> {
+								ns02#Currency: itemon.Currency,
+								ns02#FeeCode: itemon.FeeCode,
+								ns02#FlightNumber: itemon.FlightNumber,
+								ns02#PaxNumber: itemon.PaxNumber,
+								ns02#Price: itemon.Price,
+								ns02#SSRCode: itemon.SSRCode,
+								ns02#SSRDescription: itemon.SSRDescription,						
+							})
+						},
 						ns02#RequiresCheckin: payload.GetBagLicensePlate_Request.Passenger.RequiresCheckin,
 						ns02#SeatNumber: payload.GetBagLicensePlate_Request.Passenger.SeatNumber,
+							ns02#SeatPreference: {
+								ns02#Name: payload.GetBagLicensePlate_Request.Passenger.SeatPreference.Name,
+							},
+						ns02#SupportsCheckin: payload.GetBagLicensePlate_Request.Passenger.SupportsCheckin,
 						ns02#Title: payload.GetBagLicensePlate_Request.Passenger.Title
 					},
 					ns01#Pnr: payload.GetBagLicensePlate_Request.Pnr
