@@ -211,6 +211,7 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 									BaggageItemTypeId: $.ns01#BaggageItemTypeId,
 									BaggageItemTypeName: $.ns01#BaggageItemTypeName,
 									BaggageItemSubTypeId: $.ns01#BaggageItemSubTypeId,
+									BaggageItemSubTypeName: $.ns01#BaggageItemSubTypeName,
 									HasNotionalWeight: $.ns01#HasNotionalWeight,
 									OutOfGauge: $.ns01#OutOfGauge,
 									ConsumeAllowance: $.ns01#ConsumeAllowance,

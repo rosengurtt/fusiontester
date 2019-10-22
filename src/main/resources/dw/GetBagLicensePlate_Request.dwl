@@ -39,7 +39,7 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#Weight: payload.GetBagLicensePlate_Request.Session.Weight
 					},
 					ns01#ActivateBagTag: payload.GetBagLicensePlate_Request.ActivateBagTag,
-					ns01#BagWeight: payload.GetBagLicensePlate_Request.BagWeight as String,
+					ns01#BagWeight: payload.GetBagLicensePlate_Request.BagWeight,
 					ns01#BaggageItem: (payload.GetBagLicensePlate_Request.*BaggageItem map (item, index) ->  {
 						ns02#Active: item.Active,
 						ns02#BaggageAllowanceId: item.BaggageAllowanceId,
@@ -77,6 +77,7 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#DepartureTerminal: payload.GetBagLicensePlate_Request.Flight.DepartureTerminal default null,
 						ns02#DepartureTime: payload.GetBagLicensePlate_Request.Flight.DepartureTime,
 						ns02#Destination: payload.GetBagLicensePlate_Request.Flight.Destination,
+						ns02#EstimatedDepartureTime: payload.GetBagLicensePlate_Request.Flight.EstimatedDepartureTime,
 						ns02#FlightNumber: payload.GetBagLicensePlate_Request.Flight.FlightNumber,
 						ns02#FlightRPH: payload.GetBagLicensePlate_Request.Flight.FlightRPH,
 						ns02#Id: payload.GetBagLicensePlate_Request.Flight.Id,
@@ -89,7 +90,8 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#Origin: payload.GetBagLicensePlate_Request.Flight.Origin,
 						ns02#RequireMultipleAPISDocuments: payload.GetBagLicensePlate_Request.Flight.RequireMultipleAPISDocuments,
 						ns02#UTCArrivalTime: payload.GetBagLicensePlate_Request.Flight.UTCArrivalTime,
-						ns02#UTCDepartureTime: payload.GetBagLicensePlate_Request.Flight.UTCDepartureTime
+						ns02#UTCDepartureTime: payload.GetBagLicensePlate_Request.Flight.UTCDepartureTime,
+						ns02#UTCEstimatedDepartureTime: payload.GetBagLicensePlate_Request.Flight.UTCEstimatedDepartureTime,
 					},
 					ns01#Flights:  {
 						ns02#Flight: (payload.GetBagLicensePlate_Request.Flights.*Flight map {
@@ -99,6 +101,7 @@ ns a http://www.w3.org/2005/08/addressing
 							ns02#DepartureTerminal: $.DepartureTerminal,
 							ns02#DepartureTime: $.DepartureTime,
 							ns02#Destination: $.Destination,
+							ns02#EstimatedDepartureTime: $.EstimatedDepartureTime,
 							ns02#FlightNumber: $.FlightNumber,
 							ns02#FlightRPH: $.FlightRPH as String,
 							ns02#Id: $.Id,
@@ -111,7 +114,8 @@ ns a http://www.w3.org/2005/08/addressing
 							ns02#Origin: $.Origin,
 							ns02#RequireMultipleAPISDocuments: $.RequireMultipleAPISDocuments,
 							ns02#UTCArrivalTime: $.UTCArrivalTime,
-							ns02#UTCDepartureTime: $.UTCDepartureTime
+							ns02#UTCDepartureTime: $.UTCDepartureTime,
+							ns02#UTCEstimatedDepartureTime: $.UTCEstimatedDepartureTime,
 						})
 					},
 					ns01#Passenger: {
@@ -242,6 +246,7 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#IsSelected: payload.GetBagLicensePlate_Request.Passenger.IsSelected,
 						ns02#LastName: payload.GetBagLicensePlate_Request.Passenger.LastName,
 						ns02#MarketingCarrierCode: payload.GetBagLicensePlate_Request.Passenger.MarketingCarrierCode,
+						ns02#MiddleName: payload.GetBagLicensePlate_Request.Passenger.MiddleName,
 						ns02#NativePassengerId: payload.GetBagLicensePlate_Request.Passenger.NativePassengerId,
 						ns02#PassengerId: payload.GetBagLicensePlate_Request.Passenger.PassengerId,
 						ns02#PassengerRPH: payload.GetBagLicensePlate_Request.Passenger.PassengerRPH,
@@ -260,9 +265,9 @@ ns a http://www.w3.org/2005/08/addressing
 						},
 						ns02#RequiresCheckin: payload.GetBagLicensePlate_Request.Passenger.RequiresCheckin,
 						ns02#SeatNumber: payload.GetBagLicensePlate_Request.Passenger.SeatNumber,
-							ns02#SeatPreference: {
-								ns02#Name: payload.GetBagLicensePlate_Request.Passenger.SeatPreference.Name,
-							},
+						ns02#SeatPreference: {
+							ns02#Name: payload.GetBagLicensePlate_Request.Passenger.SeatPreference.Name,
+						},
 						ns02#SupportsCheckin: payload.GetBagLicensePlate_Request.Passenger.SupportsCheckin,
 						ns02#Title: payload.GetBagLicensePlate_Request.Passenger.Title
 					},
