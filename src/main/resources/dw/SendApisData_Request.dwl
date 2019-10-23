@@ -9,7 +9,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 {
 	ns0#Envelope: {
 		ns0#Header: {
-			a#Action @(ns0#mustUnderstand: "1"): "http://services.fusion.aero/IFusionService/CheckInPassenger",
+			a#Action @(ns0#mustUnderstand: "1"): "http://services.fusion.aero/IFusionService/SendApisData",
 			a#MessageID: "urn:uuid:e933edc2-19c0-4e4e-87c2-8628bc7bf3b7",
 			a#ReplyTo: {
 				a#Address: "http://www.w3.org/2005/08/addressing/anonymous"
@@ -17,56 +17,106 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 			a#To @(ns0#mustUnderstand: "1"): "http://local.fusion.aero/FusionService.svc"
 		},
 		ns0#Body: {
-			ns01#CheckInPassenger: {
+			ns01#SendApisData: {
 				ns01#request: {
-					ns02#DepartureAirportCode: payload.CheckInPassenger_Request.DepartureAirportCode,
-					ns02#IataAirlineCode: payload.CheckInPassenger_Request.IataAirlineCode,
-					ns02#MACAddress: payload.CheckInPassenger_Request.MACAddress,
-					ns02#RequestId: payload.CheckInPassenger_Request.RequestId,
-					ns02#RequestSourceName: payload.CheckInPassenger_Request.RequestSourceName,
-					ns02#RequestType: payload.CheckInPassenger_Request.RequestType,
-					ns02#TestRequest: payload.CheckInPassenger_Request.TestRequest,
+					ns02#DepartureAirportCode: payload.SendApisData_Request.DepartureAirportCode,
+					ns02#IataAirlineCode: payload.SendApisData_Request.IataAirlineCode,
+					ns02#MACAddress: payload.SendApisData_Request.MACAddress,
+					ns02#RequestId: payload.SendApisData_Request.RequestId,
+					ns02#RequestSourceName: payload.SendApisData_Request.RequestSourceName,
+					ns02#RequestType: payload.SendApisData_Request.RequestType,
+					ns02#TestRequest: payload.SendApisData_Request.TestRequest,
+					ns02#BusinessActivity: payload.SendApisData_Request.BusinessActivity,
+					ns02#OverridingKioskUser:{
+						ns02#DateCreated: payload.SendApisData_Request.OverridingKioskUser.DateCreated,
+						ns02#DisplayName: payload.SendApisData_Request.OverridingKioskUser.DisplayName,
+						ns02#HashedPassword: payload.SendApisData_Request.OverridingKioskUser.HashedPassword,
+						ns02#IsAdmin: payload.SendApisData_Request.OverridingKioskUser.IsAdmin,
+						ns02#LastLogin: payload.SendApisData_Request.OverridingKioskUser.LastLogin,
+						ns02#NativeUserId: payload.SendApisData_Request.OverridingKioskUser.NativeUserId,
+						ns02#OrganisationId: payload.SendApisData_Request.OverridingKioskUser.OrganisationId,
+						ns02#UserId: payload.SendApisData_Request.OverridingKioskUser.UserId,
+						ns02#UserName: payload.SendApisData_Request.OverridingKioskUser.UserName,
+					},
 					ns02#Session: {
-						ns02#EndTime: payload.CheckInPassenger_Request.Session.EndTime,
-						ns02#KioskId: payload.CheckInPassenger_Request.Session.KioskId,
-						ns02#PNR: payload.CheckInPassenger_Request.Session.PNR,
-						ns02#Price: payload.CheckInPassenger_Request.Session.Price,
-						ns02#ServiceConfigId: payload.CheckInPassenger_Request.Session.ServiceConfigId,
-						ns02#SessionId: payload.CheckInPassenger_Request.Session.SessionId,
-						ns02#StartTime: payload.CheckInPassenger_Request.Session.StartTime,
-						ns02#Status: payload.CheckInPassenger_Request.Session.Status,
-						ns02#UserId: payload.CheckInPassenger_Request.Session.UserId,
-						ns02#Weight: payload.CheckInPassenger_Request.Session.Weight
+						ns02#EndTime: payload.SendApisData_Request.Session.EndTime,
+						ns02#KioskId: payload.SendApisData_Request.Session.KioskId,
+						ns02#PNR: payload.SendApisData_Request.Session.PNR,
+						ns02#Price: payload.SendApisData_Request.Session.Price,
+						ns02#ServiceConfigId: payload.SendApisData_Request.Session.ServiceConfigId,
+						ns02#SessionId: payload.SendApisData_Request.Session.SessionId,
+						ns02#StartTime: payload.SendApisData_Request.Session.StartTime,
+						ns02#Status: payload.SendApisData_Request.Session.Status,
+						ns02#UserId: payload.SendApisData_Request.Session.UserId,
+						ns02#Weight: payload.SendApisData_Request.Session.Weight
 					},
-					ns01#BagCountToCheckIn: payload.CheckInPassenger_Request.BagCountToCheckIn,
-					ns01#Flights: {
-						ns02#Flight: (payload.CheckInPassenger_Request.Flights.*Flight map {
-							ns02#ApisRequired: $.ApisRequired,
-							ns02#ArrivalTime: $.ArrivalTime,
-							ns02#ConnectingFlight: $.ConnectingFlight,
-							ns02#CustomProperties:{
-								ns03#string: payload.CheckInPassenger_Request.Flight.CustomProperties.*string
+					ns02#ApisData:{
+						ns02#AddressInformation: {
+							ns02#CityName: payload.SendApisData_Request.ApisData.AddressInformation.CityName,
+							ns02#Country:{
+								ns02#A2Code: payload.SendApisData_Request.ApisData.AddressInformation.Country.A2Code,
+								ns02#A3Code: payload.SendApisData_Request.ApisData.AddressInformation.Country.A3Code,
+								ns02#Abbreviation: payload.SendApisData_Request.ApisData.AddressInformation.Country.Abbreviation,
+								ns02#Enabled: payload.SendApisData_Request.ApisData.AddressInformation.Country.Enabled,
+								ns02#Name: payload.SendApisData_Request.ApisData.AddressInformation.Country.Name,
+								ns02#PhoneCode: payload.SendApisData_Request.ApisData.AddressInformation.Country.PhoneCode,								
 							},
-							ns02#DepartureTime: $.DepartureTime,
-							ns02#EstimatedDepartureTime: $.EstimatedDepartureTime,
-							ns02#Destination: $.Destination,
-							ns02#FlightNumber: $.FlightNumber,
-							ns02#FlightRPH: $.FlightRPH,
-							ns02#Id: $.Id,
-							ns02#JourneyRPH: $.JourneyRPH,
-							ns02#MarketingCarrier: $.MarketingCarrier,
-							ns02#OpenForBoarding: $.OpenForBoarding,
-							ns02#OpenForCheckIn: $.OpenForCheckIn,
-							ns02#OperatingCarrier: $.OperatingCarrier,
-							ns02#Origin: $.Origin,
-							ns02#RequireMultipleAPISDocuments: $.RequireMultipleAPISDocuments,
-							ns02#UTCArrivalTime: $.UTCArrivalTime,
-							ns02#UTCDepartureTime: $.UTCDepartureTime,
-							ns02#UTCEstimatedDepartureTime: $.UTCEstimatedDepartureTime
-						})
+							ns02#PostalCode: payload.SendApisData_Request.ApisData.AddressInformation.PostalCode,
+							ns02#StateProvince: payload.SendApisData_Request.ApisData.AddressInformation.StateProvince,
+							ns02#StreetNumber: payload.SendApisData_Request.ApisData.AddressInformation.StreetNumber,
+						},
+						ns02#ContactInformation: if (payload.SendApisData_Request.ApisData.ContactInformation.ContactLastName != null) {
+							ns02#AddressLine: payload.SendApisData_Request.ApisData.ContactInformation.AddressLine,
+							ns02#City: payload.SendApisData_Request.ApisData.ContactInformation.City,
+							ns02#CompanyName: payload.SendApisData_Request.ApisData.ContactInformation.CompanyName,
+							ns02#ContactFirstName: payload.SendApisData_Request.ApisData.ContactInformation.ContactFirstName,
+							ns02#ContactLastName: payload.SendApisData_Request.ApisData.ContactInformation.ContactLastName,
+							ns02#ContactTitle: payload.SendApisData_Request.ApisData.ContactInformation.ContactTitle,
+							ns02#Country: payload.SendApisData_Request.ApisData.ContactInformation.Country,
+							ns02#EmailAddress: payload.SendApisData_Request.ApisData.ContactInformation.EmailAddress,
+							ns02#NotificationPreference: payload.SendApisData_Request.ApisData.ContactInformation.NotificationPreference,
+							ns02#PostalCode: payload.SendApisData_Request.ApisData.ContactInformation.PostalCode,
+							ns02#TelephoneNumber: payload.SendApisData_Request.ApisData.ContactInformation.TelephoneNumber,									
+						} else null,
+						ns02#CountryOfIssue: payload.SendApisData_Request.ApisData.CountryOfIssue,
+						ns02#CountryOfResidence: payload.SendApisData_Request.ApisData.CountryOfResidence,								
+						ns02#DateOfBirth: payload.SendApisData_Request.ApisData.DateOfBirth,		
+						ns02#DocumentExpiryDate: payload.SendApisData_Request.ApisData.DocumentExpiryDate,
+						ns02#DocumentIssueDate: payload.SendApisData_Request.ApisData.DocumentIssueDate,
+						ns02#DocumentNumber: payload.SendApisData_Request.ApisData.DocumentNumber,						
+						ns02#DocumentType: payload.SendApisData_Request.ApisData.DocumentType,
+						ns02#Firstname: payload.SendApisData_Request.ApisData.Firstname,
+						ns02#Forenames: payload.SendApisData_Request.ApisData.Forenames,
+						ns02#Gender: payload.SendApisData_Request.ApisData.Gender,
+						ns02#Nationality: payload.SendApisData_Request.ApisData.Nationality,
+						ns02#Surname: payload.SendApisData_Request.ApisData.Surname
 					},
+					ns01#Flight: {
+						ns02#ApisRequired: payload.SendApisData_Request.Flight.ApisRequired,
+						ns02#ArrivalTime: payload.SendApisData_Request.Flight.ArrivalTime,
+						ns02#ConnectingFlight: payload.SendApisData_Request.Flight.ConnectingFlight,
+						ns02#DepartureTerminal: payload.SendApisData_Request.Flight.DepartureTerminal default null,
+						ns02#DepartureTime: payload.SendApisData_Request.Flight.DepartureTime,
+						ns02#Destination: payload.SendApisData_Request.Flight.Destination,
+						ns02#EstimatedDepartureTime: payload.SendApisData_Request.Flight.EstimatedDepartureTime,
+						ns02#FlightNumber: payload.SendApisData_Request.Flight.FlightNumber,
+						ns02#FlightRPH: payload.SendApisData_Request.Flight.FlightRPH,
+						ns02#Id: payload.SendApisData_Request.Flight.Id,
+						ns02#JourneyRPH: payload.SendApisData_Request.Flight.JourneyRPH,
+						ns02#MarketingCarrier: payload.SendApisData_Request.Flight.MarketingCarrier,
+						ns02#NativeFlightId: payload.SendApisData_Request.Flight.NativeFlightId,
+						ns02#OpenForBoarding: payload.SendApisData_Request.Flight.OpenForBoarding,
+						ns02#OpenForCheckIn: payload.SendApisData_Request.Flight.OpenForCheckIn,
+						ns02#OperatingCarrier: payload.SendApisData_Request.Flight.OperatingCarrier,
+						ns02#Origin: payload.SendApisData_Request.Flight.Origin,
+						ns02#RequireMultipleAPISDocuments: payload.SendApisData_Request.Flight.RequireMultipleAPISDocuments,
+						ns02#UTCArrivalTime: payload.SendApisData_Request.Flight.UTCArrivalTime,
+						ns02#UTCDepartureTime: payload.SendApisData_Request.Flight.UTCDepartureTime,
+						ns02#UTCEstimatedDepartureTime: payload.SendApisData_Request.Flight.UTCEstimatedDepartureTime,
+					},
+					ns01#NativePassengerId: payload.SendApisData_Request.NativePassengerId,
 					ns01#Passengers: {
-						ns02#Passenger: (payload.CheckInPassenger_Request.Passengers.*Passenger map {
+						ns02#Passenger: (payload.SendApisData_Request.Passengers.*Passenger map {
 							ns02#Active: $.Active,
 							ns02#AllowanceRetrieved: $.AllowanceRetrieved,							
 							ns02#Baggage: {
@@ -157,7 +207,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 							ns02#FirstName: $.FirstName,
 							ns02#Gender: $.Gender,
 							ns02#Identity: {
-									ns02#LastAPIS: if ($.Identity.LastAPIS != null) {
+									ns02#LastAPIS: {
 										ns02#AddressInformation: $.Identity.LastAPIS.AddressInformation,
 										ns02#ContactInformation: {
 											ns02#AddressLine: $.Identity.LastAPIS.ContactInformation.AddressLine,
@@ -186,8 +236,8 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 										ns02#Nationality: $.Identity.LastAPIS.Nationality,
 										ns02#RawCodeline: $.Identity.LastAPIS.RawCodeline,
 										ns02#Surname: $.Identity.LastAPIS.Surname										
-									} else null,
-								ns02#ObtainedAPIS: if ($.Identity.ObtainedAPIS.ApisData != null) {		
+									},
+								ns02#ObtainedAPIS: {		
 									ns02#ApisData: {
 										ns02#ContactInformation: {
 											ns02#AddressLine: $.Identity.ObtainedAPIS.ApisData.ContactInformation.AddressLine,
@@ -217,7 +267,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 										ns02#RawCodeline: $.Identity.ObtainedAPIS.ApisData.RawCodeline,
 										ns02#Surname: $.Identity.ObtainedAPIS.ApisData.Surname										
 									},	
-								} else null,				
+								},				
 								ns02#ValidDocuments: if ($.Identity.ValidDocuments.APISDocumentSet != null) {
 									ns02#APISDocumentSet: {
 										ns02#IsSelected: $.Identity.ValidDocuments.APISDocumentSet.IsSelected,

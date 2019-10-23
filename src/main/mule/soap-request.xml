@@ -75,6 +75,15 @@ http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/jav
 					</ee:variables>
 				</ee:transform>
 			</when>
+			<when expression="#['sendapisdata'== vars.loggedItem.FusionRequestTypeLowerCase]">
+				<ee:transform doc:name="Create SOAP request for SendApisData" doc:id="2eb838ae-9a42-429d-a368-2a4dbf9e7484" >
+					<ee:message >
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable resource="dw/SendApisData_Request.dwl" variableName="actualRequest" />
+					</ee:variables>
+				</ee:transform>
+			</when>
 			
 </choice>
 			

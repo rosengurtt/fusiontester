@@ -242,6 +242,161 @@ ns a http://www.w3.org/2005/08/addressing
 								ns02#Surname: payload.GetBagLicensePlate_Request.Passenger.Identity.LastAPIS.Surname
 							} 
 						} else null,
+						ns02#Infant: if (payload.GetBagLicensePlate_Request.Passenger.Infant.InfantId != null) {
+							ns02#AdultPassengerId: payload.GetBagLicensePlate_Request.Passenger.Infant.AdultPassengerId,
+							ns02#AdultPassengerRPH: payload.GetBagLicensePlate_Request.Passenger.Infant.AdultPassengerRPH,
+							ns02#AllowanceRetrieved: payload.GetBagLicensePlate_Request.Passenger.Infant.AllowanceRetrieved,
+							ns02#Baggage: {
+									ns02#BaggageAllowance: if (payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.RemainingWeight != '0'
+											 or payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.InitialWeight != '0'
+											or payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.PoolItems == 'true'
+											or payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.PoolWeight == 'true') {
+										ns02#BagDropId: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.BagDropId,
+										ns02#BaggageAllowanceTypeId: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.BaggageAllowanceTypeId,
+										ns02#BaggageItemTypeId: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.BaggageItemTypeId,
+										ns02#ConsumeItemWeight: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.ConsumeItemWeight,
+										ns02#CreatedOn: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.CreatedOn,
+										ns02#FlightId: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.FlightId,
+										ns02#Id: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.Id,
+										ns02#InitialBags: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.InitialBags,
+										ns02#InitialWeight: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.InitialWeight,
+										ns02#MaxSingleItemWeight: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.MaxSingleItemWeight,
+										ns02#PassengerId: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.PassengerId,
+										ns02#PoolItems: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.PoolItems,
+										ns02#PoolWeight: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.PoolWeight,
+										ns02#PurchasedBags: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.PurchasedBags,
+										ns02#PurchasedWeight: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.PurchasedWeight,
+										ns02#RemainingBags: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.RemainingBags,
+										ns02#RemainingWeight: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.RemainingWeight,
+										ns02#UpdateInitialAllowance: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowance.UpdateInitialAllowance
+									} else null,
+									ns02#BaggageAllowances: {
+										ns02#BaggageAllowance: (payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageAllowances.*BaggageAllowance map (item, index) -> {
+											ns02#BagDropId: item.BagDropId,
+											ns02#BaggageAllowanceTypeId: item.BaggageAllowanceTypeId,
+											ns02#BaggageItemTypeId: item.BaggageItemTypeId,
+											ns02#ConsumeItemWeight: item.ConsumeItemWeight,
+											ns02#CreatedOn: item.CreatedOn,
+											ns02#FlightId: item.FlightId,
+											ns02#Id: item.Id,
+											ns02#InitialBags: item.InitialBags,
+											ns02#InitialWeight: item.InitialWeight,
+											ns02#MaxSingleItemWeight: item.MaxSingleItemWeight,
+											ns02#PassengerId: item.PassengerId,
+											ns02#PoolItems: item.PoolItems,
+											ns02#PoolWeight: item.PoolWeight,
+											ns02#PurchasedBags: item.PurchasedBags,
+											ns02#PurchasedWeight: item.PurchasedWeight,
+											ns02#RemainingBags: item.RemainingBags,
+											ns02#RemainingWeight: item.RemainingWeight,
+											ns02#UpdateInitialAllowance: item.UpdateInitialAllowance,
+										})
+									},
+									ns02#BaggageItems: {
+										ns02#BaggageItem: (payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.BaggageItems.*BaggageItem map (item, index) -> {
+											ns02#Active: item.Active,
+											ns02#BaggageAllowanceId: item.BaggageAllowanceId,
+											ns02#BaggageItemSubTypeId: item.BaggageItemSubTypeId,
+											ns02#BaggageItemSubTypeName: item.BaggageItemSubTypeName,
+											ns02#BaggageItemType: item.BaggageItemType,
+											ns02#BaggageItemTypeId: item.BaggageItemTypeId,
+											ns02#BaggageItemTypeName: item.BaggageItemTypeName,
+											ns02#ConsumeAllowance: item.ConsumeAllowance,
+											ns02#CreatedOn: item.CreatedOn,		
+											ns02#Dropped: item.Dropped,		
+											ns02#DroppedTime: item.DroppedTime,		
+											ns02#HasNotionalWeight: item.HasNotionalWeight,	
+											ns02#Id: item.Id,	
+											ns02#InitialWeight: item.InitialWeight,
+											ns02#NativeBaggageId: item.NativeBaggageId,
+											ns02#OutOfGauge: item.OutOfGauge,
+											ns02#PassengerId: item.PassengerId,
+											ns02#Printed: item.Printed,
+											ns02#PrintedTime: item.PrintedTime,
+											ns02#Registered: item.Registered,
+											ns02#RegisteredTime: item.RegisteredTime,
+											ns02#SessionId: item.SessionId,
+											ns02#TagNumber: item.TagNumber,
+											ns02#Weight: item.Weight,
+										})
+									},
+									ns02#MaxSingleItemWeight: payload.GetBagLicensePlate_Request.Passenger.Infant.Baggage.MaxSingleItemWeight
+								},
+							ns02#Boarded: payload.GetBagLicensePlate_Request.Passenger.Infant.Boarded,
+							ns02#CheckedIn: payload.GetBagLicensePlate_Request.Passenger.Infant.CheckedIn,
+							ns02#ConfirmedIdentity: payload.GetBagLicensePlate_Request.Passenger.Infant.ConfirmedIdentity,
+							ns02#CustomProperties:{
+								ns03#string: payload.GetBagLicensePlate_Request.Passenger.Infant.CustomProperties.*string
+							},
+							ns02#DateOfBirth: payload.GetBagLicensePlate_Request.Passenger.Infant.DateOfBirth,
+							ns02#Fees:{
+								ns02#Fee: (payload.GetBagLicensePlate_Request.Passenger.Infant.*Fee map  {
+									ns02#Code: $.Code,
+									ns02#Currency: $.Currency,
+									ns02#FeeAmount: $.FeeAmount,
+									ns02#FeeType: $.FeeType,										
+								})
+							},
+							ns02#FirstName: payload.GetBagLicensePlate_Request.Passenger.Infant.FirstName,
+							ns02#Gender: payload.GetBagLicensePlate_Request.Passenger.Infant.Gender,
+							ns02#Identity: if (payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS != null) {
+								ns02#LastAPIS: {	
+									ns02#AddressInformation: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.AddressInformation,	
+									ns02#ContactInformation: if (payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.ContactLastName != null) {
+										ns02#AddressLine: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.AddressLine,
+										ns02#City: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.City,
+										ns02#CompanyName: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.CompanyName,
+										ns02#ContactFirstName: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.ContactFirstName,
+										ns02#ContactLastName: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.ContactLastName,
+										ns02#ContactTitle: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.ContactTitle,
+										ns02#Country: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.Country,
+										ns02#EmailAddress: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.EmailAddress,
+										ns02#NotificationPreference: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.NotificationPreference,
+										ns02#PostalCode: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.PostalCode,
+										ns02#TelephoneNumber: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.ContactInformation.TelephoneNumber,									
+										} else null,
+										ns02#CountryOfIssue: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.CountryOfIssue,
+										ns02#CountryOfResidence: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.CountryOfResidence,								
+										ns02#DateOfBirth: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.DateOfBirth,		
+									ns02#DocumentExpiryDate: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.DocumentExpiryDate,
+									ns02#DocumentIssueDate: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.DocumentIssueDate,
+									ns02#DocumentNumber: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.DocumentNumber,						
+									ns02#DocumentType: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.DocumentType,
+									ns02#Firstname: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.Firstname,
+									ns02#Forenames: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.Forenames,
+									ns02#Gender: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.Gender,
+									ns02#Nationality: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.Nationality,
+									ns02#Surname: payload.GetBagLicensePlate_Request.Passenger.Infant.Identity.LastAPIS.Surname
+								} 
+							} else null,
+							ns02#InfantId: payload.GetBagLicensePlate_Request.Passenger.Infant.InfantId,
+							ns02#IsSelected: payload.GetBagLicensePlate_Request.Passenger.Infant.IsSelected,
+							ns02#LastName: payload.GetBagLicensePlate_Request.Passenger.Infant.LastName,
+							ns02#MiddleName: payload.GetBagLicensePlate_Request.Passenger.Infant.MiddleName,
+							ns02#NativePassengerId: payload.GetBagLicensePlate_Request.Passenger.Infant.NativePassengerId,
+							ns02#PassengerRPH: payload.GetBagLicensePlate_Request.Passenger.Infant.PassengerRPH,
+							ns02#PassengerSequenceNumber: payload.GetBagLicensePlate_Request.Passenger.Infant.PassengerSequenceNumber,
+							ns02#Remarks: {
+								ns02#Remark: (payload.GetBagLicensePlate_Request.Passenger.Infant.Remarks.*Remark map  {
+									ns02#RemarkType: $.RemarkType,
+									ns02#Wording: $.Wording,										
+								})
+							},
+							ns02#SSRs: {
+								ns02#SSR: (payload.GetBagLicensePlate_Request.Passenger.Infant.SSRs.*SSR map (itemon, indexon) -> {
+									ns02#Currency: itemon.Currency,
+									ns02#FeeCode: itemon.FeeCode,
+									ns02#FlightNumber: itemon.FlightNumber,
+									ns02#PaxNumber: itemon.PaxNumber,
+									ns02#Price: itemon.Price,
+									ns02#SSRCode: itemon.SSRCode,
+									ns02#SSRDescription: itemon.SSRDescription,				
+								})
+							},
+							ns02#SeatNumber: payload.GetBagLicensePlate_Request.Passenger.Infant.SeatNumber,
+							ns02#Title: payload.GetBagLicensePlate_Request.Passenger.Infant.Title,
+							
+						} else null,
 						ns02#IsSelectableForBoardingPass: payload.GetBagLicensePlate_Request.Passenger.IsSelectableForBoardingPass,
 						ns02#IsSelected: payload.GetBagLicensePlate_Request.Passenger.IsSelected,
 						ns02#LastName: payload.GetBagLicensePlate_Request.Passenger.LastName,

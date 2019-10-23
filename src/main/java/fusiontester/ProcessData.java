@@ -18,6 +18,7 @@ import fusiontester.methods.CheckInPassenger;
 import fusiontester.methods.GetBagLicensePlate;
 import fusiontester.methods.GetReservationByNativeReference;
 import fusiontester.methods.QuoteBag;
+import fusiontester.methods.SendApisData;
 
 public class ProcessData {
 	
@@ -191,6 +192,9 @@ public class ProcessData {
 		}
 		else if (requestType.toLowerCase().equals("ActivateBag".toLowerCase())) {
 			return ActivateBag.removeThingsWeDontCompare(xml);
+		}
+		else if (requestType.toLowerCase().equals("SendApisData".toLowerCase())) {
+			return SendApisData.removeThingsWeDontCompare(xml);
 		}
 		return xml;
 	}
