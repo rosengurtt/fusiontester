@@ -6,50 +6,50 @@ ns ns01 http://services.fusion.aero
 ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 ---
 {
-	QuoteBag_Response: {
-		RequestId: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns02#RequestId,
-		ResponseId: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns02#ResponseId,
-		Errors: (payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns02#Errors.*ns02#FusionError map
+	QuoteBag_Response: (payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.*ns01#QuoteBagResult map (i, ind) -> {
+		RequestId: i.ns02#RequestId,
+		ResponseId: i.ns02#ResponseId,
+		Errors: (i.ns02#Errors.*ns02#FusionError map (err, errIndex) ->
 		{
 			FusionError: {
-				Code: $.ns02#Code,
-				Critical: $.ns02#Critical,
-				Description: $.ns02#Description,
-				Method: $.ns02#Method,
-				Source: $.ns02#Source
+				Code: err.ns02#Code,
+				Critical: err.ns02#Critical,
+				Description: err.ns02#Description,
+				Method: err.ns02#Method,
+				Source: err.ns02#Source
 			}
 		}),
-		Costs: {
-			ItemList: {
-				ExcessBaggageCost: {
-					AdditionalAllowance: {
-						Id: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#Id,
-						BaggageAllowanceTypeId: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#BaggageAllowanceTypeId,
-						BaggageItemTypeId: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#BaggageItemTypeId,
-						BagDropId: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#BagDropId,
-						FlightId: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#FlightId,
-						PassengerId: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#PassengerId,
-						PoolItems: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#PoolItems as Boolean default null,
-						PoolWeight: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#PoolWeight as Boolean default null,
-						ConsumeItemWeight: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#ConsumeItemWeight as Boolean default null,
-						UpdateInitialAllowance: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#UpdateInitialAllowance as Boolean default null,
-						MaxSingleItemWeight: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#MaxSingleItemWeight,
-						InitialBags: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#InitialBags as Number default null,
-						InitialWeight: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#InitialWeight as Number default null,
-						PurchasedBags: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#PurchasedBags as Number default null,
-						PurchasedWeight: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#PurchasedWeight,
-						RemainingBags: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#RemainingBags,
-						RemainingWeight: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#RemainingWeight,
-						CreatedOn: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#AdditionalAllowance.ns02#CreatedOn as String default null
-					},
-					Price: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#Price,
-					Quantity: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#Quantity,
-					Description: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#ItemList.ns02#ExcessBaggageCost.ns02#Description
-				}
-			},
-			Currency: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#Currency,
-			PaymentType: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#PaymentType,
-			QuoteStatus: payload.ns0#Envelope.ns0#Body.ns01#QuoteBagResponse.ns01#QuoteBagResult.ns01#Costs.ns02#QuoteStatus
-		}
-	}
+		Costs: (i.*ns01#Costs map (costs, costsIndex) ->  {
+			ItemList: (costs.*ns02#ItemList map (itemList, itemListIndex) -> {
+				ExcessBaggageCost: (itemList.*ns02#ExcessBaggageCost map (excessBagaggeCost, excessBagaggeCostIndex) -> {
+					AdditionalAllowance: (excessBagaggeCost.*ns02#AdditionalAllowance map (additionalAllowance, additionalAllowanceIndex) -> {
+						Id: additionalAllowance.ns02#Id,
+						BaggageAllowanceTypeId: additionalAllowance.ns02#BaggageAllowanceTypeId,
+						BaggageItemTypeId: additionalAllowance.ns02#BaggageItemTypeId,
+						BagDropId: additionalAllowance.ns02#BagDropId,
+						FlightId: additionalAllowance.ns02#FlightId,
+						PassengerId: additionalAllowance.ns02#PassengerId,
+						PoolItems: additionalAllowance.ns02#PoolItems as Boolean default null,
+						PoolWeight: additionalAllowance.ns02#PoolWeight as Boolean default null,
+						ConsumeItemWeight: additionalAllowance.ns02#ConsumeItemWeight as Boolean default null,
+						UpdateInitialAllowance: additionalAllowance.ns02#UpdateInitialAllowance as Boolean default null,
+						MaxSingleItemWeight: additionalAllowance.ns02#MaxSingleItemWeight,
+						InitialBags: additionalAllowance.ns02#InitialBags as Number default null,
+						InitialWeight: additionalAllowance.ns02#InitialWeight as Number default null,
+						PurchasedBags: additionalAllowance.ns02#PurchasedBags as Number default null,
+						PurchasedWeight: additionalAllowance.ns02#PurchasedWeight,
+						RemainingBags: additionalAllowance.ns02#RemainingBags,
+						RemainingWeight: additionalAllowance.ns02#RemainingWeight,
+						CreatedOn: additionalAllowance.ns02#CreatedOn as String default null
+					}),
+					Price: excessBagaggeCost.ns02#Price,
+					Quantity: excessBagaggeCost.ns02#Quantity,
+					Description: excessBagaggeCost.ns02#Description
+				})
+			}),
+			Currency: costs.ns02#Currency,
+			PaymentType: costs.ns02#PaymentType,
+			QuoteStatus: costs.ns02#QuoteStatus
+		})
+	})
 }

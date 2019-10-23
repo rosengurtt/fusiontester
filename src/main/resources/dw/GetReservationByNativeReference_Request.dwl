@@ -21,44 +21,44 @@ ns i http://www.w3.org/2001/XMLSchema-instance
 	     s#Body:
 			{
 				ns0#GetReservationByNativeReference: {
-					ns0#request: {
-						ns01#DepartureAirportCode: payload.GetReservationByNativeReference_Request.DepartureAirportCode,
-						ns01#IataAirlineCode: payload.GetReservationByNativeReference_Request.IataAirlineCode,
-						ns01#MACAddress: payload.GetReservationByNativeReference_Request.MACAddress,
-						ns01#RequestId: payload.GetReservationByNativeReference_Request.RequestId,
-						ns01#RequestSourceName: payload.GetReservationByNativeReference_Request.RequestSourceName,
-						ns01#RequestType: payload.GetReservationByNativeReference_Request.RequestType,
-						ns01#TestRequest: payload.GetReservationByNativeReference_Request.TestRequest as Boolean,
+					ns0#request: (payload.*GetReservationByNativeReference_Request map (i, index) -> {
+						ns01#DepartureAirportCode: i.DepartureAirportCode,
+						ns01#IataAirlineCode: i.IataAirlineCode,
+						ns01#MACAddress: i.MACAddress,
+						ns01#RequestId: i.RequestId,
+						ns01#RequestSourceName: i.RequestSourceName,
+						ns01#RequestType: i.RequestType,
+						ns01#TestRequest: i.TestRequest as Boolean,
 						ns01#Session: {
 							ns01#EndTime: '2119-08-06T09:41:13.1896001Z' as DateTime,
-							ns01#KioskId: payload.GetReservationByNativeReference_Request.Session.KioskId,
-							ns01#PNR: payload.GetReservationByNativeReference_Request.Session.PNR,
-							ns01#Price: payload.GetReservationByNativeReference_Request.Session.Price,
-							ns01#ServiceConfigId: payload.GetReservationByNativeReference_Request.Session.ServiceConfigId,
-							ns01#SessionId: payload.GetReservationByNativeReference_Request.Session.SessionId,
-							ns01#StartTime: payload.GetReservationByNativeReference_Request.Session.StartTime,
-							ns01#Status: payload.GetReservationByNativeReference_Request.Session.Status,
-							ns01#UserId: payload.GetReservationByNativeReference_Request.Session.UserId,
-							ns01#Weight: payload.GetReservationByNativeReference_Request.Session.Weight
+							ns01#KioskId: i.Session.KioskId,
+							ns01#PNR: i.Session.PNR,
+							ns01#Price: i.Session.Price,
+							ns01#ServiceConfigId: i.Session.ServiceConfigId,
+							ns01#SessionId: i.Session.SessionId,
+							ns01#StartTime: i.Session.StartTime,
+							ns01#Status: i.Session.Status,
+							ns01#UserId: i.Session.UserId,
+							ns01#Weight: i.Session.Weight
 						},
-						ns0#AirlineReference: payload.GetReservationByNativeReference_Request.AirlineReference,
+						ns0#AirlineReference: i.AirlineReference,
 						ns0#BoardingPassInfo: {
-							ns01#AirlineReference: payload.GetReservationByNativeReference_Request.BoardingPassInfo.AirlineReference,
-							ns01#ArrivalAirport: payload.GetReservationByNativeReference_Request.BoardingPassInfo.ArrivalAirport,
-							ns01#BarcodeData: payload.GetReservationByNativeReference_Request.BoardingPassInfo.BarcodeData,
-							ns01#BookingReference: payload.GetReservationByNativeReference_Request.BoardingPassInfo.BookingReference,
-							ns01#DepartureAirport: payload.GetReservationByNativeReference_Request.BoardingPassInfo.DepartureAirport,
-							ns01#DepartureDate: payload.GetReservationByNativeReference_Request.BoardingPassInfo.DepartureDate,
-							ns01#FastTrack: payload.GetReservationByNativeReference_Request.BoardingPassInfo.FastTrack as Boolean,
-							ns01#FirstName: payload.GetReservationByNativeReference_Request.BoardingPassInfo.FirstName,
-							ns01#FlightNumber: payload.GetReservationByNativeReference_Request.BoardingPassInfo.FlightNumber,
-							ns01#IATACode: payload.GetReservationByNativeReference_Request.BoardingPassInfo.IATACode,
-							ns01#LastName: payload.GetReservationByNativeReference_Request.BoardingPassInfo.LastName,
-							ns01#Seat: payload.GetReservationByNativeReference_Request.BoardingPassInfo.Seat,
-							ns01#SequenceNumber: payload.GetReservationByNativeReference_Request.BoardingPassInfo.SequenceNumber
+							ns01#AirlineReference: i.BoardingPassInfo.AirlineReference,
+							ns01#ArrivalAirport: i.BoardingPassInfo.ArrivalAirport,
+							ns01#BarcodeData: i.BoardingPassInfo.BarcodeData,
+							ns01#BookingReference: i.BoardingPassInfo.BookingReference,
+							ns01#DepartureAirport: i.BoardingPassInfo.DepartureAirport,
+							ns01#DepartureDate: i.BoardingPassInfo.DepartureDate,
+							ns01#FastTrack: i.BoardingPassInfo.FastTrack as Boolean,
+							ns01#FirstName: i.BoardingPassInfo.FirstName,
+							ns01#FlightNumber: i.BoardingPassInfo.FlightNumber,
+							ns01#IATACode: i.BoardingPassInfo.IATACode,
+							ns01#LastName: i.BoardingPassInfo.LastName,
+							ns01#Seat: i.BoardingPassInfo.Seat,
+							ns01#SequenceNumber: i.BoardingPassInfo.SequenceNumber
 						},
-						ns0#NativeReference: payload.GetReservationByNativeReference_Request.NativeReference
-					}
+						ns0#NativeReference: i.NativeReference
+					})
 				}
 			}
 		}

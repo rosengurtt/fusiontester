@@ -62,7 +62,7 @@ http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/jav
 					<ee:message >
 					</ee:message>
 					<ee:variables >
-						<ee:set-variable resource="dw/buyAllowance_Request.dwl" variableName="actualRequest" />
+						<ee:set-variable resource="dw/BuyAllowance_Request.dwl" variableName="actualRequest" />
 					</ee:variables>
 				</ee:transform>
 			</when>

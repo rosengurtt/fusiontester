@@ -6,18 +6,18 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 ---
 {
-	SendApisData_Response: {
-		RequestId: payload.ns0#Envelope.ns0#Body.ns01#SendApisDataResponse.ns01#SendApisDataResult.ns02#RequestId,
-		ResponseId: payload.ns0#Envelope.ns0#Body.ns01#SendApisDataResponse.ns01#SendApisDataResult.ns02#ResponseId,
-		DcsRequestsIds: payload.ns0#Envelope.ns0#Body.ns01#SendApisDataResponse.ns01#SendApisDataResult.ns02#DcsRequestsIds.ns03#guid,
-		Errors: (payload.ns0#Envelope.ns0#Body.ns01#SendApisDataResponse.ns01#SendApisDataResult.ns02#Errors.*ns02#FusionError map {
+	SendApisData_Response: (payload.ns0#Envelope.ns0#Body.ns01#SendApisDataResponse.*ns01#SendApisDataResult map (i, index) -> {
+		RequestId: i.ns02#RequestId,
+		ResponseId: i.ns02#ResponseId,
+		DcsRequestsIds: i.ns02#DcsRequestsIds.ns03#guid,
+		Errors: (i.ns02#Errors.*ns02#FusionError map (err, errIndex) ->{
 			FusionError: {
-				Critical: $.ns01#Critical,
-				Code: $.ns01#Code,
-				Description: $.ns01#Description,
-				Method: $.ns01#Method,
-				Source: $.ns01#Source
+				Critical: err.ns01#Critical,
+				Code: err.ns01#Code,
+				Description: err.ns01#Description,
+				Method: err.ns01#Method,
+				Source: err.ns01#Source
 			}
 		}),
-	}
+	})
 }
