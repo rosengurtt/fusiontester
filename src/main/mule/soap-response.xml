@@ -7,7 +7,8 @@
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
 	
 	<flow name="formatResponse" doc:id="dcc09853-566e-4713-8ed1-90393015e4b1" >
-				<choice doc:name="What response type?" doc:id="dbe162b1-05ab-44aa-a33e-d73d1986b9f9" >
+				<set-payload value="#[vars.rawFusionResponse]" doc:name="Set Payload to value stored in 'rawFusionResponse'" doc:id="35b4e183-bf97-4912-bc84-84df10458206" />
+		<choice doc:name="What response type?" doc:id="dbe162b1-05ab-44aa-a33e-d73d1986b9f9" >
 			<when expression="'activatebag' == vars.loggedItem.FusionRequestTypeLowerCase">
 				<ee:transform doc:name="Format and save response to 'actualResponse'" doc:id="6835bd47-bfef-48e5-82ff-2cfe27745f6f" >
 					<ee:message >

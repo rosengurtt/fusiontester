@@ -133,8 +133,9 @@ output application/java
 			</error-handler>
 		</try>
 		<logger level="INFO" doc:name="Logger" doc:id="9db9b4d0-d4ca-49af-bbd7-fd5dd5a380d4" message="test-job: Fusion returned   #['\n']  #[payload] #['\n']"/>
-		<flow-ref doc:name="formatResponse" doc:id="ebabee6f-5948-4d52-85c0-9216bd0d3ad0" name="formatResponse" />
+		<set-variable value="#[payload]" doc:name="Store payload in variable" doc:id="fe15aa68-1705-4687-b6d7-6f8c4e44a6cd" variableName="rawFusionResponse"/>
 		<flow-ref doc:name="SetTimeToCurrentTime" doc:id="8ce24fd9-d044-41a7-af28-9a2f151ce0cc" name="SetTimeToCurrentTime" />
+		<flow-ref doc:name="formatResponse" doc:id="ebabee6f-5948-4d52-85c0-9216bd0d3ad0" name="formatResponse" />
 		<logger level="INFO" doc:name="Logger" doc:id="4d3f1b4c-322f-4d32-89c6-7cc1e128f644" message="test-job: Will call GetDCSCallsForFusionRequest #['\n']"/>
 		<db:stored-procedure doc:name="Get DCS calls info" doc:id="1aa84446-ea2e-408e-8913-25e648b1145e" config-ref="mssql-jdbc">
 			<db:sql >{ call GetDCSCallsForFusionRequest(:FusionRequestId)}</db:sql>

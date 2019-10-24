@@ -43,18 +43,20 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 						ns02#Flight: (i.Flights.*Flight map (flight, flightIndex) -> {
 							ns02#ApisRequired: flight.ApisRequired,
 							ns02#ArrivalTime: flight.ArrivalTime,
-							ns02#ConnectingFlight: flight.ConnectingFlight,
+							ns02#ConnectingFlight: flight.ConnectingFlight,								
 							ns02#CustomProperties:{
 								ns03#string: flight.CustomProperties.*string
 							},
+							ns02#DepartureTerminal: flight.DepartureTerminal,
 							ns02#DepartureTime: flight.DepartureTime,
-							ns02#EstimatedDepartureTime: flight.EstimatedDepartureTime,
 							ns02#Destination: flight.Destination,
+							ns02#EstimatedDepartureTime: flight.EstimatedDepartureTime,
 							ns02#FlightNumber: flight.FlightNumber,
 							ns02#FlightRPH: flight.FlightRPH,
 							ns02#Id: flight.Id,
 							ns02#JourneyRPH: flight.JourneyRPH,
 							ns02#MarketingCarrier: flight.MarketingCarrier,
+							ns02#NativeFlightId: flight.NativeFlightId,
 							ns02#OpenForBoarding: flight.OpenForBoarding,
 							ns02#OpenForCheckIn: flight.OpenForCheckIn,
 							ns02#OperatingCarrier: flight.OperatingCarrier,
@@ -62,7 +64,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 							ns02#RequireMultipleAPISDocuments: flight.RequireMultipleAPISDocuments,
 							ns02#UTCArrivalTime: flight.UTCArrivalTime,
 							ns02#UTCDepartureTime: flight.UTCDepartureTime,
-							ns02#UTCEstimatedDepartureTime: flight.UTCEstimatedDepartureTime
+							ns02#UTCEstimatedDepartureTime: flight.UTCEstimatedDepartureTime,
 						})
 					},
 					ns01#Passengers: {

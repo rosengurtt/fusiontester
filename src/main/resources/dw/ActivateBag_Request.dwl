@@ -26,7 +26,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 					ns02#RequestSourceName: i.RequestSourceName,
 					ns02#RequestType: i.RequestType,
 					ns02#TestRequest: i.TestRequest,
-					ns02#Session: (i.Session map (session, sessionindex) -> {
+					ns02#Session: (i.*Session map (session, sessionindex) -> {
 						ns02#EndTime: session.EndTime,
 						ns02#KioskId: session.KioskId,
 						ns02#PNR: session.PNR,
@@ -42,17 +42,18 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 						ns02#Active: baggageItem.Active,
 						ns02#BaggageAllowanceId: baggageItem.BaggageAllowanceId,
 						ns02#BaggageItemSubTypeId: baggageItem.BaggageItemSubTypeId,
+						ns02#BaggageItemSubTypeName: baggageItem.BaggageItemSubTypeName,
 						ns02#BaggageItemType: baggageItem.BaggageItemType,
 						ns02#BaggageItemTypeId: baggageItem.BaggageItemTypeId,
 						ns02#BaggageItemTypeName: baggageItem.BaggageItemTypeName,
 						ns02#ConsumeAllowance: baggageItem.ConsumeAllowance,
-						ns02#CreatedOn: baggageItem.CreatedOn,
-						ns02#Dropped: baggageItem.Dropped,
-						ns02#DroppedTime: baggageItem.DroppedTime,
-						ns02#HasNotionalWeight: baggageItem.HasNotionalWeight,
-						ns02#Id: baggageItem.Id,
+						ns02#CreatedOn: baggageItem.CreatedOn,		
+						ns02#Dropped: baggageItem.Dropped,		
+						ns02#DroppedTime: baggageItem.DroppedTime,		
+						ns02#HasNotionalWeight: baggageItem.HasNotionalWeight,	
+						ns02#Id: baggageItem.Id,	
 						ns02#InitialWeight: baggageItem.InitialWeight,
-						ns02#NativeBaggageId:  baggageItem.NativeBaggageId,
+						ns02#NativeBaggageId: baggageItem.NativeBaggageId,
 						ns02#OutOfGauge: baggageItem.OutOfGauge,
 						ns02#PassengerId: baggageItem.PassengerId,
 						ns02#Printed: baggageItem.Printed,
@@ -61,15 +62,16 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 						ns02#RegisteredTime: baggageItem.RegisteredTime,
 						ns02#SessionId: baggageItem.SessionId,
 						ns02#TagNumber: baggageItem.TagNumber,
-						ns02#Weight: baggageItem.Weight
+						ns02#Weight: baggageItem.Weight,
 					}),
 					ns01#Flight: (i.*Flight map (flight, flightIndex) -> {
 						ns02#ApisRequired: flight.ApisRequired,
 						ns02#ArrivalTime: flight.ArrivalTime,
-						ns02#ConnectingFlight: flight.ConnectingFlight,
+						ns02#ConnectingFlight: flight.ConnectingFlight,								
 						ns02#CustomProperties:{
 							ns03#string: flight.CustomProperties.*string
 						},
+						ns02#DepartureTerminal: flight.DepartureTerminal,
 						ns02#DepartureTime: flight.DepartureTime,
 						ns02#Destination: flight.Destination,
 						ns02#EstimatedDepartureTime: flight.EstimatedDepartureTime,
@@ -78,6 +80,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 						ns02#Id: flight.Id,
 						ns02#JourneyRPH: flight.JourneyRPH,
 						ns02#MarketingCarrier: flight.MarketingCarrier,
+						ns02#NativeFlightId: flight.NativeFlightId,
 						ns02#OpenForBoarding: flight.OpenForBoarding,
 						ns02#OpenForCheckIn: flight.OpenForCheckIn,
 						ns02#OperatingCarrier: flight.OperatingCarrier,
@@ -85,7 +88,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 						ns02#RequireMultipleAPISDocuments: flight.RequireMultipleAPISDocuments,
 						ns02#UTCArrivalTime: flight.UTCArrivalTime,
 						ns02#UTCDepartureTime: flight.UTCDepartureTime,
-						ns02#UTCEstimatedDepartureTime: flight.UTCEstimatedDepartureTime
+						ns02#UTCEstimatedDepartureTime: flight.UTCEstimatedDepartureTime,
 					}),
 					ns01#Passenger: (i.*Passenger map (passenger, passengerIndex) -> {
 						ns02#Active: passenger.Active,
@@ -113,6 +116,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 							}),
 							ns02#BaggageItems: {
 								ns02#BaggageItem: (passenger.Baggage.BaggageItems.*BaggageItem map (baggageItem, bagaggeItemIndex) -> {
+									ns02#Active: baggageItem.Active,
 									ns02#BaggageAllowanceId: baggageItem.BaggageAllowanceId,
 									ns02#BaggageItemSubTypeId: baggageItem.BaggageItemSubTypeId,
 									ns02#BaggageItemSubTypeName: baggageItem.BaggageItemSubTypeName,
@@ -120,11 +124,11 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 									ns02#BaggageItemTypeId: baggageItem.BaggageItemTypeId,
 									ns02#BaggageItemTypeName: baggageItem.BaggageItemTypeName,
 									ns02#ConsumeAllowance: baggageItem.ConsumeAllowance,
-									ns02#CreatedOn: baggageItem.CreatedOn,
-									ns02#Dropped: baggageItem.Dropped,
-									ns02#DroppedTime: baggageItem.DroppedTime,
-									ns02#HasNotionalWeight: baggageItem.HasNotionalWeight,
-									ns02#Id: baggageItem.Id,
+									ns02#CreatedOn: baggageItem.CreatedOn,		
+									ns02#Dropped: baggageItem.Dropped,		
+									ns02#DroppedTime: baggageItem.DroppedTime,		
+									ns02#HasNotionalWeight: baggageItem.HasNotionalWeight,	
+									ns02#Id: baggageItem.Id,	
 									ns02#InitialWeight: baggageItem.InitialWeight,
 									ns02#NativeBaggageId: baggageItem.NativeBaggageId,
 									ns02#OutOfGauge: baggageItem.OutOfGauge,
@@ -135,7 +139,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 									ns02#RegisteredTime: baggageItem.RegisteredTime,
 									ns02#SessionId: baggageItem.SessionId,
 									ns02#TagNumber: baggageItem.TagNumber,
-									ns02#Weight: baggageItem.Weight
+									ns02#Weight: baggageItem.Weight,
 								})
 							},
 							ns02#MaxSingleItemWeight: passenger.Baggage.MaxSingleItemWeight

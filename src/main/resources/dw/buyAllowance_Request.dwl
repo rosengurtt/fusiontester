@@ -25,18 +25,18 @@ ns a http://www.w3.org/2005/08/addressing
 					ns02#RequestSourceName: i.RequestSourceName,
 					ns02#RequestType: i.RequestType,
 					ns02#TestRequest: i.TestRequest,
-					ns02#Session: {
-						ns02#EndTime: i.Session.EndTime,
-						ns02#KioskId: i.Session.KioskId,
-						ns02#PNR: i.Session.PNR,
-						ns02#Price: i.Session.Price,
-						ns02#ServiceConfigId: i.Session.ServiceConfigId,
-						ns02#SessionId: i.Session.SessionId,
-						ns02#StartTime: i.Session.StartTime,
-						ns02#Status: i.Session.Status,
-						ns02#UserId: i.Session.UserId,
-						ns02#Weight: i.Session.Weight
-					},
+					ns02#Session: (i.*Session map (session, sessionIndex) ->{
+						ns02#EndTime: session.EndTime,
+						ns02#KioskId: session.KioskId,
+						ns02#PNR: session.PNR,
+						ns02#Price: session.Price,
+						ns02#ServiceConfigId: session.ServiceConfigId,
+						ns02#SessionId: session.SessionId,
+						ns02#StartTime: session.StartTime,
+						ns02#Status: session.Status,
+						ns02#UserId: session.UserId,
+						ns02#Weight: session.Weight
+					}),
 					ns01#AgentName: i.AgentName,
 					ns01#Costs: {
 						ns02#Currency: i.Costs.Currency,
@@ -74,10 +74,14 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#Flight: (i.Flights.*Flight map (flight, flightInd) -> {
 							ns02#ApisRequired: flight.ApisRequired,
 							ns02#ArrivalTime: flight.ArrivalTime,
-							ns02#ConnectingFlight: flight.ConnectingFlight,
+							ns02#ConnectingFlight: flight.ConnectingFlight,								
+							ns02#CustomProperties:{
+								ns03#string: flight.CustomProperties.*string
+							},
 							ns02#DepartureTerminal: flight.DepartureTerminal,
 							ns02#DepartureTime: flight.DepartureTime,
 							ns02#Destination: flight.Destination,
+							ns02#EstimatedDepartureTime: flight.EstimatedDepartureTime,
 							ns02#FlightNumber: flight.FlightNumber,
 							ns02#FlightRPH: flight.FlightRPH,
 							ns02#Id: flight.Id,
@@ -90,7 +94,8 @@ ns a http://www.w3.org/2005/08/addressing
 							ns02#Origin: flight.Origin,
 							ns02#RequireMultipleAPISDocuments: flight.RequireMultipleAPISDocuments,
 							ns02#UTCArrivalTime: flight.UTCArrivalTime,
-							ns02#UTCDepartureTime: flight.UTCDepartureTime
+							ns02#UTCDepartureTime: flight.UTCDepartureTime,
+							ns02#UTCEstimatedDepartureTime: flight.UTCEstimatedDepartureTime,
 						})
 					},
 					ns01#Passenger: (i.*Passenger map (passenger, indPass) -> {
@@ -119,30 +124,30 @@ ns a http://www.w3.org/2005/08/addressing
 							}),
 							ns02#BaggageItems: {
 								ns02#BaggageItem: (bagagge.BaggageItems.*BaggageItem map (bagaggeItem, ind) -> {
-									ns02#Active: bagaggeItem.Active,
-									ns02#BaggageAllowanceId: bagaggeItem.BaggageAllowanceId,
-									ns02#BaggageItemSubTypeId: bagaggeItem.BaggageItemSubTypeId,
-									ns02#BaggageItemSubTypeName: bagaggeItem.BaggageItemSubTypeName,
-									ns02#BaggageItemType: bagaggeItem.BaggageItemType,
-									ns02#BaggageItemTypeId: bagaggeItem.BaggageItemTypeId,
-									ns02#BaggageItemTypeName: bagaggeItem.BaggageItemTypeName,
-									ns02#ConsumeAllowance: bagaggeItem.ConsumeAllowance,
-									ns02#CreatedOn: bagaggeItem.CreatedOn,
-									ns02#Dropped: bagaggeItem.Dropped,
-									ns02#DroppedTime: bagaggeItem.DroppedTime,
-									ns02#HasNotionalWeight: bagaggeItem.HasNotionalWeight,
-									ns02#Id: bagaggeItem.Id,
-									ns02#InitialWeight: bagaggeItem.InitialWeight,
-									ns02#NativeBaggageId: bagaggeItem.NativeBaggageId,
-									ns02#OutOfGauge: bagaggeItem.OutOfGauge,
-									ns02#PassengerId: bagaggeItem.PassengerId,
-									ns02#Printed: bagaggeItem.Printed,
-									ns02#PrintedTime: bagaggeItem.PrintedTime,
-									ns02#Registered: bagaggeItem.Registered,
-									ns02#RegisteredTime: bagaggeItem.RegisteredTime,
-									ns02#SessionId: bagaggeItem.SessionId,
-									ns02#TagNumber: bagaggeItem.TagNumber,
-									ns02#Weight: bagaggeItem.Weight
+									ns02#Active: baggageItem.Active,
+									ns02#BaggageAllowanceId: baggageItem.BaggageAllowanceId,
+									ns02#BaggageItemSubTypeId: baggageItem.BaggageItemSubTypeId,
+									ns02#BaggageItemSubTypeName: baggageItem.BaggageItemSubTypeName,
+									ns02#BaggageItemType: baggageItem.BaggageItemType,
+									ns02#BaggageItemTypeId: baggageItem.BaggageItemTypeId,
+									ns02#BaggageItemTypeName: baggageItem.BaggageItemTypeName,
+									ns02#ConsumeAllowance: baggageItem.ConsumeAllowance,
+									ns02#CreatedOn: baggageItem.CreatedOn,		
+									ns02#Dropped: baggageItem.Dropped,		
+									ns02#DroppedTime: baggageItem.DroppedTime,		
+									ns02#HasNotionalWeight: baggageItem.HasNotionalWeight,	
+									ns02#Id: baggageItem.Id,	
+									ns02#InitialWeight: baggageItem.InitialWeight,
+									ns02#NativeBaggageId: baggageItem.NativeBaggageId,
+									ns02#OutOfGauge: baggageItem.OutOfGauge,
+									ns02#PassengerId: baggageItem.PassengerId,
+									ns02#Printed: baggageItem.Printed,
+									ns02#PrintedTime: baggageItem.PrintedTime,
+									ns02#Registered: baggageItem.Registered,
+									ns02#RegisteredTime: baggageItem.RegisteredTime,
+									ns02#SessionId: baggageItem.SessionId,
+									ns02#TagNumber: baggageItem.TagNumber,
+									ns02#Weight: baggageItem.Weight,
 								})
 							},
 							ns02#MaxSingleItemWeight: bagagge.MaxSingleItemWeight
@@ -160,14 +165,36 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#Gender: passenger.Gender,
 						ns02#Identity: {
 							ns02#LastAPIS: (passenger.Identity.*LastAPIS map (lastApis, lastApisIndex) -> {
+								ns02#AddressInformation: lastApis.AddressInformation,
+								ns02#ContactInformation: 
+								if (lastApis.ContactInformation.ContactLastName != null)
+								(lastApis.*ContactInformation map (contactInfo, contactInfoIndex) -> {
+									ns02#AddressLine: contactInfo.AddressLine,
+									ns02#City: contactInfo.City,
+									ns02#CompanyName: contactInfo.CompanyName,
+									ns02#ContactFirstName: contactInfo.ContactFirstName,
+									ns02#ContactLastName: contactInfo.ContactLastName,
+									ns02#ContactTitle: contactInfo.ContactTitle,
+									ns02#Country: contactInfo.Country,
+									ns02#EmailAddress: contactInfo.EmailAddress,
+									ns02#NotificationPreference: contactInfo.NotificationPreference,
+									ns02#PostalCode: contactInfo.PostalCode,
+									ns02#TelephoneNumber: contactInfo.TelephoneNumber		
+								}) else null,
+								ns02#CountryOfIssue: lastApis.CountryOfIssue,
+								ns02#CountryOfResidence: lastApis.CountryOfResidence,
 								ns02#DateOfBirth: lastApis.DateOfBirth,
 								ns02#DocumentExpiryDate: lastApis.DocumentExpiryDate,
 								ns02#DocumentIssueDate: lastApis.DocumentIssueDate,
 								ns02#DocumentNumber: lastApis.DocumentNumber,
 								ns02#DocumentType: lastApis.DocumentType,
 								ns02#Firstname: lastApis.Firstname,
+								ns02#Forenames: lastApis.Forenames,
+								ns02#Gender: lastApis.Gender,
+								ns02#ImageBytes: lastApis.ImageBytes,
 								ns02#Nationality: lastApis.Nationality,
-								ns02#Surname: lastApis.Surname
+								ns02#RawCodeline: lastApis.RawCodeline,
+								ns02#Surname: lastApis.Surname	
 							})
 						},
 						ns02#IsSelectableForBoardingPass: passenger.IsSelectableForBoardingPass,

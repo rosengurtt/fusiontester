@@ -85,7 +85,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 						or bagagge.ns02#BaggageAllowance.ns02#RemainingWeight != '0'
 						or bagagge.ns02#BaggageAllowance.ns02#PoolItems == 'true'
 						or bagagge.ns02#BaggageAllowance.ns02#PoolWeight == 'true') 
-					(bagagge.*s02#BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) ->   {
+					(bagagge.*ns02#BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) ->   {
 					Id: baggageAllowance.ns02#Id,
 					BaggageAllowanceTypeId: baggageAllowance.ns02#BaggageAllowanceTypeId,
 					BaggageItemTypeId: baggageAllowance.ns02#BaggageItemTypeId,
@@ -128,29 +128,29 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 					})
 				},
 				BaggageItems: {
-					BaggageItem: (bagagge.ns02#BaggageItems.*ns02#BaggageItem map (bagagge, bagaggeIndex) -> {
-						Id: bagagge.ns02#Id,
-						BaggageAllowanceId: bagagge.ns02#BaggageAllowanceId,
-						PassengerId: bagagge.ns02#PassengerId,
-						SessionId: bagagge.ns02#SessionId,
-						TagNumber: bagagge.ns02#TagNumber,
-						Weight: bagagge.ns02#Weight,
-						InitialWeight: bagagge.ns02#InitialWeight,
-						BaggageItemType: bagagge.ns02#BaggageItemType,
-						BaggageItemTypeId: bagagge.ns02#BaggageItemTypeId,
-						BaggageItemTypeName: bagagge.ns02#BaggageItemTypeName,
-						BaggageItemSubTypeId: bagagge.ns02#BaggageItemSubTypeId,
-						BaggageItemSubTypeName: bagagge.ns02#BaggageItemSubTypeName,
-						HasNotionalWeight: bagagge.ns02#HasNotionalWeight,
-						OutOfGauge: bagagge.ns02#OutOfGauge,
-						ConsumeAllowance: bagagge.ns02#ConsumeAllowance,
-						Registered: bagagge.ns02#Registered,
-						Printed: bagagge.ns02#Printed,
-						Dropped: bagagge.ns02#Dropped,
-						RegisteredTime: bagagge.ns02#RegisteredTime,
-						PrintedTime: bagagge.ns02#PrintedTime,
-						DroppedTime: bagagge.ns02#DroppedTime,
-						CreatedOn: bagagge.ns02#CreatedOn					
+					BaggageItem: (bagagge.ns02#BaggageItems.*ns02#BaggageItem map (bagaggeItem, bagaggeIndex) -> {
+						Id: bagaggeItem.ns02#Id,
+						BaggageAllowanceId: bagaggeItem.ns02#BaggageAllowanceId,
+						PassengerId: bagaggeItem.ns02#PassengerId,
+						SessionId: bagaggeItem.ns02#SessionId,
+						TagNumber: bagaggeItem.ns02#TagNumber,
+						Weight: bagaggeItem.ns02#Weight,
+						InitialWeight: bagaggeItem.ns02#InitialWeight,
+						BaggageItemType: bagaggeItem.ns02#BaggageItemType,
+						BaggageItemTypeId: bagaggeItem.ns02#BaggageItemTypeId,
+						BaggageItemTypeName: bagaggeItem.ns02#BaggageItemTypeName,
+						BaggageItemSubTypeId: bagaggeItem.ns02#BaggageItemSubTypeId,
+						BaggageItemSubTypeName: bagaggeItem.ns02#BaggageItemSubTypeName,
+						HasNotionalWeight: bagaggeItem.ns02#HasNotionalWeight,
+						OutOfGauge: bagaggeItem.ns02#OutOfGauge,
+						ConsumeAllowance: bagaggeItem.ns02#ConsumeAllowance,
+						Registered: bagaggeItem.ns02#Registered,
+						Printed: bagaggeItem.ns02#Printed,
+						Dropped: bagaggeItem.ns02#Dropped,
+						RegisteredTime: bagaggeItem.ns02#RegisteredTime,
+						PrintedTime: bagaggeItem.ns02#PrintedTime,
+						DroppedTime: bagaggeItem.ns02#DroppedTime,
+						CreatedOn: bagaggeItem.ns02#CreatedOn					
 					})
 				},			
 				MaxSingleItemWeight: bagagge.ns02#MaxSingleItemWeight

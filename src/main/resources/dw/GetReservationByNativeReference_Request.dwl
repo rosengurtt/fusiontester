@@ -30,7 +30,7 @@ ns i http://www.w3.org/2001/XMLSchema-instance
 						ns01#RequestType: i.RequestType,
 						ns01#TestRequest: i.TestRequest as Boolean,
 						ns01#Session: (i.*Session map (session, sessionIndex) -> {
-							ns01#EndTime: '2119-08-06T09:41:13.1896001Z' as DateTime,
+							ns01#EndTime: session.EndTime,
 							ns01#KioskId: session.KioskId,
 							ns01#PNR: session.PNR,
 							ns01#Price: session.Price,

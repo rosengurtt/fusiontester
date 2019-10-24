@@ -19,7 +19,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 				Source: err.ns01#Source
 			}
 		}),
-		BagDetails: (bagDetails map (bagDetails, bagDetailsIndex) -> {
+		BagDetails: (i.*ns01#BagDetails map (bagDetails, bagDetailsIndex) -> {
 			BaggageItemId: bagDetails.ns02#BaggageItemId,
 			BagWeight: bagDetails.ns02#BagWeight,
 			BagRegistrationTime: bagDetails.ns02#BagRegistrationTime,

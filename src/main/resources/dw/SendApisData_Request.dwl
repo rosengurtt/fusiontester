@@ -65,7 +65,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 							ns02#StateProvince: addressInfo.StateProvince,
 							ns02#StreetNumber: addressInfo.StreetNumber,
 						}),
-						ns02#ContactInformation: if (contactInfo.ContactLastName != null)
+						ns02#ContactInformation: if (apisData.ContactInformation.ContactLastName != null)
 							(apisData.*ContactInformation map (contactInfo, contactInfoIndex) -> {
 							ns02#AddressLine: contactInfo.AddressLine,
 							ns02#City: contactInfo.City,
@@ -95,8 +95,11 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 					ns01#Flight: (i.*Flight map (flight, flightIndex) -> {
 						ns02#ApisRequired: flight.ApisRequired,
 						ns02#ArrivalTime: flight.ArrivalTime,
-						ns02#ConnectingFlight: flight.ConnectingFlight,
-						ns02#DepartureTerminal: flight.DepartureTerminal default null,
+						ns02#ConnectingFlight: flight.ConnectingFlight,								
+						ns02#CustomProperties:{
+							ns03#string: flight.CustomProperties.*string
+						},
+						ns02#DepartureTerminal: flight.DepartureTerminal,
 						ns02#DepartureTime: flight.DepartureTime,
 						ns02#Destination: flight.Destination,
 						ns02#EstimatedDepartureTime: flight.EstimatedDepartureTime,
@@ -142,7 +145,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 									ns02#UpdateInitialAllowance: bagaggeAllowance.UpdateInitialAllowance,									
 								}),
 								BaggageAllowances: {
-									BaggageAllowance: (bagaggeAllowances.*BaggageAllowance map (bagaggeAllowance, bagaggeAllowanceIndex) -> {
+									BaggageAllowance: (passenger.Baggage.BaggageAllowances.*BaggageAllowance map (bagaggeAllowance, bagaggeAllowanceIndex) -> {
 										ns02#BagDropId: bagaggeAllowance.BagDropId,
 										ns02#BaggageAllowanceTypeId: bagaggeAllowance.BaggageAllowanceTypeId,
 										ns02#BaggageItemTypeId: bagaggeAllowance.BaggageItemTypeId,
@@ -210,7 +213,9 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 							ns02#Identity: {
 									ns02#LastAPIS: (passenger.Identity.*LastAPIS map (lastApis, lastApisindex) -> {
 										ns02#AddressInformation: lastApis.AddressInformation,
-										ns02#ContactInformation: (lastApis.*ContactInformation map (contactInfo, contactInfoIndex) -> {
+										ns02#ContactInformation: 
+										if (lastApis.ContactInformation.ContactLastName != null)
+										(lastApis.*ContactInformation map (contactInfo, contactInfoIndex) -> {
 											ns02#AddressLine: contactInfo.AddressLine,
 											ns02#City: contactInfo.City,
 											ns02#CompanyName: contactInfo.CompanyName,
@@ -222,7 +227,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 											ns02#NotificationPreference: contactInfo.NotificationPreference,
 											ns02#PostalCode: contactInfo.PostalCode,
 											ns02#TelephoneNumber: contactInfo.TelephoneNumber		
-										}),
+										}) else null,
 										ns02#CountryOfIssue: lastApis.CountryOfIssue,
 										ns02#CountryOfResidence: lastApis.CountryOfResidence,
 										ns02#DateOfBirth: lastApis.DateOfBirth,
@@ -240,7 +245,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 									}),
 								ns02#ObtainedAPIS: {		
 									ns02#ApisData: (passenger.Identity.ObtainedAPIS.*ApisData map (apisData, apisDataIndex) -> {
-										ns02#ContactInformation: (apisData.ContactInformation map (contactInfo, contactInfoIndex) -> {
+										ns02#ContactInformation: (apisData.*ContactInformation map (contactInfo, contactInfoIndex) -> {
 											ns02#AddressLine: contactInfo.AddressLine,
 											ns02#City: contactInfo.City,
 											ns02#CompanyName: contactInfo.CompanyName,
@@ -288,14 +293,14 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 							ns02#PaxType: passenger.PaxType,
 							ns02#RequiresCheckin: passenger.RequiresCheckin,
 							ns02#SSRs: {
-								ns02#SSR: (passenger.SSRs.*SSR map (s, indexon) -> {
-									ns02#Currency: itemon.Currency,
-									ns02#FeeCode: itemon.FeeCode,
-									ns02#FlightNumber: itemon.FlightNumber,
-									ns02#PaxNumber: itemon.PaxNumber,
-									ns02#Price: itemon.Price,
-									ns02#SSRCode: itemon.SSRCode,
-									ns02#SSRDescription: itemon.SSRDescription,				
+								ns02#SSR: (passenger.SSRs.*SSR map (ssr, ssrIndex) -> {
+									ns02#Currency: ssr.Currency,
+									ns02#FeeCode: ssr.FeeCode,
+									ns02#FlightNumber: ssr.FlightNumber,
+									ns02#PaxNumber: ssr.PaxNumber,
+									ns02#Price: ssr.Price,
+									ns02#SSRCode: ssr.SSRCode,
+									ns02#SSRDescription: ssr.SSRDescription,				
 								})
 							},
 							ns02#SeatNumber: passenger.SeatNumber,
