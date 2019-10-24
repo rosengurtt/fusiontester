@@ -26,7 +26,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 					ns02#RequestSourceName: i.RequestSourceName,
 					ns02#RequestType: i.RequestType,
 					ns02#TestRequest: i.TestRequest,
-					ns02#Session: (i.Session map (session, sessionIndex) -> {
+					ns02#Session: (i.*Session map (session, sessionIndex) -> {
 						ns02#EndTime: session.EndTime,
 						ns02#KioskId: session.KioskId,
 						ns02#PNR: session.PNR,
@@ -70,7 +70,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 							ns02#Active: passenger.Active,
 							ns02#AllowanceRetrieved: passenger.AllowanceRetrieved,							
 							ns02#Baggage: {
-								ns02#BaggageAllowance: (passenger.Baggage.BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) -> {
+								ns02#BaggageAllowance: (passenger.Baggage.*BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) -> {
 									ns02#BagDropId: baggageAllowance.BagDropId,
 									ns02#BaggageAllowanceTypeId: baggageAllowance.BaggageAllowanceTypeId,
 									ns02#BaggageItemTypeId: baggageAllowance.BaggageItemTypeId,
@@ -220,7 +220,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 									}),	
 								} else null,				
 								ns02#ValidDocuments: if (passenger.Identity.ValidDocuments.APISDocumentSet != null) {
-									ns02#APISDocumentSet: (passenger.Identity.ValidDocuments.APISDocumentSet map (apisDocSet,apisDocSetIndex) -> {
+									ns02#APISDocumentSet: (passenger.Identity.ValidDocuments.*APISDocumentSet map (apisDocSet,apisDocSetIndex) -> {
 										ns02#IsSelected: apisDocSet.IsSelected,
 										ns02#MainDocumentIssuerCountryCode: apisDocSet.MainDocumentIssuerCountryCode,
 										ns02#MainDocumentType: apisDocSet.MainDocumentType

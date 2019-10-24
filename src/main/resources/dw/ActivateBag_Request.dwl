@@ -38,7 +38,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 						ns02#UserId: session.UserId,
 						ns02#Weight: session.Weight
 					}),
-					ns01#BaggageItem: (i.BaggageItem map (baggageItem, baggageItemIndex) -> {
+					ns01#BaggageItem: (i.*BaggageItem map (baggageItem, baggageItemIndex) -> {
 						ns02#Active: baggageItem.Active,
 						ns02#BaggageAllowanceId: baggageItem.BaggageAllowanceId,
 						ns02#BaggageItemSubTypeId: baggageItem.BaggageItemSubTypeId,
@@ -63,7 +63,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 						ns02#TagNumber: baggageItem.TagNumber,
 						ns02#Weight: baggageItem.Weight
 					}),
-					ns01#Flight: (i.Flight map (flight, flightIndex) -> {
+					ns01#Flight: (i.*Flight map (flight, flightIndex) -> {
 						ns02#ApisRequired: flight.ApisRequired,
 						ns02#ArrivalTime: flight.ArrivalTime,
 						ns02#ConnectingFlight: flight.ConnectingFlight,
@@ -87,11 +87,11 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 						ns02#UTCDepartureTime: flight.UTCDepartureTime,
 						ns02#UTCEstimatedDepartureTime: flight.UTCEstimatedDepartureTime
 					}),
-					ns01#Passenger: (i.Passenger map (passenger, passengerIndex) -> {
+					ns01#Passenger: (i.*Passenger map (passenger, passengerIndex) -> {
 						ns02#Active: passenger.Active,
 						ns02#AllowanceRetrieved: passenger.AllowanceRetrieved,
 						ns02#Baggage: {
-							ns02#BaggageAllowance: (passenger.Baggage.BaggageAllowance map (baggageAllowance, BaggageAllowanceindex) -> {
+							ns02#BaggageAllowance: (passenger.Baggage.*BaggageAllowance map (baggageAllowance, BaggageAllowanceindex) -> {
 								ns02#BagDropId: baggageAllowance.BagDropId,
 								ns02#BaggageAllowanceTypeId: baggageAllowance.BaggageAllowanceTypeId,
 								ns02#BaggageItemTypeId: baggageAllowance.BaggageItemTypeId,

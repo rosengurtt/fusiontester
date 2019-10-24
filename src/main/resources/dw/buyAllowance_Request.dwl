@@ -96,7 +96,7 @@ ns a http://www.w3.org/2005/08/addressing
 					ns01#Passenger: (i.*Passenger map (passenger, indPass) -> {
 						ns02#Active: passenger.Active,
 						ns02#AllowanceRetrieved: passenger.AllowanceRetrieved,
-						ns02#Baggage: (bagagge map (bagagge, in) -> {
+						ns02#Baggage: (i.*Bagagge map (bagagge, in) -> {
 							ns02#BaggageAllowance: (bagagge.*BaggageAllowance map (bagaggeAllowance, index) -> {
 								ns02#BagDropId: bagaggeAllowance.BagDropId,
 								ns02#BaggageAllowanceTypeId: bagaggeAllowance.BaggageAllowanceTypeId,

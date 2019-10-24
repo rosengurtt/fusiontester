@@ -78,9 +78,9 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 						Boarded: passenger.ns01#Boarded,
 						Active: passenger.ns01#Active,
 						DocumentCheckRequired: passenger.ns01#DocumentCheckRequired,
-						Identity: {
-							ObtainedAPIS:{
-								ApisData: (passenger.ns01#Identity.ns01#ObtainedAPIS.*ns01#ApisData map (apisData, apisDataIndex) -> {
+						Identity: (passenger.*ns01#Identity map (identity, identityIndex) -> {
+							ObtainedAPIS: (identity.ns01#ObtainedAPIS map (obtainedApis, obtainedApisIndex) -> {
+								ApisData: (obtainedApis.*ns01#ApisData map (apisData, apisDataIndex) -> {
 									Surname: apisData.ns01#Surname,
 									Firstname: apisData.ns01#Firstname,
 									DateOfBirth: apisData.ns01#DateOfBirth,
@@ -105,8 +105,8 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 										NotificationPreference: contactInfo.ns01#NotificationPreference								
 									}),
 								})
-							},
-							LastAPIS: (passenger.ns01#Identity.*ns01#LastAPIS map (lastApi, lastApiIndex) -> {
+							}),
+							LastAPIS: (identity.*ns01#LastAPIS map (lastApi, lastApiIndex) -> {
 								Surname: lastApi.ns01#Surname,
 								Firstname: lastApi.ns01#Firstname,
 								DateOfBirth: lastApi.ns01#DateOfBirth,
@@ -116,7 +116,7 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 								DocumentNumber: lastApi.ns01#DocumentNumber,
 								DocumentIssueDate: lastApi.ns01#DocumentIssueDate ,
 								DocumentExpiryDate: lastApi.ns01#DocumentExpiryDate,
-								CountryOfIssue: passenger.ns01#Identity.LastAPIS.ns01#CountryOfIssue,
+								CountryOfIssue: identity.LastAPIS.ns01#CountryOfIssue,
 								ContactInformation: (lastApi.*ns01#ContactInformation  map (contactInfo, contactInfoIndex) -> {
 									ContactTitle: contactInfo.ns01#ContactTitle,
 									ContactFirstName: contactInfo.ns01#ContactFirstName,
@@ -132,7 +132,7 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 								}),
 							}),
 							ValidDocuments: {
-								APISDocumentSet: (passenger.ns01#Identity.ns01#ValidDocuments.*ns01#APISDocumentSet map (apisDocSet, apisDocSetIndex) ->   {
+								APISDocumentSet: (identity.ns01#ValidDocuments.*ns01#APISDocumentSet map (apisDocSet, apisDocSetIndex) ->   {
 									MainDocumentType: apisDocSet.ns01#MainDocumentType,
 									MainDocumentIssuerCountryCode: apisDocSet.ns01#MainDocumentIssuerCountryCode,
 									APISDocuments:  {
@@ -159,7 +159,7 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 								})
 							},
 							DocumentOptions: {
-								APISDocumentSet: (passenger.ns01#Identity.ns01#DocumentOptions.*ns01#APISDocumentSet map (apisDocSet, apisDocSetIndex) ->   {
+								APISDocumentSet: (identity.ns01#DocumentOptions.*ns01#APISDocumentSet map (apisDocSet, apisDocSetIndex) ->   {
 									MainDocumentType: apisDocSet.ns01#MainDocumentType,
 									MainDocumentIssuerCountryCode: apisDocSet.ns01#MainDocumentIssuerCountryCode,
 									APISDocuments:  {
@@ -185,7 +185,7 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 									IsSelected: apisDocSet.ns01#IsSelected
 								})
 							},
-						},
+						}),
 						Baggage: {
 							BaggageAllowance: (passenger.ns01#Baggage.*ns01#BaggageAllowance map (baggageAllowance, baggageAllowanceindex) ->  {	
 								Id: baggageAllowance.ns01#Id,

@@ -26,7 +26,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 					ns02#RequestSourceName: i.RequestSourceName,
 					ns02#RequestType: i.RequestType,
 					ns02#TestRequest: i.TestRequest,
-					ns02#Session: (i.Session map (session, sessionIndex) -> {
+					ns02#Session: (i.*Session map (session, sessionIndex) -> {
 						ns02#KioskId: session.KioskId,
 						ns02#PNR: session.PNR,
 						ns02#Price: session.Price,

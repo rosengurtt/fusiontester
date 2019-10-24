@@ -89,7 +89,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 						DocumentIssueDate: lastApis.ns02#DocumentIssueDate,
 						DocumentExpiryDate: lastApis.ns02#DocumentExpiryDate,
 						CountryOfIssue: lastApis.ns02#CountryOfIssue,
-						ContactInformation: (lastApis.ns02#ContactInformation map (contactInfo, contactInfoIndex) -> {
+						ContactInformation: (lastApis.*ns02#ContactInformation map (contactInfo, contactInfoIndex) -> {
 								ContactTitle: contactInfo.ns02#ContactTitle,
 								ContactFirstName: contactInfo.ns02#ContactFirstName,
 								ContactLastName: contactInfo.ns02#ContactLastName,

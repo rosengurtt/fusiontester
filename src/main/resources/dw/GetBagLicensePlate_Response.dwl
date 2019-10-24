@@ -12,199 +12,200 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 		DcsRequestsIds: {
 			guid: i.ns02#DcsRequestsIds.ns03#guid
 		},
-		Errors: (i.ns02#Errors.*ns02#FusionError map (item, index) -> {
+		Errors: (i.ns02#Errors.*ns02#FusionError map (err, errIndex) -> {
 			FusionError: {
-				Code: item.ns02#Code,
-				Critical: item.ns02#Critical,
-				Description: item.ns02#Description,
-				Method: item.ns02#Method,
-				Source: item.ns02#Source
+				Code: err.ns02#Code,
+				Critical: err.ns02#Critical,
+				Description: err.ns02#Description,
+				Method: err.ns02#Method,
+				Source: err.ns02#Source
 			}
 		}),
 		LicensePlate: i.ns01#LicensePlate,
 		RoundedWeight: i.ns01#RoundedWeight,
-		Passenger: {
-			PassengerId: i.ns01#Passenger.ns02#PassengerId,
-			Title: i.ns01#Passenger.ns02#Title,
-			FirstName: i.ns01#Passenger.ns02#FirstName,
-			LastName: i.ns01#Passenger.ns02#LastName,
-			NativePassengerId: i.ns01#Passenger.ns02#NativePassengerId,
-			MarketingCarrierCode: i.ns01#Passenger.ns02#MarketingCarrierCode,
-			Gender: i.ns01#Passenger.ns02#Gender,
-			DateOfBirth: i.ns01#Passenger.ns02#DateOfBirth,
-			PassengerSequenceNumber: i.ns01#Passenger.ns02#PassengerSequenceNumber,
-			SeatNumber: i.ns01#Passenger.ns02#SeatNumber,
-			PaxType: i.ns01#Passenger.ns02#PaxType,
-			PassengerRPH: i.ns01#Passenger.ns02#PassengerRPH,
-			Barcode: i.ns01#Passenger.ns02#Barcode,
-			ConnectingFlightNumber: i.ns01#Passenger.ns02#ConnectingFlightNumber,
-			ConfirmedDga: i.ns01#Passenger.ns02#ConfirmedDga,
-			ConfirmedIdentity: i.ns01#Passenger.ns02#ConfirmedIdentity,
-			AllowanceRetrieved: i.ns01#Passenger.ns02#AllowanceRetrieved,
-			IsSelected: i.ns01#Passenger.ns02#IsSelected,
-			IsSelectableForBoardingPass: i.ns01#Passenger.ns02#IsSelectableForBoardingPass,
-			ClearanceRequired: i.ns01#Passenger.ns02#ClearanceRequired,
-			ClearanceStatus: i.ns01#Passenger.ns02#ClearanceStatus,
-			CheckedIn: i.ns01#Passenger.ns02#CheckedIn,
-			RequiresCheckin: i.ns01#Passenger.ns02#RequiresCheckin,
-			SupportsCheckin: i.ns01#Passenger.ns02#SupportsCheckin,
-			Boarded: i.ns01#Passenger.ns02#Boarded,
-			Active: i.ns01#Passenger.ns02#Active,
-			DocumentCheckRequired: i.ns01#Passenger.ns02#DocumentCheckRequired,
-			Identity: {
-				LastAPIS: {
-					Surname: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#Surname,
-					Firstname: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#Firstname,
-					DateOfBirth: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#DateOfBirth,
-					Nationality: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#Nationality,
-					DocumentType: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#DocumentType,
-					DocumentNumber: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#DocumentNumber,
-					DocumentIssueDate: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#DocumentIssueDate,
-					DocumentExpiryDate: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#DocumentExpiryDate,
-					CountryOfIssue: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#CountryOfIssue,
-					ContactInformation: {
-						ContactTitle: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#ContactTitle,
-						ContactFirstName: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#ContactFirstName,
-						ContactLastName: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#ContactLastName,
-						TelephoneNumber: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#TelephoneNumber,
-						EmailAddress: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#EmailAddress,
-						AddressLine: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#AddressLine,
-						City: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#City,
-						Country: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#Country,
-						PostalCode: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#PostalCode,
-						CompanyName: i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#CompanyName,
+		Passenger: (i.*ns01#Passenger map (passenger, passengerIndex) -> {
+			PassengerId: passenger.ns02#PassengerId,
+			Title: passenger.ns02#Title,
+			FirstName: passenger.ns02#FirstName,
+			LastName: passenger.ns02#LastName,
+			NativePassengerId: passenger.ns02#NativePassengerId,
+			MarketingCarrierCode: passenger.ns02#MarketingCarrierCode,
+			Gender: passenger.ns02#Gender,
+			DateOfBirth: passenger.ns02#DateOfBirth,
+			PassengerSequenceNumber: passenger.ns02#PassengerSequenceNumber,
+			SeatNumber: passenger.ns02#SeatNumber,
+			PaxType: passenger.ns02#PaxType,
+			PassengerRPH: passenger.ns02#PassengerRPH,
+			Barcode: passenger.ns02#Barcode,
+			ConnectingFlightNumber: passenger.ns02#ConnectingFlightNumber,
+			ConfirmedDga: passenger.ns02#ConfirmedDga,
+			ConfirmedIdentity: passenger.ns02#ConfirmedIdentity,
+			AllowanceRetrieved: passenger.ns02#AllowanceRetrieved,
+			IsSelected: passenger.ns02#IsSelected,
+			IsSelectableForBoardingPass: passenger.ns02#IsSelectableForBoardingPass,
+			ClearanceRequired: passenger.ns02#ClearanceRequired,
+			ClearanceStatus: passenger.ns02#ClearanceStatus,
+			CheckedIn: passenger.ns02#CheckedIn,
+			RequiresCheckin: passenger.ns02#RequiresCheckin,
+			SupportsCheckin: passenger.ns02#SupportsCheckin,
+			Boarded: passenger.ns02#Boarded,
+			Active: passenger.ns02#Active,
+			DocumentCheckRequired: passenger.ns02#DocumentCheckRequired,
+			Identity: (passenger.*ns02#Identity map (identity, identityIndex) -> {
+				LastAPIS: (identity.*ns02#LastAPIS map (lastApis, lastApisIndex) -> {
+					Surname: lastApis.ns02#Surname,
+					Firstname: lastApis.ns02#Firstname,
+					DateOfBirth: lastApis.ns02#DateOfBirth,
+					Nationality: lastApis.ns02#Nationality,
+					DocumentType: lastApis.ns02#DocumentType,
+					DocumentNumber: lastApis.ns02#DocumentNumber,
+					DocumentIssueDate: lastApis.ns02#DocumentIssueDate,
+					DocumentExpiryDate: lastApis.ns02#DocumentExpiryDate,
+					CountryOfIssue: lastApis.ns02#CountryOfIssue,
+					ContactInformation: (lastApis.*ns02#ContactInformation map (contactInfo, contactInfoIndex) -> {
+						ContactTitle: contactInfo.ns02#ContactTitle,
+						ContactFirstName: contactInfo.ns02#ContactFirstName,
+						ContactLastName: contactInfo.ns02#ContactLastName,
+						TelephoneNumber: contactInfo.ns02#TelephoneNumber,
+						EmailAddress: contactInfo.ns02#EmailAddress,
+						AddressLine: contactInfo.ns02#AddressLine,
+						City: contactInfo.ns02#City,
+						Country: contactInfo.ns02#Country,
+						PostalCode: contactInfo.ns02#PostalCode,
+						CompanyName: contactInfo.ns02#CompanyName,
 						NotificationPreference: 
-							if (i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#NotificationPreference != '') 
-							i.ns01#Passenger.ns02#Identity.ns02#LastAPIS.ns02#ContactInformation.ns02#NotificationPreference
+							if (contactInfo.ns02#NotificationPreference != '') 
+							contactInfo.ns02#NotificationPreference
 							else null								
-					},
-				}
-			},
-			Baggage: {
-				BaggageAllowance: if (i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#InitialWeight != '0'
-						or i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#RemainingWeight != '0'
-						or i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PoolItems == 'true'
-						or i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PoolWeight == 'true') {
-					Id: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#Id,
-					BaggageAllowanceTypeId: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#BaggageAllowanceTypeId,
-					BaggageItemTypeId: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#BaggageItemTypeId,
-					BagDropId: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#BagDropId,
-					FlightId: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#FlightId,
-					PassengerId: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PassengerId,
-					PoolItems: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PoolItems,
-					PoolWeight: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PoolWeight,
-					ConsumeItemWeight: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#ConsumeItemWeight,
-					UpdateInitialAllowance: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#UpdateInitialAllowance,
-					MaxSingleItemWeight: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#MaxSingleItemWeight,
-					InitialBags: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#InitialBags,
-					InitialWeight: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#InitialWeight,
-					PurchasedBags: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PurchasedBags,
-					PurchasedWeight: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#PurchasedWeight,
-					RemainingBags: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#RemainingBags,
-					RemainingWeight: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#RemainingWeight,
-					CreatedOn: i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowance.ns02#CreatedOn
-				} else null,
+					}),
+				})
+			}),
+			Baggage: (passenger.*ns02#Baggage map (bagagge, bagaggeIndex) -> {
+				BaggageAllowance: if (bagagge.ns02#BaggageAllowance.ns02#InitialWeight != '0'
+						or bagagge.ns02#BaggageAllowance.ns02#RemainingWeight != '0'
+						or bagagge.ns02#BaggageAllowance.ns02#PoolItems == 'true'
+						or bagagge.ns02#BaggageAllowance.ns02#PoolWeight == 'true') 
+					(bagagge.*s02#BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) ->   {
+					Id: baggageAllowance.ns02#Id,
+					BaggageAllowanceTypeId: baggageAllowance.ns02#BaggageAllowanceTypeId,
+					BaggageItemTypeId: baggageAllowance.ns02#BaggageItemTypeId,
+					BagDropId: baggageAllowance.ns02#BagDropId,
+					FlightId: baggageAllowance.ns02#FlightId,
+					PassengerId: baggageAllowance.ns02#PassengerId,
+					PoolItems: baggageAllowance.ns02#PoolItems,
+					PoolWeight: baggageAllowance.ns02#PoolWeight,
+					ConsumeItemWeight: baggageAllowance.ns02#ConsumeItemWeight,
+					UpdateInitialAllowance: baggageAllowance.ns02#UpdateInitialAllowance,
+					MaxSingleItemWeight: baggageAllowance.ns02#MaxSingleItemWeight,
+					InitialBags: baggageAllowance.ns02#InitialBags,
+					InitialWeight: baggageAllowance.ns02#InitialWeight,
+					PurchasedBags: baggageAllowance.ns02#PurchasedBags,
+					PurchasedWeight: baggageAllowance.ns02#PurchasedWeight,
+					RemainingBags: baggageAllowance.ns02#RemainingBags,
+					RemainingWeight: baggageAllowance.ns02#RemainingWeight,
+					CreatedOn: baggageAllowance.ns02#CreatedOn
+				}) else null,
 				BaggageAllowances: {
-					BaggageAllowance: (i.ns01#Passenger.ns02#Baggage.ns02#BaggageAllowances.*ns02#BaggageAllowance map (item, index) -> {
-						Id: item.ns02#Id,
-						BaggageAllowanceTypeId: item.ns02#BaggageAllowanceTypeId,
-						BaggageItemTypeId: item.ns02#BaggageItemTypeId,
-						BagDropId: item.ns02#BagDropId,
-						FlightId: item.ns02#FlightId,
-						PassengerId: item.ns02#PassengerId,
-						PoolItems: item.ns02#PoolItems,
-						PoolWeight: item.ns02#PoolWeight,
-						ConsumeItemWeight: item.ns02#ConsumeItemWeight,
-						UpdateInitialAllowance: item.ns02#UpdateInitialAllowance,
-						MaxSingleItemWeight: item.ns02#MaxSingleItemWeight,
-						InitialBags: item.ns02#InitialBags,
-						InitialWeight: item.ns02#InitialWeight,
-						PurchasedBags: item.ns02#PurchasedBags,
-						PurchasedWeight: item.ns02#PurchasedWeight,
-						RemainingBags: item.ns02#RemainingBags,
-						RemainingWeight: item.ns02#RemainingWeight,
-						CreatedOn: item.ns02#CreatedOn
+					BaggageAllowance: (bagagge.ns02#BaggageAllowances.*ns02#BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) -> {
+						Id: baggageAllowance.ns02#Id,
+						BaggageAllowanceTypeId: baggageAllowance.ns02#BaggageAllowanceTypeId,
+						BaggageItemTypeId: baggageAllowance.ns02#BaggageItemTypeId,
+						BagDropId: baggageAllowance.ns02#BagDropId,
+						FlightId: baggageAllowance.ns02#FlightId,
+						PassengerId: baggageAllowance.ns02#PassengerId,
+						PoolItems: baggageAllowance.ns02#PoolItems,
+						PoolWeight: baggageAllowance.ns02#PoolWeight,
+						ConsumeItemWeight: baggageAllowance.ns02#ConsumeItemWeight,
+						UpdateInitialAllowance: baggageAllowance.ns02#UpdateInitialAllowance,
+						MaxSingleItemWeight: baggageAllowance.ns02#MaxSingleItemWeight,
+						InitialBags: baggageAllowance.ns02#InitialBags,
+						InitialWeight: baggageAllowance.ns02#InitialWeight,
+						PurchasedBags: baggageAllowance.ns02#PurchasedBags,
+						PurchasedWeight: baggageAllowance.ns02#PurchasedWeight,
+						RemainingBags: baggageAllowance.ns02#RemainingBags,
+						RemainingWeight: baggageAllowance.ns02#RemainingWeight,
+						CreatedOn: baggageAllowance.ns02#CreatedOn
 					})
 				},
 				BaggageItems: {
-					BaggageItem: (i.ns01#Passenger.ns02#Baggage.ns02#BaggageItems.*ns02#BaggageItem map (item, index) -> {
-						Id: item.ns02#Id,
-						BaggageAllowanceId: item.ns02#BaggageAllowanceId,
-						PassengerId: item.ns02#PassengerId,
-						SessionId: item.ns02#SessionId,
-						TagNumber: item.ns02#TagNumber,
-						Weight: item.ns02#Weight,
-						InitialWeight: item.ns02#InitialWeight,
-						BaggageItemType: item.ns02#BaggageItemType,
-						BaggageItemTypeId: item.ns02#BaggageItemTypeId,
-						BaggageItemTypeName: item.ns02#BaggageItemTypeName,
-						BaggageItemSubTypeId: item.ns02#BaggageItemSubTypeId,
-						BaggageItemSubTypeName: item.ns02#BaggageItemSubTypeName,
-						HasNotionalWeight: item.ns02#HasNotionalWeight,
-						OutOfGauge: item.ns02#OutOfGauge,
-						ConsumeAllowance: item.ns02#ConsumeAllowance,
-						Registered: item.ns02#Registered,
-						Printed: item.ns02#Printed,
-						Dropped: item.ns02#Dropped,
-						RegisteredTime: item.ns02#RegisteredTime,
-						PrintedTime: item.ns02#PrintedTime,
-						DroppedTime: item.ns02#DroppedTime,
-						CreatedOn: item.ns02#CreatedOn					
+					BaggageItem: (bagagge.ns02#BaggageItems.*ns02#BaggageItem map (bagagge, bagaggeIndex) -> {
+						Id: bagagge.ns02#Id,
+						BaggageAllowanceId: bagagge.ns02#BaggageAllowanceId,
+						PassengerId: bagagge.ns02#PassengerId,
+						SessionId: bagagge.ns02#SessionId,
+						TagNumber: bagagge.ns02#TagNumber,
+						Weight: bagagge.ns02#Weight,
+						InitialWeight: bagagge.ns02#InitialWeight,
+						BaggageItemType: bagagge.ns02#BaggageItemType,
+						BaggageItemTypeId: bagagge.ns02#BaggageItemTypeId,
+						BaggageItemTypeName: bagagge.ns02#BaggageItemTypeName,
+						BaggageItemSubTypeId: bagagge.ns02#BaggageItemSubTypeId,
+						BaggageItemSubTypeName: bagagge.ns02#BaggageItemSubTypeName,
+						HasNotionalWeight: bagagge.ns02#HasNotionalWeight,
+						OutOfGauge: bagagge.ns02#OutOfGauge,
+						ConsumeAllowance: bagagge.ns02#ConsumeAllowance,
+						Registered: bagagge.ns02#Registered,
+						Printed: bagagge.ns02#Printed,
+						Dropped: bagagge.ns02#Dropped,
+						RegisteredTime: bagagge.ns02#RegisteredTime,
+						PrintedTime: bagagge.ns02#PrintedTime,
+						DroppedTime: bagagge.ns02#DroppedTime,
+						CreatedOn: bagagge.ns02#CreatedOn					
 					})
 				},			
-				MaxSingleItemWeight: i.ns01#Passenger.ns02#Baggage.ns02#MaxSingleItemWeight
-			},
-			Infant: {
-				InfantId: i.ns01#Passenger.ns02#Infant.ns02#InfantId,
-				AdultPassengerId: i.ns01#Passenger.ns02#Infant.ns02#AdultPassengerId,
-				FirstName: i.ns01#Passenger.ns02#Infant.ns02#FirstName,
-				LastName: i.ns01#Passenger.ns02#Infant.ns02#LastName,
-				DateOfBirth: i.ns01#Passenger.ns02#Infant.ns02#DateOfBirth,
-				PassengerRPH: i.ns01#Passenger.ns02#Infant.ns02#PassengerRPH,
-				AdultPassengerRPH: i.ns01#Passenger.ns02#Infant.ns02#AdultPassengerRPH,
-				ConfirmedIdentity: i.ns01#Passenger.ns02#Infant.ns02#ConfirmedIdentity,
-				AllowanceRetrieved: i.ns01#Passenger.ns02#Infant.ns02#AllowanceRetrieved,
-				IsSelected: i.ns01#Passenger.ns02#Infant.ns02#IsSelected,
-				CheckedIn: i.ns01#Passenger.ns02#Infant.ns02#CheckedIn,
-				Boarded: i.ns01#Passenger.ns02#Infant.ns02#Boarded,
+				MaxSingleItemWeight: bagagge.ns02#MaxSingleItemWeight
+			}),
+			Infant: (passenger.*ns02#Infant map (infant, infantIndex) -> {
+				InfantId: infant.ns02#InfantId,
+				AdultPassengerId: infant.ns02#AdultPassengerId,
+				FirstName: infant.ns02#FirstName,
+				LastName: infant.ns02#LastName,
+				DateOfBirth: infant.ns02#DateOfBirth,
+				PassengerRPH: infant.ns02#PassengerRPH,
+				AdultPassengerRPH: infant.ns02#AdultPassengerRPH,
+				ConfirmedIdentity: infant.ns02#ConfirmedIdentity,
+				AllowanceRetrieved: infant.ns02#AllowanceRetrieved,
+				IsSelected: infant.ns02#IsSelected,
+				CheckedIn: infant.ns02#CheckedIn,
+				Boarded: infant.ns02#Boarded,
 				CustomProperties: {
-					string: i.ns01#Passenger.ns01#Infant.ns02#CustomProperties.*ns03#string
+					string: passenger.ns01#Infant.ns02#CustomProperties.*ns03#string
 				},			
-			},
+			}),
 			SSRs:{
-				SSR: (i.ns01#Passenger.ns02#SSRs.*ns02#SSR map {
-					SSRCode: $.ns02#SSRCode,
-					SSRDescription: $.ns02#SSRDescription,
-					FeeCode: $.ns02#FeeCode,
-					PaxNumber: $.ns02#PaxNumber,
-					Price: $.ns02#Price
+				SSR: (passenger.ns02#SSRs.*ns02#SSR map (ssr, ssrIndex) -> {
+					SSRCode: ssr.ns02#SSRCode,
+					SSRDescription: ssr.ns02#SSRDescription,
+					FeeCode: ssr.ns02#FeeCode,
+					PaxNumber: ssr.ns02#PaxNumber,
+					Price: ssr.ns02#Price
 				})
 			},
 			CustomProperties: {
-				string: i.ns01#Passenger.ns02#CustomProperties.*ns03#string
+				string: passenger.ns02#CustomProperties.*ns03#string
 			},
-			SeatPreference: i.ns01#Passenger.ns02#SeatPreference,
-		},
+			SeatPreference: passenger.ns02#SeatPreference,
+		}),
 		Flights: {
-			Flight: (i.ns01#Flights.*ns02#Flight map (item, index) -> {
-				Id: item.Id,
-				Origin: item.Origin,
-				Destination: item.Destination,
-				DepartureTime: item.DepartureTime,
-				ArrivalTime: item.ArrivalTime,
-				UTCDepartureTime: item.UTCDepartureTime,
-				UTCArrivalTime: item.UTCArrivalTime,
-				OperatingCarrier: item.OperatingCarrier,
-				MarketingCarrier: item.MarketingCarrier,
-				FlightNumber: item.FlightNumber,
-				NativeFlightId: item.NativeFlightId,
-				FlightRPH: item.FlightRPH,
-				ApisRequired: item.ApisRequired,
-				RequireMultipleAPISDocuments: item.RequireMultipleAPISDocuments,
-				OpenForCheckIn: item.OpenForCheckIn,
-				OpenForBoarding: item.OpenForBoarding,
-				ConnectingFlight: item.ConnectingFlight,
-				JourneyRPH: item.JourneyRPH
+			Flight: (i.ns01#Flights.*ns02#Flight map (flight, flightIndex) -> {
+				Id: flight.Id,
+				Origin: flight.Origin,
+				Destination: flight.Destination,
+				DepartureTime: flight.DepartureTime,
+				ArrivalTime: flight.ArrivalTime,
+				UTCDepartureTime: flight.UTCDepartureTime,
+				UTCArrivalTime: flight.UTCArrivalTime,
+				OperatingCarrier: flight.OperatingCarrier,
+				MarketingCarrier: flight.MarketingCarrier,
+				FlightNumber: flight.FlightNumber,
+				NativeFlightId: flight.NativeFlightId,
+				FlightRPH: flight.FlightRPH,
+				ApisRequired: flight.ApisRequired,
+				RequireMultipleAPISDocuments: flight.RequireMultipleAPISDocuments,
+				OpenForCheckIn: flight.OpenForCheckIn,
+				OpenForBoarding: flight.OpenForBoarding,
+				ConnectingFlight: flight.ConnectingFlight,
+				JourneyRPH: flight.JourneyRPH
 			})
 		}
 	})

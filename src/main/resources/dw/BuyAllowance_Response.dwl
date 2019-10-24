@@ -5,21 +5,21 @@ ns ns01 http://services.fusion.aero
 ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 ---
 {
-	BuyAllowance_Response: {
-		RequestId: payload.ns0#Envelope.ns0#Body.ns01#BuyAllowanceResponse.ns01#BuyAllowanceResult.ns02#RequestId,
-		ResponseId: payload.ns0#Envelope.ns0#Body.ns01#BuyAllowanceResponse.ns01#BuyAllowanceResult.ns02#ResponseId,
+	BuyAllowance_Response: (payload.ns0#Envelope.ns0#Body.ns01#BuyAllowanceResponse.*ns01#BuyAllowanceResult map (i, ind) -> {
+		RequestId: i.ns02#RequestId,
+		ResponseId: i.ns02#ResponseId,
 		DcsRequestsIds: {
-			guid: payload.ns0#Envelope.ns0#Body.ns01#BuyAllowanceResponse.ns01#BuyAllowanceResult.ns02#DcsRequestsIds.*guid			
+			guid: i.ns02#DcsRequestsIds.*guid			
 		},
-		Errors: (payload.ns0#Envelope.ns0#Body.ns01#BuyAllowanceResponse.ns01#BuyAllowanceResult.ns02#Errors.*ns02#FusionError map
+		Errors: (i.ns02#Errors.*ns02#FusionError map (err, errInd) ->
 		{
 			FusionError: {
-				Code: $.ns02#Code,
-				Critical: $.ns02#Critical,
-				Description: $.ns02#Description,
-				Method: $.ns02#Method,
-				Source: $.ns02#Source
+				Code: err.ns02#Code,
+				Critical: err.ns02#Critical,
+				Description: err.ns02#Description,
+				Method: err.ns02#Method,
+				Source: err.ns02#Source
 			}
 		}),
-	}
+	})
 }
