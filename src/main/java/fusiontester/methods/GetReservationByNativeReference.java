@@ -14,6 +14,7 @@ public class GetReservationByNativeReference {
 		xml = xml.replaceAll("<CreatedOn[\\s\\S]{32,40}CreatedOn>","");
 		xml = xml.replaceAll("<InfantId[\\s\\S]{39}InfantId>","");
 		xml = xml.replaceAll("<string>TransactionFlowLink=[^<]*</string>", "");
+		xml = xml.replaceAll("<AdultPassengerId[\\s\\S]{39}AdultPassengerId>","");
 		return xml;
 	}
 }

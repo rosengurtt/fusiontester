@@ -117,7 +117,7 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 							DocumentNumber: lastApis.ns01#DocumentNumber,
 							DocumentIssueDate: lastApis.ns01#DocumentIssueDate ,
 							DocumentExpiryDate: lastApis.ns01#DocumentExpiryDate,
-							CountryOfIssue: passenger.ns01#Identity.LastAPIS.ns01#CountryOfIssue,
+							CountryOfIssue: lastApis.ns01#CountryOfIssue,
 							ContactInformation: {
 								ContactTitle: lastApis.ns01#ContactInformation.ns01#ContactTitle,
 								ContactFirstName: lastApis.ns01#ContactInformation.ns01#ContactFirstName,
@@ -264,22 +264,135 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 					Infant: {
 						InfantId: passenger.ns01#Infant.ns01#InfantId,
 						AdultPassengerId: passenger.ns01#Infant.ns01#AdultPassengerId,
+						Title: passenger.ns01#Infant.ns01#Title,
 						FirstName: passenger.ns01#Infant.ns01#FirstName,
 						LastName: passenger.ns01#Infant.ns01#LastName,
 						NativePassengerId: passenger.ns01#Infant.ns01#NativePassengerId,
+						SeatNumber: passenger.ns01#Infant.ns01#SeatNumber,
 						PassengerRPH: passenger.ns01#Infant.ns01#PassengerRPH,
 						AdultPassengerRPH: passenger.ns01#Infant.ns01#AdultPassengerRPH,
 						ConfirmedIdentity: passenger.ns01#Infant.ns01#ConfirmedIdentity,
 						AllowanceRetrieved: passenger.ns01#Infant.ns01#AllowanceRetrieved,
 						IsSelected: passenger.ns01#Infant.ns01#IsSelected,
 						CheckedIn: passenger.ns01#Infant.ns01#CheckedIn,
-						Boarded: passenger.ns01#Infant.ns01#Boarded,						
+						Boarded: passenger.ns01#Infant.ns01#Boarded,
+						Identity: {
+							ObtainedAPIS:{
+								ApisData: (passenger.ns01#Infant.ns01#Identity.ns01#ObtainedAPIS.*ns01#ApisData map (apisData, apisDataIndex) -> {
+									Surname: apisData.ns01#Surname,
+									Firstname: apisData.ns01#Firstname,
+									DateOfBirth: apisData.ns01#DateOfBirth,
+									CountryOfResidence: apisData.ns01#CountryOfResidence,
+									Nationality: apisData.ns01#Nationality,
+									DocumentType: apisData.ns01#DocumentType,
+									DocumentNumber: apisData.ns01#DocumentNumber,
+									DocumentIssueDate: apisData.ns01#DocumentIssueDate,
+									DocumentExpiryDate: apisData.ns01#DocumentExpiryDate,
+									CountryOfIssue: apisData.ns01#CountryOfIssue,
+									ContactInformation: {
+										ContactTitle: apisData.ns01#ContactInformation.ns01#ContactTitle,
+										ContactFirstName: apisData.ns01#ContactInformation.ns01#ContactFirstName,
+										ContactLastName: apisData.ns01#ContactInformation.ns01#ContactLastName,
+										TelephoneNumber: apisData.ns01#ContactInformation.ns01#TelephoneNumber,
+										EmailAddress: apisData.ns01#ContactInformation.ns01#EmailAddress,
+										AddressLine: apisData.ns01#ContactInformation.ns01#AddressLine,
+										City: apisData.ns01#ContactInformation.ns01#City,
+										Country: apisData.ns01#ContactInformation.ns01#Country,
+										PostalCode: apisData.ns01#ContactInformation.ns01#PostalCode,
+										CompanyName: apisData.ns01#ContactInformation.ns01#CompanyName,
+										NotificationPreference: apisData.ns01#ContactInformation.ns01#NotificationPreference								
+									},
+								})
+							},
+							LastAPIS: (passenger.ns01#Infant.ns01#Identity.*ns01#LastAPIS map (lastApis, lastApisIndex) ->{
+								Surname: lastApis.ns01#Surname,
+								Firstname: lastApis.ns01#Firstname,
+								DateOfBirth: lastApis.ns01#DateOfBirth,
+								CountryOfResidence: lastApis.ns01#CountryOfResidence,
+								Nationality: lastApis.ns01#Nationality,
+								DocumentType: lastApis.ns01#DocumentType,
+								DocumentNumber: lastApis.ns01#DocumentNumber,
+								DocumentIssueDate: lastApis.ns01#DocumentIssueDate ,
+								DocumentExpiryDate: lastApis.ns01#DocumentExpiryDate,
+								CountryOfIssue: lastApis.ns01#CountryOfIssue,
+								ContactInformation: {
+									ContactTitle: lastApis.ns01#ContactInformation.ns01#ContactTitle,
+									ContactFirstName: lastApis.ns01#ContactInformation.ns01#ContactFirstName,
+									ContactLastName: lastApis.ns01#ContactInformation.ns01#ContactLastName,
+									TelephoneNumber: lastApis.ns01#ContactInformation.ns01#TelephoneNumber,
+									EmailAddress: lastApis.ns01#ContactInformation.ns01#EmailAddress,
+									AddressLine: lastApis.ns01#ContactInformation.ns01#AddressLine,
+									City: lastApis.ns01#ContactInformation.ns01#City,
+									Country: lastApis.ns01#ContactInformation.ns01#Country,
+									PostalCode: lastApis.ns01#ContactInformation.ns01#PostalCode,
+									CompanyName: lastApis.ns01#ContactInformation.ns01#CompanyName,
+									NotificationPreference: lastApis.ns01#ContactInformation.ns01#NotificationPreference								
+								},
+							}),
+							ValidDocuments: {
+								APISDocumentSet: (passenger.ns01#Infant.ns01#Identity.ns01#ValidDocuments.*ns01#APISDocumentSet map (apisDocSet, apisDocSetIndex) ->   {
+									MainDocumentType: apisDocSet.ns01#MainDocumentType,
+									MainDocumentIssuerCountryCode: apisDocSet.ns01#MainDocumentIssuerCountryCode,
+									APISDocuments:  {
+										DocumentDetail:(apisDocSet.ns01#APISDocuments.*ns01#DocumentDetail map (docDetail, docDetailIndex) ->  {
+											Type: docDetail.ns01#Type,
+											IssuerCountryCode: docDetail.ns01#IssuerCountryCode,
+											Fields:  {
+												DocumentField:(docDetail.ns01#Fields.*ns01#DocumentField map (docField, docFieldIndex) ->  {
+													Name: docField.ns01#Name,
+													Required: docField.ns01#Required,
+													AcceptedValues: {
+														string: docField.ns01#AcceptedValues.*string
+													},
+												})
+											},
+											Scannable: docDetail.ns01#Scannable,
+											Complete: docDetail.ns01#Complete,
+											Required: docDetail.ns01#Required,
+											Active: docDetail.ns01#Active,
+											Order: docDetail.ns01#Order
+										})
+									},
+									IsSelected: apisDocSet.ns01#IsSelected
+								})
+							},
+							DocumentOptions: {
+								APISDocumentSet: (passenger.ns01#Infant.ns01#Identity.ns01#DocumentOptions.*ns01#APISDocumentSet map (apisDocSet, apisDocSetIndex) ->   {
+									MainDocumentType: apisDocSet.ns01#MainDocumentType,
+									MainDocumentIssuerCountryCode: apisDocSet.ns01#MainDocumentIssuerCountryCode,
+									APISDocuments:  {
+										DocumentDetail:(apisDocSet.ns01#APISDocuments.*ns01#DocumentDetail map (docDetail, docDetailIndex) ->  {
+											Type: docDetail.ns01#Type,
+											IssuerCountryCode: docDetail.ns01#IssuerCountryCode,
+											Fields:  {
+												DocumentField:(docDetail.ns01#Fields.*ns01#DocumentField map (docField, docFieldIndex) ->  {
+													Name: docField.ns01#Name,
+													Required: docField.ns01#Required,
+													AcceptedValues: {
+														string: docField.ns01#AcceptedValues.*string
+													},
+												})
+											},
+											Scannable: docDetail.ns01#Scannable,
+											Complete: docDetail.ns01#Complete,
+											Required: docDetail.ns01#Required,
+											Active: docDetail.ns01#Active,
+											Order: docDetail.ns01#Order
+										})
+									},
+									IsSelected: apisDocSet.ns01#IsSelected
+								})
+							},
+						},						
+						CustomProperties: {
+							string: passenger.ns01#Infant.ns01#CustomProperties.*string
+						}
 					},					
 					SSRs: {
 						SSR: (passenger.ns01#SSRs.*ns01#SSR map (ssr, ssrIndex) -> {
 							SSRCode: ssr.ns01#SSRCode,
-							FlightNumber: ssr.ns01#FlightNumber,
 							SSRDescription: ssr.ns01#SSRDescription,
+							FlightNumber: ssr.ns01#FlightNumber,
 							FeeCode: ssr.ns01#FeeCode,
 							PaxNumber: ssr.ns01#PaxNumber,
 							Price: ssr.ns01#Price

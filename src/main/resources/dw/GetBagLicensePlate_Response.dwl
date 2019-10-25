@@ -161,6 +161,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 				AdultPassengerId: infant.ns02#AdultPassengerId,
 				FirstName: infant.ns02#FirstName,
 				LastName: infant.ns02#LastName,
+				NativePassengerId: infant.ns02#NativePassengerId,
 				DateOfBirth: infant.ns02#DateOfBirth,
 				PassengerRPH: infant.ns02#PassengerRPH,
 				AdultPassengerRPH: infant.ns02#AdultPassengerRPH,
@@ -176,6 +177,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 			SSRs:{
 				SSR: (passenger.ns02#SSRs.*ns02#SSR map (ssr, ssrIndex) -> {
 					SSRCode: ssr.ns02#SSRCode,
+					FlightNumber: ssr.ns02#FlightNumber,
 					SSRDescription: ssr.ns02#SSRDescription,
 					FeeCode: ssr.ns02#FeeCode,
 					PaxNumber: ssr.ns02#PaxNumber,

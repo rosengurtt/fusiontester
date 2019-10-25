@@ -4,6 +4,7 @@ ns ns0 http://www.w3.org/2003/05/soap-envelope
 ns ns01 http://services.fusion.aero
 ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 ns a http://www.w3.org/2005/08/addressing
+ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 ---
 {
 	ns0#Envelope: {
@@ -39,6 +40,14 @@ ns a http://www.w3.org/2005/08/addressing
 					}),
 					ns01#AgentName: i.AgentName,
 					ns01#Costs: {
+						ns02#CardPayment: {
+							ns02#AuthorisationCode: i.Costs.CardPayment.AuthorisationCode,
+							ns02#CardScheme: i.Costs.CardPayment.CardScheme,
+							ns02#MerchantId: i.Costs.CardPayment.AuthorisationCode,
+							ns02#TerminalId: i.Costs.CardPayment.TerminalId,
+							ns02#TransactionDate: i.Costs.CardPayment.TransactionDate,
+							ns02#TransactionReference: i.Costs.CardPayment.TransactionReference,
+						},
 						ns02#Currency: i.Costs.Currency,
 						ns02#ItemList: {
 							ns02#ExcessBaggageCost: {
@@ -61,14 +70,18 @@ ns a http://www.w3.org/2005/08/addressing
 									ns02#RemainingBags: additionalAllowance.RemainingBags,
 									ns02#RemainingWeight: additionalAllowance.RemainingWeight,
 									ns02#UpdateInitialAllowance: additionalAllowance.UpdateInitialAllowance
-								}),
+								}),								
+								ns02#CurrencySymbol: i.Costs.ItemList.ExcessBaggageCost.CurrencySymbol,
 								ns02#Description: i.Costs.ItemList.ExcessBaggageCost.Description,
 								ns02#Price: i.Costs.ItemList.ExcessBaggageCost.Price,
 								ns02#Quantity: i.Costs.ItemList.ExcessBaggageCost.Quantity
 							}
 						},
+						ns02#PaymentReference: i.Costs.PaymentReference,
 						ns02#PaymentType: i.Costs.PaymentType,
-						ns02#QuoteStatus: i.Costs.QuoteStatus
+						ns02#PaymentTypeDetail: i.Costs.PaymentTypeDetail,
+						ns02#QuoteStatus: i.Costs.QuoteStatus,
+						ns02#StatusMessage: i.Costs.StatusMessage
 					},
 					ns01#Flights: {
 						ns02#Flight: (i.Flights.*Flight map (flight, flightInd) -> {
@@ -101,7 +114,7 @@ ns a http://www.w3.org/2005/08/addressing
 					ns01#Passenger: (i.*Passenger map (passenger, indPass) -> {
 						ns02#Active: passenger.Active,
 						ns02#AllowanceRetrieved: passenger.AllowanceRetrieved,
-						ns02#Baggage: (i.*Baggage map (baggage, in) -> {
+						ns02#Baggage: (passenger.*Baggage map (baggage, in) -> {
 							ns02#BaggageAllowance: (baggage.*BaggageAllowance map (baggageAllowance, index) -> {
 								ns02#BagDropId: baggageAllowance.BagDropId,
 								ns02#BaggageAllowanceTypeId: baggageAllowance.BaggageAllowanceTypeId,
@@ -159,6 +172,9 @@ ns a http://www.w3.org/2005/08/addressing
 						ns02#ConfirmedDga: passenger.ConfirmedDga,
 						ns02#ConfirmedIdentity: passenger.ConfirmedIdentity,
 						ns02#ConnectingFlightNumber: passenger.ConnectingFlightNumber,
+						ns02#CustomProperties:{
+							ns03#string: passenger.CustomProperties.*string
+						},
 						ns02#DateOfBirth: passenger.DateOfBirth,
 						ns02#DocumentCheckRequired: passenger.DocumentCheckRequired,
 						ns02#FirstName: passenger.FirstName,
