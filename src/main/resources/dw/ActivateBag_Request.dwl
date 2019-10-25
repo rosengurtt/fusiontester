@@ -115,7 +115,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 								ns02#UpdateInitialAllowance: baggageAllowance.UpdateInitialAllowance
 							}),
 							ns02#BaggageItems: {
-								ns02#BaggageItem: (passenger.Baggage.BaggageItems.*BaggageItem map (baggageItem, bagaggeItemIndex) -> {
+								ns02#BaggageItem: (passenger.Baggage.BaggageItems.*BaggageItem map (baggageItem, baggageItemIndex) -> {
 									ns02#Active: baggageItem.Active,
 									ns02#BaggageAllowanceId: baggageItem.BaggageAllowanceId,
 									ns02#BaggageItemSubTypeId: baggageItem.BaggageItemSubTypeId,

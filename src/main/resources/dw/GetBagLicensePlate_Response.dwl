@@ -29,6 +29,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 			FirstName: passenger.ns02#FirstName,
 			LastName: passenger.ns02#LastName,
 			NativePassengerId: passenger.ns02#NativePassengerId,
+			CarrierBookingClass: passenger.ns02#CarrierBookingClass,
 			MarketingCarrierCode: passenger.ns02#MarketingCarrierCode,
 			Gender: passenger.ns02#Gender,
 			DateOfBirth: passenger.ns02#DateOfBirth,
@@ -80,12 +81,12 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 					}),
 				})
 			}),
-			Baggage: (passenger.*ns02#Baggage map (bagagge, bagaggeIndex) -> {
-				BaggageAllowance: if (bagagge.ns02#BaggageAllowance.ns02#InitialWeight != '0'
-						or bagagge.ns02#BaggageAllowance.ns02#RemainingWeight != '0'
-						or bagagge.ns02#BaggageAllowance.ns02#PoolItems == 'true'
-						or bagagge.ns02#BaggageAllowance.ns02#PoolWeight == 'true') 
-					(bagagge.*ns02#BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) ->   {
+			Baggage: (passenger.*ns02#Baggage map (baggage, baggageIndex) -> {
+				BaggageAllowance: if (baggage.ns02#BaggageAllowance.ns02#InitialWeight != '0'
+						or baggage.ns02#BaggageAllowance.ns02#RemainingWeight != '0'
+						or baggage.ns02#BaggageAllowance.ns02#PoolItems == 'true'
+						or baggage.ns02#BaggageAllowance.ns02#PoolWeight == 'true') 
+					(baggage.*ns02#BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) ->   {
 					Id: baggageAllowance.ns02#Id,
 					BaggageAllowanceTypeId: baggageAllowance.ns02#BaggageAllowanceTypeId,
 					BaggageItemTypeId: baggageAllowance.ns02#BaggageItemTypeId,
@@ -106,7 +107,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 					CreatedOn: baggageAllowance.ns02#CreatedOn
 				}) else null,
 				BaggageAllowances: {
-					BaggageAllowance: (bagagge.ns02#BaggageAllowances.*ns02#BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) -> {
+					BaggageAllowance: (baggage.ns02#BaggageAllowances.*ns02#BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) -> {
 						Id: baggageAllowance.ns02#Id,
 						BaggageAllowanceTypeId: baggageAllowance.ns02#BaggageAllowanceTypeId,
 						BaggageItemTypeId: baggageAllowance.ns02#BaggageItemTypeId,
@@ -128,32 +129,32 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 					})
 				},
 				BaggageItems: {
-					BaggageItem: (bagagge.ns02#BaggageItems.*ns02#BaggageItem map (bagaggeItem, bagaggeIndex) -> {
-						Id: bagaggeItem.ns02#Id,
-						BaggageAllowanceId: bagaggeItem.ns02#BaggageAllowanceId,
-						PassengerId: bagaggeItem.ns02#PassengerId,
-						SessionId: bagaggeItem.ns02#SessionId,
-						TagNumber: bagaggeItem.ns02#TagNumber,
-						Weight: bagaggeItem.ns02#Weight,
-						InitialWeight: bagaggeItem.ns02#InitialWeight,
-						BaggageItemType: bagaggeItem.ns02#BaggageItemType,
-						BaggageItemTypeId: bagaggeItem.ns02#BaggageItemTypeId,
-						BaggageItemTypeName: bagaggeItem.ns02#BaggageItemTypeName,
-						BaggageItemSubTypeId: bagaggeItem.ns02#BaggageItemSubTypeId,
-						BaggageItemSubTypeName: bagaggeItem.ns02#BaggageItemSubTypeName,
-						HasNotionalWeight: bagaggeItem.ns02#HasNotionalWeight,
-						OutOfGauge: bagaggeItem.ns02#OutOfGauge,
-						ConsumeAllowance: bagaggeItem.ns02#ConsumeAllowance,
-						Registered: bagaggeItem.ns02#Registered,
-						Printed: bagaggeItem.ns02#Printed,
-						Dropped: bagaggeItem.ns02#Dropped,
-						RegisteredTime: bagaggeItem.ns02#RegisteredTime,
-						PrintedTime: bagaggeItem.ns02#PrintedTime,
-						DroppedTime: bagaggeItem.ns02#DroppedTime,
-						CreatedOn: bagaggeItem.ns02#CreatedOn					
+					BaggageItem: (baggage.ns02#BaggageItems.*ns02#BaggageItem map (baggageItem, baggageIndex) -> {
+						Id: baggageItem.ns02#Id,
+						BaggageAllowanceId: baggageItem.ns02#BaggageAllowanceId,
+						PassengerId: baggageItem.ns02#PassengerId,
+						SessionId: baggageItem.ns02#SessionId,
+						TagNumber: baggageItem.ns02#TagNumber,
+						Weight: baggageItem.ns02#Weight,
+						InitialWeight: baggageItem.ns02#InitialWeight,
+						BaggageItemType: baggageItem.ns02#BaggageItemType,
+						BaggageItemTypeId: baggageItem.ns02#BaggageItemTypeId,
+						BaggageItemTypeName: baggageItem.ns02#BaggageItemTypeName,
+						BaggageItemSubTypeId: baggageItem.ns02#BaggageItemSubTypeId,
+						BaggageItemSubTypeName: baggageItem.ns02#BaggageItemSubTypeName,
+						HasNotionalWeight: baggageItem.ns02#HasNotionalWeight,
+						OutOfGauge: baggageItem.ns02#OutOfGauge,
+						ConsumeAllowance: baggageItem.ns02#ConsumeAllowance,
+						Registered: baggageItem.ns02#Registered,
+						Printed: baggageItem.ns02#Printed,
+						Dropped: baggageItem.ns02#Dropped,
+						RegisteredTime: baggageItem.ns02#RegisteredTime,
+						PrintedTime: baggageItem.ns02#PrintedTime,
+						DroppedTime: baggageItem.ns02#DroppedTime,
+						CreatedOn: baggageItem.ns02#CreatedOn					
 					})
 				},			
-				MaxSingleItemWeight: bagagge.ns02#MaxSingleItemWeight
+				MaxSingleItemWeight: baggage.ns02#MaxSingleItemWeight
 			}),
 			Infant: (passenger.*ns02#Infant map (infant, infantIndex) -> {
 				InfantId: infant.ns02#InfantId,
@@ -188,24 +189,28 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 		}),
 		Flights: {
 			Flight: (i.ns01#Flights.*ns02#Flight map (flight, flightIndex) -> {
-				Id: flight.Id,
-				Origin: flight.Origin,
-				Destination: flight.Destination,
-				DepartureTime: flight.DepartureTime,
-				ArrivalTime: flight.ArrivalTime,
-				UTCDepartureTime: flight.UTCDepartureTime,
-				UTCArrivalTime: flight.UTCArrivalTime,
-				OperatingCarrier: flight.OperatingCarrier,
-				MarketingCarrier: flight.MarketingCarrier,
-				FlightNumber: flight.FlightNumber,
-				NativeFlightId: flight.NativeFlightId,
-				FlightRPH: flight.FlightRPH,
-				ApisRequired: flight.ApisRequired,
-				RequireMultipleAPISDocuments: flight.RequireMultipleAPISDocuments,
-				OpenForCheckIn: flight.OpenForCheckIn,
-				OpenForBoarding: flight.OpenForBoarding,
-				ConnectingFlight: flight.ConnectingFlight,
-				JourneyRPH: flight.JourneyRPH
+				Id: flight.ns02#Id,
+				Origin: flight.ns02#Origin,
+				Destination: flight.ns02#Destination,
+				DepartureTime: flight.ns02#DepartureTime,
+				ArrivalTime: flight.ns02#ArrivalTime,
+				UTCDepartureTime: flight.ns02#UTCDepartureTime,
+				UTCArrivalTime: flight.ns02#UTCArrivalTime,
+				OperatingCarrier: flight.ns02#OperatingCarrier,
+				MarketingCarrier: flight.ns02#MarketingCarrier,
+				FlightNumber: flight.ns02#FlightNumber,
+				NativeFlightId: flight.ns02#NativeFlightId,
+				FlightRPH: flight.ns02#FlightRPH,
+				ApisRequired: flight.ns02#ApisRequired,
+				RequireMultipleAPISDocuments: flight.ns02#RequireMultipleAPISDocuments,
+				OpenForCheckIn: flight.ns02#OpenForCheckIn,
+				OpenForBoarding: flight.ns02#OpenForBoarding,
+				BaggageAcceptanceStatus: flight.ns02#BaggageAcceptanceStatus,
+				ConnectingFlight: flight.ns02#ConnectingFlight,
+				JourneyRPH: flight.JourneyRPH,
+				CustomProperties: {	
+					 string: flight.ns02#CustomProperties.*ns03#string					
+				},
 			})
 		}
 	})

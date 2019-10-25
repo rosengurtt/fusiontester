@@ -101,29 +101,29 @@ ns a http://www.w3.org/2005/08/addressing
 					ns01#Passenger: (i.*Passenger map (passenger, indPass) -> {
 						ns02#Active: passenger.Active,
 						ns02#AllowanceRetrieved: passenger.AllowanceRetrieved,
-						ns02#Baggage: (i.*Bagagge map (bagagge, in) -> {
-							ns02#BaggageAllowance: (bagagge.*BaggageAllowance map (bagaggeAllowance, index) -> {
-								ns02#BagDropId: bagaggeAllowance.BagDropId,
-								ns02#BaggageAllowanceTypeId: bagaggeAllowance.BaggageAllowanceTypeId,
-								ns02#BaggageItemTypeId: bagaggeAllowance.BaggageItemTypeId,
-								ns02#ConsumeItemWeight: bagaggeAllowance.ConsumeItemWeight,
-								ns02#CreatedOn: bagaggeAllowance.CreatedOn,
-								ns02#FlightId: bagaggeAllowance.FlightId,
-								ns02#Id: bagaggeAllowance.Id,
-								ns02#InitialBags: bagaggeAllowance.InitialBags,
-								ns02#InitialWeight: bagaggeAllowance.InitialWeight,
-								ns02#MaxSingleItemWeight: bagaggeAllowance.MaxSingleItemWeight,
-								ns02#PassengerId: bagaggeAllowance.PassengerId,
-								ns02#PoolItems: bagaggeAllowance.PoolItems,
-								ns02#PoolWeight: bagaggeAllowance.PoolWeight,
-								ns02#PurchasedBags: bagaggeAllowance.PurchasedBags,
-								ns02#PurchasedWeight: bagaggeAllowance.PurchasedWeight,
-								ns02#RemainingBags: bagaggeAllowance.RemainingBags,
-								ns02#RemainingWeight: bagaggeAllowance.RemainingWeight,
-								ns02#UpdateInitialAllowance: bagaggeAllowance.UpdateInitialAllowance
+						ns02#Baggage: (i.*Baggage map (baggage, in) -> {
+							ns02#BaggageAllowance: (baggage.*BaggageAllowance map (baggageAllowance, index) -> {
+								ns02#BagDropId: baggageAllowance.BagDropId,
+								ns02#BaggageAllowanceTypeId: baggageAllowance.BaggageAllowanceTypeId,
+								ns02#BaggageItemTypeId: baggageAllowance.BaggageItemTypeId,
+								ns02#ConsumeItemWeight: baggageAllowance.ConsumeItemWeight,
+								ns02#CreatedOn: baggageAllowance.CreatedOn,
+								ns02#FlightId: baggageAllowance.FlightId,
+								ns02#Id: baggageAllowance.Id,
+								ns02#InitialBags: baggageAllowance.InitialBags,
+								ns02#InitialWeight: baggageAllowance.InitialWeight,
+								ns02#MaxSingleItemWeight: baggageAllowance.MaxSingleItemWeight,
+								ns02#PassengerId: baggageAllowance.PassengerId,
+								ns02#PoolItems: baggageAllowance.PoolItems,
+								ns02#PoolWeight: baggageAllowance.PoolWeight,
+								ns02#PurchasedBags: baggageAllowance.PurchasedBags,
+								ns02#PurchasedWeight: baggageAllowance.PurchasedWeight,
+								ns02#RemainingBags: baggageAllowance.RemainingBags,
+								ns02#RemainingWeight: baggageAllowance.RemainingWeight,
+								ns02#UpdateInitialAllowance: baggageAllowance.UpdateInitialAllowance
 							}),
 							ns02#BaggageItems: {
-								ns02#BaggageItem: (bagagge.BaggageItems.*BaggageItem map (bagaggeItem, ind) -> {
+								ns02#BaggageItem: (baggage.BaggageItems.*BaggageItem map (baggageItem, ind) -> {
 									ns02#Active: baggageItem.Active,
 									ns02#BaggageAllowanceId: baggageItem.BaggageAllowanceId,
 									ns02#BaggageItemSubTypeId: baggageItem.BaggageItemSubTypeId,
@@ -150,7 +150,7 @@ ns a http://www.w3.org/2005/08/addressing
 									ns02#Weight: baggageItem.Weight,
 								})
 							},
-							ns02#MaxSingleItemWeight: bagagge.MaxSingleItemWeight
+							ns02#MaxSingleItemWeight: baggage.MaxSingleItemWeight
 						}),
 						ns02#Boarded: passenger.Boarded,
 						ns02#CheckedIn: passenger.CheckedIn,

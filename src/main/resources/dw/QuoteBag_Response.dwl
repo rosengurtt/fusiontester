@@ -21,8 +21,8 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 		}),
 		Costs: (i.*ns01#Costs map (costs, costsIndex) ->  {
 			ItemList: (costs.*ns02#ItemList map (itemList, itemListIndex) -> {
-				ExcessBaggageCost: (itemList.*ns02#ExcessBaggageCost map (excessBagaggeCost, excessBagaggeCostIndex) -> {
-					AdditionalAllowance: (excessBagaggeCost.*ns02#AdditionalAllowance map (additionalAllowance, additionalAllowanceIndex) -> {
+				ExcessBaggageCost: (itemList.*ns02#ExcessBaggageCost map (excessBaggageCost, excessBaggageCostIndex) -> {
+					AdditionalAllowance: (excessBaggageCost.*ns02#AdditionalAllowance map (additionalAllowance, additionalAllowanceIndex) -> {
 						Id: additionalAllowance.ns02#Id,
 						BaggageAllowanceTypeId: additionalAllowance.ns02#BaggageAllowanceTypeId,
 						BaggageItemTypeId: additionalAllowance.ns02#BaggageItemTypeId,
@@ -42,9 +42,9 @@ ns ns02 http://schemas.datacontract.org/2004/07/Fusion.Integration
 						RemainingWeight: additionalAllowance.ns02#RemainingWeight,
 						CreatedOn: additionalAllowance.ns02#CreatedOn as String default null
 					}),
-					Price: excessBagaggeCost.ns02#Price,
-					Quantity: excessBagaggeCost.ns02#Quantity,
-					Description: excessBagaggeCost.ns02#Description
+					Price: excessBaggageCost.ns02#Price,
+					Quantity: excessBaggageCost.ns02#Quantity,
+					Description: excessBaggageCost.ns02#Description
 				})
 			}),
 			Currency: costs.ns02#Currency,

@@ -77,25 +77,25 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 							ns02#Active: currPass.Passenger.Active,
 							ns02#AllowanceRetrieved: currPass.Passenger.AllowanceRetrieved,
 							ns02#Baggage: {
-								ns02#BaggageAllowance: (currPass.Passenger.Baggage.*BaggageAllowance map (bagaggeAllowance, bagaggeAllowanceIndex) -> {
-									ns02#BagDropId: bagaggeAllowance.BagDropId,
-									ns02#BaggageAllowanceTypeId: bagaggeAllowance.BaggageAllowanceTypeId,
-									ns02#BaggageItemTypeId: bagaggeAllowance.BaggageItemTypeId,
-									ns02#ConsumeItemWeight: bagaggeAllowance.ConsumeItemWeight,
-									ns02#CreatedOn: bagaggeAllowance.CreatedOn,
-									ns02#FlightId: bagaggeAllowance.FlightId,
-									ns02#Id: bagaggeAllowance.Id,
-									ns02#InitialBags: bagaggeAllowance.InitialBags,
-									ns02#InitialWeight: bagaggeAllowance.InitialWeight,
-									ns02#MaxSingleItemWeight: bagaggeAllowance.MaxSingleItemWeight,
-									ns02#PassengerId: bagaggeAllowance.PassengerId,
-									ns02#PoolItems: bagaggeAllowance.PoolItems,
-									ns02#PoolWeight: bagaggeAllowance.PoolWeight,
-									ns02#PurchasedBags: bagaggeAllowance.PurchasedBags,
-									ns02#PurchasedWeight: bagaggeAllowance.PurchasedWeight,
-									ns02#RemainingBags: bagaggeAllowance.RemainingBags,
-									ns02#RemainingWeight: bagaggeAllowance.RemainingWeight,
-									ns02#UpdateInitialAllowance: bagaggeAllowance.UpdateInitialAllowance
+								ns02#BaggageAllowance: (currPass.Passenger.Baggage.*BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) -> {
+									ns02#BagDropId: baggageAllowance.BagDropId,
+									ns02#BaggageAllowanceTypeId: baggageAllowance.BaggageAllowanceTypeId,
+									ns02#BaggageItemTypeId: baggageAllowance.BaggageItemTypeId,
+									ns02#ConsumeItemWeight: baggageAllowance.ConsumeItemWeight,
+									ns02#CreatedOn: baggageAllowance.CreatedOn,
+									ns02#FlightId: baggageAllowance.FlightId,
+									ns02#Id: baggageAllowance.Id,
+									ns02#InitialBags: baggageAllowance.InitialBags,
+									ns02#InitialWeight: baggageAllowance.InitialWeight,
+									ns02#MaxSingleItemWeight: baggageAllowance.MaxSingleItemWeight,
+									ns02#PassengerId: baggageAllowance.PassengerId,
+									ns02#PoolItems: baggageAllowance.PoolItems,
+									ns02#PoolWeight: baggageAllowance.PoolWeight,
+									ns02#PurchasedBags: baggageAllowance.PurchasedBags,
+									ns02#PurchasedWeight: baggageAllowance.PurchasedWeight,
+									ns02#RemainingBags: baggageAllowance.RemainingBags,
+									ns02#RemainingWeight: baggageAllowance.RemainingWeight,
+									ns02#UpdateInitialAllowance: baggageAllowance.UpdateInitialAllowance
 								}),
 								ns02#BaggageItems: {
 									ns02#BaggageItem: (currPass.Passenger.Baggage.BaggageItems.*BaggageItem map (baggageItem, baggageItemIndex) ->  {
@@ -188,25 +188,25 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 								ns02#Active: passenger.Active,
 								ns02#AllowanceRetrieved: passenger.AllowanceRetrieved,
 								ns02#Baggage: {
-									ns02#BaggageAllowance: (passenger.Baggage.*BaggageAllowance map (bagaggeAllowance, bagaggeAllowanceIndex) -> {
-										ns02#BagDropId: bagaggeAllowance.BagDropId,
-										ns02#BaggageAllowanceTypeId: bagaggeAllowance.BaggageAllowanceTypeId,
-										ns02#BaggageItemTypeId: bagaggeAllowance.BaggageItemTypeId,
-										ns02#ConsumeItemWeight: bagaggeAllowance.ConsumeItemWeight,
-										ns02#CreatedOn: bagaggeAllowance.CreatedOn,
-										ns02#FlightId: bagaggeAllowance.FlightId,
-										ns02#Id: bagaggeAllowance.Id,
-										ns02#InitialBags: bagaggeAllowance.InitialBags,
-										ns02#InitialWeight: bagaggeAllowance.InitialWeight,
-										ns02#MaxSingleItemWeight: bagaggeAllowance.MaxSingleItemWeight,
-										ns02#PassengerId: bagaggeAllowance.PassengerId default null,
-										ns02#PoolItems: bagaggeAllowance.PoolItems,
-										ns02#PoolWeight: bagaggeAllowance.PoolWeight,
-										ns02#PurchasedBags: bagaggeAllowance.PurchasedBags,
-										ns02#PurchasedWeight: bagaggeAllowance.PurchasedWeight,
-										ns02#RemainingBags: bagaggeAllowance.RemainingBags,
-										ns02#RemainingWeight: bagaggeAllowance.RemainingWeight,
-										ns02#UpdateInitialAllowance: bagaggeAllowance.UpdateInitialAllowance
+									ns02#BaggageAllowance: (passenger.Baggage.*BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) -> {
+										ns02#BagDropId: baggageAllowance.BagDropId,
+										ns02#BaggageAllowanceTypeId: baggageAllowance.BaggageAllowanceTypeId,
+										ns02#BaggageItemTypeId: baggageAllowance.BaggageItemTypeId,
+										ns02#ConsumeItemWeight: baggageAllowance.ConsumeItemWeight,
+										ns02#CreatedOn: baggageAllowance.CreatedOn,
+										ns02#FlightId: baggageAllowance.FlightId,
+										ns02#Id: baggageAllowance.Id,
+										ns02#InitialBags: baggageAllowance.InitialBags,
+										ns02#InitialWeight: baggageAllowance.InitialWeight,
+										ns02#MaxSingleItemWeight: baggageAllowance.MaxSingleItemWeight,
+										ns02#PassengerId: baggageAllowance.PassengerId default null,
+										ns02#PoolItems: baggageAllowance.PoolItems,
+										ns02#PoolWeight: baggageAllowance.PoolWeight,
+										ns02#PurchasedBags: baggageAllowance.PurchasedBags,
+										ns02#PurchasedWeight: baggageAllowance.PurchasedWeight,
+										ns02#RemainingBags: baggageAllowance.RemainingBags,
+										ns02#RemainingWeight: baggageAllowance.RemainingWeight,
+										ns02#UpdateInitialAllowance: baggageAllowance.UpdateInitialAllowance
 									}),
 									ns02#BaggageItems: {
 										ns02#BaggageItem: (passenger.Baggage.BaggageItems.*BaggageItem map (baggageItem, baggageItemIndex) ->  {
@@ -263,7 +263,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 								ns02#FirstName: passenger.FirstName,
 								ns02#Gender: passenger.Gender,								
 								ns02#Identity: if (passenger.Identity.LastAPIS != null) {
-									ns02#LastAPIS: (passenger.Identity.*LastAPIS map (lasApis, lastApisIndex) -> {	
+									ns02#LastAPIS: (passenger.Identity.*LastAPIS map (lastApis, lastApisIndex) -> {	
 										ns02#AddressInformation: lastApis.AddressInformation,
 										ns02#ContactInformation: 
 										if (lastApis.ContactInformation.ContactLastName != null)
@@ -334,25 +334,25 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 					},
 					ns01#ScaleWeight: i.ScaleWeight,
 					ns01#UnusedBaggageAllowance: {
-						ns02#BaggageAllowance:( i.UnusedBaggageAllowance.*BaggageAllowance map (bagaggeAllowance, bagaggeAllowanceIndex) ->{
-							ns02#BagDropId: bagaggeAllowance.BagDropId,
-							ns02#BaggageAllowanceTypeId: bagaggeAllowance.BaggageAllowanceTypeId,
-							ns02#BaggageItemTypeId: bagaggeAllowance.BaggageItemTypeId,
-							ns02#ConsumeItemWeight: bagaggeAllowance.ConsumeItemWeight,
-							ns02#CreatedOn: bagaggeAllowance.CreatedOn,
-							ns02#FlightId: bagaggeAllowance.FlightId,
-							ns02#Id: bagaggeAllowance.Id,
-							ns02#InitialBags: bagaggeAllowance.InitialBags,
-							ns02#InitialWeight: bagaggeAllowance.InitialWeight,
-							ns02#MaxSingleItemWeight: bagaggeAllowance.MaxSingleItemWeight,
-							ns02#PassengerId: bagaggeAllowance.PassengerId,
-							ns02#PoolItems: bagaggeAllowance.PoolItems,
-							ns02#PoolWeight: bagaggeAllowance.PoolWeight,
-							ns02#PurchasedBags: bagaggeAllowance.PurchasedBags,
-							ns02#PurchasedWeight: bagaggeAllowance.PurchasedWeight,
-							ns02#RemainingBags: bagaggeAllowance.RemainingBags,
-							ns02#RemainingWeight: bagaggeAllowance.RemainingWeight,
-							ns02#UpdateInitialAllowance: bagaggeAllowance.UpdateInitialAllowance
+						ns02#BaggageAllowance:( i.UnusedBaggageAllowance.*BaggageAllowance map (baggageAllowance, baggageAllowanceIndex) ->{
+							ns02#BagDropId: baggageAllowance.BagDropId,
+							ns02#BaggageAllowanceTypeId: baggageAllowance.BaggageAllowanceTypeId,
+							ns02#BaggageItemTypeId: baggageAllowance.BaggageItemTypeId,
+							ns02#ConsumeItemWeight: baggageAllowance.ConsumeItemWeight,
+							ns02#CreatedOn: baggageAllowance.CreatedOn,
+							ns02#FlightId: baggageAllowance.FlightId,
+							ns02#Id: baggageAllowance.Id,
+							ns02#InitialBags: baggageAllowance.InitialBags,
+							ns02#InitialWeight: baggageAllowance.InitialWeight,
+							ns02#MaxSingleItemWeight: baggageAllowance.MaxSingleItemWeight,
+							ns02#PassengerId: baggageAllowance.PassengerId,
+							ns02#PoolItems: baggageAllowance.PoolItems,
+							ns02#PoolWeight: baggageAllowance.PoolWeight,
+							ns02#PurchasedBags: baggageAllowance.PurchasedBags,
+							ns02#PurchasedWeight: baggageAllowance.PurchasedWeight,
+							ns02#RemainingBags: baggageAllowance.RemainingBags,
+							ns02#RemainingWeight: baggageAllowance.RemainingWeight,
+							ns02#UpdateInitialAllowance: baggageAllowance.UpdateInitialAllowance
 						})
 					}
 				})

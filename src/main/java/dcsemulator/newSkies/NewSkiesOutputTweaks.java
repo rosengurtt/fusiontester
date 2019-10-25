@@ -4,7 +4,7 @@ public class NewSkiesOutputTweaks {
 
 	private static String addNamespaceToTag(String tag, String namespace, String text) {
 		text = text.replaceAll("<" + tag + " ", "<" + tag + " xmlns=\\\"" + namespace + "\\\" ");
-		return text.replaceAll("<" + tag + ">", "<" + tag + " xmlns=\\\"" + namespace + "\\\" ");
+		return text.replaceAll("<" + tag + ">", "<" + tag + " xmlns=\\\"" + namespace + "\\\">");
 	}
 
 	public static String fixNamespaces(String airlineCode, String text) {
@@ -31,7 +31,8 @@ public class NewSkiesOutputTweaks {
 				text = addNamespaceToTag("POS", namespaceCommon, text);
 				text = addNamespaceToTag("SourcePOS", namespaceCommon, text);
 				text = addNamespaceToTag("RecordLocators", namespaceCommon, text);
-				text = addNamespaceToTag("FlightDesignator", namespaceCommon, text);
+			//	text = addNamespaceToTag("FlightDesignator", namespaceCommon, text);
+			//	text = addNamespaceToTag("ExtensionData", namespaceCommon, text);
 			}	
 			// The next line deduplicates any case where we added an already existing namespace
 			String namespaceText = "xmlns=\"" + namespaceCommon + "\"";
