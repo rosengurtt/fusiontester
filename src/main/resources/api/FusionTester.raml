@@ -242,27 +242,6 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
             type: array
             items: string
 
-/fusiontester/airports:
-  get:
-    description: Returns an array with the 3 letter codes of the airports for which there is data
-
-    responses:
-      200:
-        body:
-          application/json:
-            type: array
-            items: string
-
-/fusiontester/fusion-request-types:
-  get:
-    description: Returns an array of the types of fusion requests for which there is data
-
-    responses:
-      200:
-        body:
-          application/json:
-            type: array
-            items: string
 
 /fusiontester/tests/{test-id}/results/statistics:
   get:
@@ -320,3 +299,163 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
           application/json:
             type: array
             items: !include types/result-details.raml
+
+
+/fusiontester/airports:
+  get:
+    description: Returns an array with the 3 letter codes of the airports for which there is data
+
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: string
+
+/fusiontester/fusion-request-types:
+  get:
+    description: Returns an array of the types of fusion requests for which there is data
+
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: string
+
+/fusiontester/fusion-requests:
+  get:
+    description: Returns an array of fusion requests
+    queryParameters:
+      page-size:
+        type: integer
+        description: Used for pagination. The number of records per page.
+        required: false
+        default: 10
+        example: 12
+      page:
+        type: integer
+        description: Used for pagination. The page number to return.
+        required: false
+        default: 1
+        example: 3
+      pnr:
+        type: string
+        description: 6-letter reservation code
+        required: false
+        example: 'HG423D'
+      airport:
+        type: string
+        description: list of 3-letter airport codes enclosed in single quotes
+        required: false
+        example: "'MAN','LTN'"
+      airline:
+        type: string
+        description: list of 2-letter airline codes enclosed in single quotes
+        required: false
+        example: "'J9','BY'"
+      request-type:
+        type: string
+        description: list of request types enclosed in single quotes
+        required: false
+        example: "'ActivateBag','CheckInPassenger','GetBagLicensePlate'"
+      date-from:
+        type: string
+        description: a date with format YYYY-MM-dd hh:mm:ss.sss. The data returned will have a request time bigger than this datetime
+        required: false
+        example: '2019-11-09 12:45:22.199'
+      date-to:
+        type: string
+        description: a date with format YYYY-MM-dd hh:mm:ss.sss. The data returned will have a request time smaller than this datetime
+        required: false
+        example: '2019-11-09 12:45:22.199'
+
+    responses:
+      200:
+        body:
+          application/json:
+            type: array
+            items: !include types/fusion-request.raml
+
+/fusiontester/fusion-requests/statistics:
+  get:
+    description: Returns the number of fusion request records that will be retrieved if the parameters passed are used for the db query
+    queryParameters:
+      page-size:
+        type: integer
+        description: Used for pagination. The number of records per page.
+        required: false
+        default: 10
+        example: 12
+      page:
+        type: integer
+        description: Used for pagination. The page number to return.
+        required: false
+        default: 1
+        example: 3
+      pnr:
+        type: string
+        description: 6-letter reservation code
+        required: false
+        example: 'HG423D'
+      airport:
+        type: string
+        description: list of 3-letter airport codes enclosed in single quotes
+        required: false
+        example: "'MAN','LTN'"
+      airline:
+        type: string
+        description: list of 2-letter airline codes enclosed in single quotes
+        required: false
+        example: "'J9','BY'"
+      request-type:
+        type: string
+        description: list of request types enclosed in single quotes
+        required: false
+        example: "'ActivateBag','CheckInPassenger','GetBagLicensePlate'"
+      date-from:
+        type: string
+        description: a date with format YYYY-MM-dd hh:mm:ss.sss. The data returned will have a request time bigger than this datetime
+        required: false
+        example: '2019-11-09 12:45:22.199'
+      date-to:
+        type: string
+        description: a date with format YYYY-MM-dd hh:mm:ss.sss. The data returned will have a request time smaller than this datetime
+        required: false
+        example: '2019-11-09 12:45:22.199'
+
+    responses:
+        200:
+          body:
+            application/json:
+              type: object
+              properties:
+                result:
+                  type: string
+                  example: "success"
+                data:
+                  type: object
+                  example: |
+                    {
+                      "FusionRequests": 8342
+                    }
+
+/fusiontester/fusion-requests/{fusion-request-id}:
+  get:
+    description: Runs a single fusion request. Intended for debugging Fusion code. 
+
+    responses:
+        200:
+          body:
+            application/json:
+              type: object
+              properties:
+                result:
+                  type: string
+                  example: "success"
+                data:
+                  type: object
+                  example: |
+                    {
+                        "FusionRequestId": "6221D154-ACCF-4901-B250-634888CA1245"
+                    }

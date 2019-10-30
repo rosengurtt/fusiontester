@@ -103,7 +103,7 @@ payload map (d, i) ->{
 	data: vars.globalData
 }]]]></java:args>
 		</java:invoke-static>
-		<logger level="INFO" doc:name="Logger" doc:id="c6ae0ebc-3093-458d-a1ac-3a0210967146" message="#['\n']DCSemulator received request with maintag #[vars.mainTag] and is sending back this response #[payload]#['\n']" />
+		<logger level="INFO" doc:name="Logger" doc:id="c6ae0ebc-3093-458d-a1ac-3a0210967146" message="#['\n']DCSemulator received request #['\n']  #[vars.inputData.payload] #['\n'] with maintag #[vars.mainTag] and is sending back this response #['\n'] #[payload] #['\n']" />
 		<set-payload value="#[payload]" doc:name="Set  content type" doc:id="aef4be31-0aa5-4699-967f-bbde7d602e9a" mimeType="text/xml; charset=utf-8"/>
 	
 	</flow>

@@ -11,6 +11,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
 
+
 	<flow name="SetTimeToCurrentTime" doc:id="c12be2a5-7c5a-4f0b-b50b-2c29597854d9" >
 		<set-variable value="# [new java.util.Random().nextInt(20)]" doc:name="Generate Random Variable" doc:id="1e6e2b9a-9ddf-4422-b414-f2a4a6e065c0" variableName="RandomNumber" />
 		<java:invoke-static method="GenerateRandomNumber(int, int)" doc:name="Generate random number between 0 and 19" doc:id="f8d04f67-9ad8-4491-9429-9864307f7b78" class="fusiontester.Helpers" target="RandomNumber">
@@ -71,6 +72,18 @@ output application/json
 		<java:invoke-static method="SleepNmilliSeconds(long) " doc:name="Wait for time to change" doc:id="905531c2-a500-4175-83ab-d5a31209ea83" class="fusiontester.Helpers">
 			<java:args><![CDATA[#[{i: 100}]]]></java:args>
 		</java:invoke-static>
+		<ee:transform doc:name="Copy time info to payload" doc:id="bff2a09f-def9-4ce0-a98b-41a4c08a06f2">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+	currentDateTime: vars.CurrentDateTime,
+	eventDateTime: vars.loggedItem.FusionRequestTime
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<vm:publish doc:name="Send to TimeRestoreQueue" doc:id="8e48ea08-d521-40be-90df-c747eb9c961a" config-ref="VM_TimeRestore_Config" queueName="TimeRestoreQueue" />
 	
 </flow>
 	<flow name="GetCurrentTimeUsingTimeServer" doc:id="15c88590-9ba6-4358-9c64-ec215ba2d099" >
@@ -118,6 +131,24 @@ output application/json
 		</http:request>
 		</async>
 		<logger level="INFO" doc:name="Logger" doc:id="212b89fe-ded8-449b-852b-ffb9cabd4fc9" message="System time was set to correct value using time server #['\n']"/>
+	</flow>
+	<flow name="TimeRestoreWhenDead" doc:id="46b51deb-97ca-4135-b201-fbbc2c0aab77" >
+		<vm:listener doc:name="TimeRestoreQueue" doc:id="dd65cbc0-c0cc-4870-ad91-93416fc5123c" config-ref="VM_TimeRestore_Config" queueName="TimeRestoreQueue"/>
+		<set-variable value="#[payload]" doc:name="Store time info" doc:id="36fd648b-2b2c-46df-9cf5-009f636a55ba" variableName="TimeInfo"/>
+		<set-variable value="${fusiontester.timeout}" doc:name="Set Timeout" doc:id="332da731-944f-4d19-93bb-6e15d43557af" variableName="FusionTesterTimeout" />
+		<java:invoke-static doc:name="Check date time is restored within timeout" doc:id="d41d9419-a9b3-4aed-b807-2aaae590989d" class="fusiontester.Helpers" method="CheckSystemTimeIsRestored(String, String, long) " target="TimeWasRestored">
+		<java:args ><![CDATA[#[{eventDateTime: vars.TimeInfo.eventDateTime, currentDateTime: vars.TimeInfo.currentDateTime,  
+	timeOutInMilliseconds: vars.FusionTesterTimeout
+}]]]></java:args>
+		</java:invoke-static>
+		<choice doc:name="Choice" doc:id="59497952-03fb-45a7-9dce-fa578e4548d8" >
+			<when expression="#[vars.TimeWasRestored == false]">
+				<flow-ref doc:name="SetTimeToCurrentTime" doc:id="704d4a86-e8d2-4c45-bb85-5a2637bbfeb5" name="SetTimeToCurrentTime"/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="5cef33a7-2b33-43ee-9e55-df9624fb5182" message="TimeRestoreWhenDead is exeeting without needing to restore system time."/>
+			</otherwise>
+		</choice>
 	</flow>
 	
 	

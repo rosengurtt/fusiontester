@@ -1,0 +1,35 @@
+type: object
+properties:
+  FusionRequestId:
+    type: string
+    description: Guid that identifies the request
+  RequestSourceId:
+      type: string
+      description: Guid that identifies the kiosk
+  SessionId:
+    type: string
+    description: Guid that identifies the Fusion session
+  PNR:
+      type: string
+      description: 6-letter code that identifies a reservation
+  Airline:
+      type: string
+      description: 2-letter code of the airline
+  Airport:
+      type: string
+      description: 3-letter code of the airport
+  RequestType:
+      type: string
+      description: A string that identifies the type of the request
+  FusionRequestXml:
+      type: string
+      description: The soap body sent by Sonic for this request
+  FusionResponseXm:
+      type: string
+      description: The soap body sent by Fusion back to Sonic
+  RequestTime:
+      type: string
+      description: The date time of the request in format YYYY/MM/dd hh:mm:ss.mm
+  ResponseTime:
+      type: string
+      description: The date time of the rsponse in format YYYY/MM/dd hh:mm:ss.mm

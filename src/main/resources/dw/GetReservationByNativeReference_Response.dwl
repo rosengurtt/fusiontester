@@ -104,12 +104,28 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 									PostalCode: apisData.ns01#ContactInformation.ns01#PostalCode,
 									CompanyName: apisData.ns01#ContactInformation.ns01#CompanyName,
 									NotificationPreference: apisData.ns01#ContactInformation.ns01#NotificationPreference								
+								},								
+								AddressInformation: {
+									StreetNumber: apisData.ns01#AddressInformation.ns01#StreetNumber,
+									CityName: apisData.ns01#AddressInformation.ns01#CityName,
+									StateProvince: apisData.ns01#AddressInformation.ns01#StateProvince,
+									PostalCode: apisData.ns01#AddressInformation.ns01#PostalCode,
+									Country: {
+										A2Code: apisData.ns01#AddressInformation.ns01#Country.ns01#A2Code,
+										A3Code: apisData.ns01#AddressInformation.ns01#Country.ns01#A3Code,
+										PhoneCode: apisData.ns01#AddressInformation.ns01#Country.ns01#PhoneCode,
+										Name: apisData.ns01#AddressInformation.ns01#Country.ns01#Name,
+										Abbreviation: apisData.ns01#AddressInformation.ns01#Country.ns01#Abbreviation,
+										Enabled: apisData.ns01#AddressInformation.ns01#Country.ns01#Enabled,
+										
+									},
 								},
 							})
 						},
 						LastAPIS: (passenger.ns01#Identity.*ns01#LastAPIS map (lastApis, lastApisIndex) ->{
 							Surname: lastApis.ns01#Surname,
 							Firstname: lastApis.ns01#Firstname,
+							Gender: lastApis.ns01#Gender,
 							DateOfBirth: lastApis.ns01#DateOfBirth,
 							CountryOfResidence: lastApis.ns01#CountryOfResidence,
 							Nationality: lastApis.ns01#Nationality,
@@ -130,6 +146,21 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 								PostalCode: lastApis.ns01#ContactInformation.ns01#PostalCode,
 								CompanyName: lastApis.ns01#ContactInformation.ns01#CompanyName,
 								NotificationPreference: lastApis.ns01#ContactInformation.ns01#NotificationPreference								
+							},
+							AddressInformation: {
+								StreetNumber: lastApis.ns01#AddressInformation.ns01#StreetNumber,
+								CityName: lastApis.ns01#AddressInformation.ns01#CityName,
+								StateProvince: lastApis.ns01#AddressInformation.ns01#StateProvince,
+								PostalCode: lastApis.ns01#AddressInformation.ns01#PostalCode,
+								Country: {
+									A2Code: lastApis.ns01#AddressInformation.ns01#Country.ns01#A2Code,
+									A3Code: lastApis.ns01#AddressInformation.ns01#Country.ns01#A3Code,
+									PhoneCode: lastApis.ns01#AddressInformation.ns01#Country.ns01#PhoneCode,
+									Name: lastApis.ns01#AddressInformation.ns01#Country.ns01#Name,
+									Abbreviation: lastApis.ns01#AddressInformation.ns01#Country.ns01#Abbreviation,
+									Enabled: lastApis.ns01#AddressInformation.ns01#Country.ns01#Enabled,
+									
+								},
 							},
 						}),
 						ValidDocuments: {
@@ -287,7 +318,7 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 									DocumentType: apisData.ns01#DocumentType,
 									DocumentNumber: apisData.ns01#DocumentNumber,
 									DocumentIssueDate: apisData.ns01#DocumentIssueDate,
-									DocumentExpiryDate: apisData.ns01#DocumentExpiryDate,
+									DocumentExpiryDate: apisData.ns01#DocumentExpiryDate,									
 									CountryOfIssue: apisData.ns01#CountryOfIssue,
 									ContactInformation: {
 										ContactTitle: apisData.ns01#ContactInformation.ns01#ContactTitle,
@@ -301,6 +332,21 @@ ns ns03 http://www.w3.org/2003/05/soap-envelope
 										PostalCode: apisData.ns01#ContactInformation.ns01#PostalCode,
 										CompanyName: apisData.ns01#ContactInformation.ns01#CompanyName,
 										NotificationPreference: apisData.ns01#ContactInformation.ns01#NotificationPreference								
+									},
+									AddressInformation: {
+										StreetNumber: apisData.ns01#AddressInformation.ns01#StreetNumber,
+										CityName: apisData.ns01#AddressInformation.ns01#CityName,
+										StateProvince: apisData.ns01#AddressInformation.ns01#StateProvince,
+										PostalCode: apisData.ns01#AddressInformation.ns01#PostalCode,
+										Country: {
+											A2Code: apisData.ns01#AddressInformation.ns01#Country.ns01#A2Code,
+											A3Code: apisData.ns01#AddressInformation.ns01#Country.ns01#A3Code,
+											PhoneCode: apisData.ns01#AddressInformation.ns01#Country.ns01#PhoneCode,
+											Name: apisData.ns01#AddressInformation.ns01#Country.ns01#Name,
+											Abbreviation: apisData.ns01#AddressInformation.ns01#Country.ns01#Abbreviation,
+											Enabled: apisData.ns01#AddressInformation.ns01#Country.ns01#Enabled,
+											
+										},
 									},
 								})
 							},

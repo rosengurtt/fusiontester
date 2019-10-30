@@ -8,6 +8,7 @@ import java.util.HashMap;
 import dcsemulator.helpers.XmlHelpers;
 import dcsemulator.ink.*;
 import dcsemulator.newSkies.NewSkiesOutputTweaks;
+import dcsemulator.Lufthansa.LufthansaOutputTweaks;
 import dcsemulator.abas.AbasOutputTweaks;
 import dcsemulator.halo.*;
 
@@ -31,6 +32,9 @@ public class OutputProcessing {
 				}
 				if (dcsName.toLowerCase().equals("newskies")) {
 					responseContent =  NewSkiesOutputTweaks.fixNamespaces(airlineCode, responseContent);
+				}
+				if (dcsName.toLowerCase().equals("lufthansa")) {
+					responseContent =  LufthansaOutputTweaks.fixNamespaces(responseContent);
 				}
 				responseContent = confi.get(0).get("addResponseStart") + responseContent + confi.get(0).get("addResponseEnd");
 			}

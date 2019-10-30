@@ -103,6 +103,9 @@ ns a http://www.w3.org/2005/08/addressing
 							ns02#ApisRequired: flight.ApisRequired,
 							ns02#ArrivalTime: flight.ArrivalTime,
 							ns02#ConnectingFlight: flight.ConnectingFlight,
+							ns02#CustomProperties:{
+								ns03#string: flight.CustomProperties.*string
+							},
 							ns02#DepartureTerminal: flight.DepartureTerminal,
 							ns02#DepartureTime: flight.DepartureTime,
 							ns02#Destination: flight.Destination,

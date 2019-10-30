@@ -56,6 +56,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 				LastAPIS: (identity.*ns02#LastAPIS map (lastApis, lastApisIndex) -> {
 					Surname: lastApis.ns02#Surname,
 					Firstname: lastApis.ns02#Firstname,
+					Gender: lastApis.ns02#Gender,
 					DateOfBirth: lastApis.ns02#DateOfBirth,
 					Nationality: lastApis.ns02#Nationality,
 					DocumentType: lastApis.ns02#DocumentType,
@@ -177,8 +178,8 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 			SSRs:{
 				SSR: (passenger.ns02#SSRs.*ns02#SSR map (ssr, ssrIndex) -> {
 					SSRCode: ssr.ns02#SSRCode,
-					FlightNumber: ssr.ns02#FlightNumber,
 					SSRDescription: ssr.ns02#SSRDescription,
+					FlightNumber: ssr.ns02#FlightNumber,
 					FeeCode: ssr.ns02#FeeCode,
 					PaxNumber: ssr.ns02#PaxNumber,
 					Price: ssr.ns02#Price
@@ -209,7 +210,7 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 				OpenForBoarding: flight.ns02#OpenForBoarding,
 				BaggageAcceptanceStatus: flight.ns02#BaggageAcceptanceStatus,
 				ConnectingFlight: flight.ns02#ConnectingFlight,
-				JourneyRPH: flight.JourneyRPH,
+				JourneyRPH: flight.ns02#JourneyRPH,
 				CustomProperties: {	
 					 string: flight.ns02#CustomProperties.*ns03#string					
 				},

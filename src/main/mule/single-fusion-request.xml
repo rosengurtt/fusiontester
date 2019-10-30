@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="get:\fusiontester\fusion-requests\(fusion-request-id):FusionTester-config" doc:id="1b4757e4-ce88-4000-80c6-550754efbe43" >
+		<set-variable value="#[attributes.uriParams['fusion-request-id']]" doc:name="Store FusionRequestId" doc:id="e6e8a2ad-6ecf-4c21-8dcc-15d8e205c4b2" variableName="FusionRequestId"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7383fad3-5a2a-44c0-b7ad-cd8bc0d9c07a" message="Recibi al soreton de #[vars.FusionRequestid] #['\n']"/>
+		<ee:transform doc:name="Build response" doc:id="cb246cda-4abc-4c59-b742-18c582215aec" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "success",
+	data:{
+		FusionRequestId: vars.FusionRequestId
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="AddCORSheader" doc:id="6bf20e70-bd60-43e0-94ab-e27bf2e7dbbb" name="AddCORSheader"/>
+	</flow>
+</mule>

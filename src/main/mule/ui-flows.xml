@@ -442,4 +442,47 @@ payload.resultSet1]]></ee:set-payload>
 		</ee:transform>
 		<flow-ref doc:name="AddCORSheader"  name="AddCORSheader" />
 	</flow>
+	<flow name="get:\fusiontester\fusion-requests:FusionTester-config" doc:id="b8167d99-dde8-4ee9-895b-5304324fb085" >
+		<db:stored-procedure doc:name="Get Fusion Requests" doc:id="5a7d7b60-9d52-41a9-b79f-dfc3d12dbbac" config-ref="mssql-jdbc">
+			<db:sql >{ call GetFusionRequests(:airline, :airport, :PNR, :RequestType, :FromDate, :ToDate, :PageSize, :Page) }</db:sql>
+			<db:input-parameters ><![CDATA[#[{ 'airline': attributes.queryParams['airline'], 'airport': attributes.queryParams['airport'], 
+'PNR': attributes.queryParams['pnr'], 'RequestType': attributes.queryParams['request-type'],
+'FromDate': attributes.queryParams['date-from'], 'ToDate': attributes.queryParams['date-to'],
+'PageSize': attributes.queryParams['page-size'], 'Page': attributes.queryParams['page']
+}]]]></db:input-parameters>
+		</db:stored-procedure>
+		<ee:transform doc:name="Format response" doc:id="981e3926-56f7-4377-9435-6722de69f33f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.resultSet1]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="AddCORSheader" doc:id="78277216-c3aa-4b30-b7a9-d1b8835d77d4" name="AddCORSheader" />
+	</flow>
+	<flow name="get:\fusiontester\fusion-requests\statistics:FusionTester-config" doc:id="47f33c40-9296-4fe4-b2d8-94e574fe9c54" >
+		<db:stored-procedure doc:name="Get Fusion Requests Statistics" doc:id="000854dd-00bc-4b9b-ba56-f1dd9c319189" config-ref="mssql-jdbc">
+			<db:sql >{ call GetFusionRequestsStatistics(:airline, :airport, :PNR, :RequestType, :FromDate, :ToDate) }</db:sql>
+			<db:input-parameters ><![CDATA[#[{ 	'airline': attributes.queryParams['airline'], 
+	'airport': attributes.queryParams['airport'], 
+	'PNR': attributes.queryParams['pnr'], 
+	'RequestType': attributes.queryParams['request-type'],
+	'FromDate': attributes.queryParams['date-from'], 
+	'ToDate': attributes.queryParams['date-to']
+}]]]></db:input-parameters>
+		</db:stored-procedure>
+		<ee:transform doc:name="Format response"  doc:id="4af551c6-be87-4045-bbb7-0667478b78c0">
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	result: "success",
+	data: payload.resultSet1[0]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="AddCORSheader"  name="AddCORSheader" />
+	</flow>
 </mule>

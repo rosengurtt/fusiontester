@@ -6,6 +6,7 @@ public class ActivateBag {
 		xml = xml.replaceAll("<ResponseId[\\s\\S]{38,40}ResponseId>","");
 		xml = xml.replaceAll("<BaggageItemId[\\s\\S]{38,40}BaggageItemId>","");
 		xml = xml.replaceAll("<CreatedOn[\\s\\S]{32,40}CreatedOn>","");
+		xml = xml.replaceAll("<DcsRequestsIds[\\s\\S]*DcsRequestsIds>","");
 		return xml;
 	}
 }

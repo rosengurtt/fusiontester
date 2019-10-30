@@ -19,16 +19,24 @@ ns ns03 http://schemas.microsoft.com/2003/10/Serialization/Arrays
 				Source: err.ns01#Source
 			}
 		}),
+		Status: i.ns01#Status,
 		BagDetails: (i.*ns01#BagDetails map (bagDetails, bagDetailsIndex) -> {
 			BaggageItemId: bagDetails.ns02#BaggageItemId,
+			BagTagNumber: bagDetails.ns02#BagTagNumber,
 			BagWeight: bagDetails.ns02#BagWeight,
 			BagRegistrationTime: bagDetails.ns02#BagRegistrationTime,
 			Active: bagDetails.ns02#Active,
 			Dropped: bagDetails.ns02#Dropped,
 			FlightId: bagDetails.ns02#FlightId,
+			DepartureAirportCode: bagDetails.ns02#DepartureAirportCode,
+			ArrivalAirportCode: bagDetails.ns02#ArrivalAirportCode,
 			ScheduledDepartureDateTime: bagDetails.ns02#ScheduledDepartureDateTime,
 			PassengerId: bagDetails.ns02#PassengerId,
-			SessionId: bagDetails.ns02#SessionId
+			LastName: bagDetails.ns02#LastName,
+			FirstName: bagDetails.ns02#FirstName,
+			Title: bagDetails.ns02#Title,			
+			SessionId: bagDetails.ns02#SessionId,
+			PNR: bagDetails.ns02#PNR,
 		})
 	})
 }

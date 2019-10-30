@@ -67,8 +67,12 @@ public class Helpers {
 		return simpleFormat.format(CalculatedCurrentDateTime);
 	}
 	
+	// This function is used to restore the system time to the current time
+	// To do that we count how many milliseconds elapsed since we set back the time, and we add
+	// that number of milliseconds to the saved "current date time".
+	// It is possible that the system time has been set externally to the right current time, and in that case the number of milliseconds
+	// passed to addMilliSeconds will be giagantic. In that case, we don't set the time to the real current time, because it is already right
 	public static Date addMilliSeconds(Date date, long milliSeconds) {
-		System.out.print("Entre en addMilliSeconds.");
 		    Calendar cal = Calendar.getInstance();
 		    cal.setTime(date);
 		    if (milliSeconds > 1000 * 60) {
@@ -85,6 +89,49 @@ public class Helpers {
 		    	cal.add(Calendar.MILLISECOND, (int)milliSeconds);
 			    return cal.getTime();
 		    }
+	}
+	
+	// This function is used to recover from a situation where we have set the system time to the time of the Fusion event we are 
+	// running, and for whatever reason the system time was not restored to the real current time after Fusion completed
+	// We wait a maximum of time that corresponds to the fusion tester timeout
+	public static boolean CheckSystemTimeIsRestored(String eventDateTime, String currentDateTime, long timeOutInMilliseconds)   {
+		System.out.print("Entre en CheckTimeIsRestoreds.");
+		try {
+
+			SimpleDateFormat simpleFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			Date storedCurrentDateTime = simpleFormat.parse(currentDateTime.substring(0,23));
+			Date storedEventDateTime = simpleFormat.parse(eventDateTime.substring(0,23));
+			
+			long sleepingTimeInMilliseconds = 50; //We sleep some time before testing again to avoid creating unnecessary load to the CPU
+			long maxIterations = timeOutInMilliseconds / sleepingTimeInMilliseconds;
+			int iteration = 0;
+			long oneHourInMilliseconds = 1000 * 60 * 60; 	// We assume the time of the event is at the very least an hour in the past
+															// If the time difference is longer than an hour, it is because we are comparing
+															// with the time of the event
+					
+			while (iteration < maxIterations) {
+				Thread.sleep(sleepingTimeInMilliseconds); 
+				Date systemDate = new Date();
+				long elapsedTimeInMillisecondsFromCurrentTime = java.lang.Math.abs(storedCurrentDateTime.getTime() - systemDate.getTime());					
+				
+				if (elapsedTimeInMillisecondsFromCurrentTime < oneHourInMilliseconds) {
+					System.out.print("CheckSystemTimeIsRestored() found out that the system time was not reset after a timeout\n");
+					return true;	
+				}
+				
+				iteration += 1;
+			}
+			System.out.print("CheckTimeIsRestoreds is returning false\n");
+			// If we reached this point, it means that we have reached the time out and the system time is still the time of the event
+			return false;
+		}
+		catch (Exception ex) {
+			System.out.print(ex.getMessage());
+		}
+		System.out.print("CheckTimeIsRestoreds is returning true because it raised an exception\n");
+		// Fail safe. If there is any issue, assume that there is no need to change the system time
+		return true;
+		
 	}
 	
 	public static boolean IsErrorWasDueToSystemTimeChanges(String errorDescription, String eventDateTime)  {
