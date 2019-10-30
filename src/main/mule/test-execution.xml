@@ -18,7 +18,16 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 		<choice doc:name="Verify that TestJob is inactive and there are records to process" doc:id="911d0f75-ba42-42b4-b7c5-882d3632a96a" >
 			<when expression="#[(vars.JobInfo.TestIsRunning == 'TRUE') and (vars.JobInfo.IsTestJobActive == 'FALSE') and (vars.JobInfo.RemainingRecords &gt; 0)]">
 				<logger level="INFO" doc:name="Logger" doc:id="e12be65d-e769-4178-bea2-826b925b6d94" message="Test-Execution: TestJob is not active so will queue a new job #['\n']"/>
-				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="b6753fe5-ef0f-4785-bdb8-a2828791ec3b" />
+				<ee:transform doc:name="Copy TestId to payload" doc:id="b2688488-7eb0-4267-a9c4-3355fa6c91ec" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	'TestId': vars.TestId
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 				<vm:publish doc:name="Send job to TestJobQueue" doc:id="01e532db-6c4a-4d23-a81e-216536561f9a" config-ref="VM_Config_TestJob" queueName="TestJobQueue" />
 			</when>
 			<otherwise >
@@ -31,7 +40,7 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 		<choice doc:name="If there are records to process continue" doc:id="ba6e4b04-d8ee-4b1b-b58e-2c1d3c722fc5" >
 			<when expression="vars.JobInfo.RemainingRecords &gt; 0">
 				<logger level="INFO" doc:name="Logger" doc:id="82ec0847-07af-4a60-a099-5a070f440cfb" message="Test-execution: After waking up and finding records still to process send message to queue to keep looping in test-execution #['\n']"/>
-				<set-payload value="#[vars.TestId]" doc:name="Set Payload" doc:id="386a0ff2-05c0-4434-aa67-7e0b1843f4de" />
+				<set-payload value="#[vars.Testid]" doc:name="Copy TestId to Payload" doc:id="2296a57d-fc8d-4352-9da2-ff169580c4c8" />
 				<vm:publish doc:name="Send to Jobs Queue" doc:id="72fcb67f-957d-4a33-afbb-b4f2204a80b7" config-ref="VM_Config_BackgroundJob" queueName="BackgroundJob" />
 			</when>
 			<otherwise >

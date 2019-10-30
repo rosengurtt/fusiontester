@@ -27,6 +27,7 @@ fusion:
   url: "local.fusion.aero"
   port: "80"
   timeout: "40000"
+  long.timeout: "3600000"
   
 real.time.server:
   url: "http://worldtimeapi.org/api/timezone/Europe/London"

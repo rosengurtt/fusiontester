@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
 	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="get:\fusiontester\fusion-requests\(fusion-request-id):FusionTester-config" doc:id="1b4757e4-ce88-4000-80c6-550754efbe43" >
 		<set-variable value="#[attributes.uriParams['fusion-request-id']]" doc:name="Store FusionRequestId" doc:id="e6e8a2ad-6ecf-4c21-8dcc-15d8e205c4b2" variableName="FusionRequestId"/>
 		<logger level="INFO" doc:name="Logger" doc:id="7383fad3-5a2a-44c0-b7ad-cd8bc0d9c07a" message="Recibi al soreton de #[vars.FusionRequestid] #['\n']"/>
-		<ee:transform doc:name="Build response" doc:id="cb246cda-4abc-4c59-b742-18c582215aec" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+						<ee:transform doc:name="Copy FusionRequestId to payload" doc:id="6f45b426-a597-49b6-ae22-aa5448bf45f4">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+	'FusionRequestId': vars.FusionRequestId
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<vm:publish doc:name="Send to Jobs Queue" doc:id="72fcb67f-957d-4a33-afbb-b4f2204a80b7" config-ref="VM_Config_TestJob" queueName="TestJobQueue" />
+			
+		<ee:transform doc:name="Build response" doc:id="cb246cda-4abc-4c59-b742-18c582215aec">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {

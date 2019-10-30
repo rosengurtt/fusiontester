@@ -54,6 +54,13 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 	    </http:default-headers>
 	</http:request-config>
 
+	<http:request-config name="FusionWebServiceLongTimeout" doc:name="HTTP Request configuration" responseTimeout="${fusion.long.timeout}"  >
+		<http:request-connection host="${fusion.url}" port="${fusion.port}" />
+		<http:default-headers >
+	        <http:default-header key="Content-Type" value="application/soap+xml" />
+	        <http:default-header key="charset" value="UTF-8" />
+	    </http:default-headers>
+	</http:request-config>
 	
 	<http:request-config name="TimeSetterWeb_configuration" doc:name="TimeSetterWeb configuration" doc:id="a1ce70bb-6b91-479b-8d53-4874aa22eacb" 
 	responseTimeout="${time.setter.web.timeout}"

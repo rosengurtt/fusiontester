@@ -14,12 +14,10 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 	
 		<flow name="TestJob" doc:id="954bc2f4-ba05-4d41-b62e-7239a32e63f2" >
 		<vm:listener doc:name="Listener" doc:id="b2ae82fd-3e56-4c15-a178-0b233fa31848" config-ref="VM_Config_TestJob" queueName="TestJobQueue"/>
-		
-			<set-variable value="#[payload]" doc:name="Save TestId" doc:id="07a13084-3712-4a51-be0c-2e20f0a51010" variableName="TestId"/>
-		<logger level="INFO" doc:name="Logger" doc:id="7a21533c-7569-435a-b941-09a080742acc" message=" #['\n']  #['\n'] Started Testjob   #['\n']  Will now call GetNextFusionRequestToTest . TestId = #[vars.TestId]  #['\n'] " />
-				<db:stored-procedure doc:name="Get details for Fusion Request" doc:id="a090a89e-459e-48d9-8483-a6cbbed2378e" config-ref="mssql-jdbc">
-				<db:sql>{ call GetNextFusionRequestToTest(:TestId) }</db:sql>
-				<db:input-parameters><![CDATA[#[{ 'TestId': vars.TestId }]]]></db:input-parameters>
+		<flow-ref doc:name="InitializeFlow" doc:id="8c345668-65ec-451b-b13d-a62c3e128957" name="InitializeFlow"/>
+		<db:stored-procedure doc:name="Get details for Fusion Request" doc:id="a090a89e-459e-48d9-8483-a6cbbed2378e" config-ref="mssql-jdbc">
+				<db:sql>{ call GetNextFusionRequestToTest(:TestId,:FusionRequestId) }</db:sql>
+				<db:input-parameters><![CDATA[#[{ 'TestId': vars.TestId, 'FusionRequestId': vars.FusionRequestId }]]]></db:input-parameters>
 		
 </db:stored-procedure>
 				<choice doc:name="Check we got a record to process" doc:id="831228e7-b290-4e36-8208-6c18b546c1ff" >
@@ -40,7 +38,8 @@ output application/java
 	FusionResponseXml: payload[0].FusionResponseXml[0],
 	FusionRequestType: payload[0].RequestType[0],
 	FusionRequestTypeLowerCase: lower (payload[0].RequestType[0]),
-	FusionRequestTime:  payload[0].RequestTime[0] as String
+	FusionRequestTime:  payload[0].RequestTime[0] as String,
+	TestId: payload[0].TestId[0] as String,
 }]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
@@ -51,7 +50,7 @@ output application/java
 				<db:stored-procedure doc:name="Store test result" doc:id="18e6b2e3-204d-4f82-9791-abaf9d262559" config-ref="mssql-jdbc">
 				<db:sql>{ call UpdateTestResult(:TestId, :FusionRequestId, :TestResult,:ExpectedResponse,:ActualResponse,:ActualDCScalls,:ExpectedDCScalls,:NumberOfDifferences,:DCScallsMatch) }</db:sql>
 				<db:input-parameters><![CDATA[#[{
-	'TestId': vars.TestId,
+	'TestId': vars.loggedItem.TestId,
 	'FusionRequestId': vars.loggedItem.FusionRequestId,
 	'TestResult': payload.Message,
 	'ExpectedResponse': payload.ExpectedResponseCleaned,
@@ -61,9 +60,18 @@ output application/java
 	'NumberOfDifferences': payload.NumberOfDifferences,
 	'DCScallsMatch': payload.DCScallsMatch
 }]]]></db:input-parameters>
-</db:stored-procedure>
-			</otherwise>
-		</choice>
+		</db:stored-procedure>
+					</otherwise>
+				</choice>
+				
+				<choice doc:name="Check if this is a single record test" doc:id="981b04d9-08fd-4977-8abc-25ddce6f9f17" >
+					<when expression="#[vars.IsSingleRecordTest == 'True']">
+										<db:stored-procedure doc:name="Set Test Batch as finished" config-ref="mssql-jdbc" >
+							<db:sql >{ call UpdateTestBatchAsFinished(:TestId)}</db:sql>
+							<db:input-parameters ><![CDATA[#[{ 'TestId': vars.loggedItem.TestId }]]]></db:input-parameters>
+						</db:stored-procedure>
+					</when>
+				</choice>
 				<logger level="INFO" doc:name="Logger" doc:id="9eb54461-a20b-442f-8156-c3a56d26e723" message="Finished testjob for record #[vars.loggedItem.FusionRequestId]  #['\n']" />
 
 		<error-handler>
@@ -74,14 +82,36 @@ output application/java
 		</error-handler>
 	
 </flow>
+	<flow name="InitializeFlow" doc:id="c7f8295a-9748-4fc8-8628-0df2ebc754aa" >
+		<set-variable value="#[payload.TestId]" doc:name="Save TestId" doc:id="07a13084-3712-4a51-be0c-2e20f0a51010" variableName="TestId" />
+		<set-variable value="#[payload.FusionRequestId]" doc:name="Save FusionRequestId" doc:id="60096982-97dc-4609-8ef6-a650e910ac58" variableName="FusionRequestId" />
+		<choice doc:name="Check if we are running a batch of tests or debugging one record" doc:id="9eafd51f-972b-4371-b04f-d79eea18f0e0" >
+			<when expression="#[vars.FusionRequestId != null]">
+				<logger level="INFO" doc:name="Logger" doc:id="c63f259c-34f6-4def-9df9-61eada3a9d24" message=" #['\n']  #['\n'] Started Testjob   #['\n']  Will now call GetNextFusionRequestToTest . FusionRequestId = #[vars.FusionRequestId]  #['\n'] " />
+				<set-variable value="True" doc:name="Set Variable IsSingleRecordTest to true" doc:id="ec67360c-911d-4e1a-9f4b-f7cc787f073c" variableName="IsSingleRecordTest" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="7a21533c-7569-435a-b941-09a080742acc" message=" #['\n']  #['\n'] Started Testjob   #['\n']  Will now call GetNextFusionRequestToTest . TestId = #[vars.TestId]  #['\n'] " />
+				<set-variable value="False" doc:name="Set Variable IsSingleRecordTest to false" doc:id="e23a2a13-097f-4e05-9274-c0a090f9793c" variableName="IsSingleRecordTest" />
+			</otherwise>
+		</choice>
+	</flow>
 	<flow name="testFusionRequest" doc:id="6422de27-cd6f-4c88-afce-85e270f41e58" >
 		<flow-ref doc:name="SetTimeToEventTime" doc:id="10225e43-d10a-46ff-a50a-529003cf197e" name="SetTimeToEventTime"/>
-		<logger level="INFO" doc:name="Logger" doc:id="67a17f62-62af-4279-94dd-d39d26f417e6" message="Test-job: Will call Fusion  #['\n']"/>
-		<logger level="INFO" doc:name="Logger" doc:id="13376ca4-baed-45aa-876c-5e06153aa596" message="#[vars.actualRequest]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="67a17f62-62af-4279-94dd-d39d26f417e6" message="Test-job: Will call Fusion  #['\n'] #[vars.actualRequest] #['\n']"/>
 		<try doc:name="Try" doc:id="06ca8f46-34a3-4300-8b4e-9d6e36d44759" >
-			<http:request method="POST" doc:name="Fusion WS" doc:id="8f351ffe-262c-498f-801e-66d6cdd266f7" config-ref="FusionWebService" path="/FusionService.svc">
-			<http:body><![CDATA[#[vars.actualRequest]]]></http:body>			
-</http:request>
+			<choice doc:name="Check if we need a long timeout" doc:id="d6d674e1-adfa-4870-8d0c-42716037fe4c" >
+				<when expression="#[vars.IsSingleRecordTest == 'True']">
+					<http:request method="POST" doc:name="Fusion WS" doc:id="cb66c043-7f63-4885-a301-4c6bbe67bd98" config-ref="FusionWebServiceLongTimeout" path="/FusionService.svc" >
+						<http:body ><![CDATA[#[vars.actualRequest]]]></http:body>
+					</http:request>
+				</when>
+				<otherwise >
+					<http:request method="POST" doc:name="Fusion WS" doc:id="8f351ffe-262c-498f-801e-66d6cdd266f7" config-ref="FusionWebService" path="/FusionService.svc">
+						<http:body><![CDATA[#[vars.actualRequest]]]></http:body>		
+					</http:request>
+				</otherwise>
+			</choice>
 			<error-handler>
 				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b43e246e-6232-4ea7-a8fd-9960a658e0d8" >
 					<set-variable value="#[error.description]" doc:name="Save error info" doc:id="190774c8-c41b-4028-a415-37d2e05e1e44" variableName="ErrorDescription"/>
@@ -132,7 +162,12 @@ output application/java
 				</on-error-propagate>
 			</error-handler>
 		</try>
-		<logger level="INFO" doc:name="Logger" doc:id="9db9b4d0-d4ca-49af-bbd7-fd5dd5a380d4" message="test-job: Fusion returned   #['\n']  #[payload] #['\n']"/>
+		<flow-ref doc:name="ProcessFusionResponse" doc:id="c3499cf8-64a4-45da-8b51-bce27646ff87" name="ProcessFusionResponse"/>
+		
+	
+</flow>
+	<flow name="ProcessFusionResponse" doc:id="e58e728f-9175-4918-8456-8e33432e4f96" >
+	<logger level="INFO" doc:name="Logger" doc:id="9db9b4d0-d4ca-49af-bbd7-fd5dd5a380d4" message="test-job: Fusion returned   #['\n']  #[payload] #['\n']"/>
 		<set-variable value="#[payload]" doc:name="Store payload in variable" doc:id="fe15aa68-1705-4687-b6d7-6f8c4e44a6cd" variableName="rawFusionResponse"/>
 		<flow-ref doc:name="SetTimeToCurrentTime" doc:id="8ce24fd9-d044-41a7-af28-9a2f151ce0cc" name="SetTimeToCurrentTime" />
 		<flow-ref doc:name="formatResponse" doc:id="ebabee6f-5948-4d52-85c0-9216bd0d3ad0" name="formatResponse" />
@@ -163,7 +198,9 @@ output application/java
 	actualDCScalls: vars.DCScalls.actual
 }]]]></java:args>
 			</java:invoke-static>
-	</flow>
+
+	
+</flow>
 	
 	
 </mule>
