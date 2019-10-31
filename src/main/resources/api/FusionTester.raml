@@ -27,7 +27,6 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
                   {
                     "message" : "Test started"
                   }
-
 /fusiontester/tests:
   get:
     description: Returns a list of tests. The tests returned can be filtered and paged.
@@ -95,10 +94,12 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
             example: ["FR","BE","BA","LS"]
           FromDate:
             type: string | nil
+            required: false
             description: Used to filter the records to include in the test. This is the lower limit
             example: "2019-04-07 23:00:08"
           ToDate:
             type: string | nil
+            required: false
             description: Used to filter the records to include in the test. This is the upper limit
             example: "2019-09-07 02:00:08"
           IncludeFusionRequestTypes:
@@ -121,9 +122,6 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
                     {
                         "TestId": 23
                     }
-
-
-
 /fusiontester/tests/{test-id}:
   get:
     description: Returns the details of a test
@@ -151,7 +149,6 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
                 "TestId": 64,
                 "StartDateTime": "2019-09-11T16:29:03.303"
               }
-
   put:
     description: Used to update existing tests
     body:
@@ -207,8 +204,6 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
                     {
                         "TestId": 23
                     }
-
-
 /fusiontester/tests/statistics:
   get:
     description: Returns total number of tests, total number of FusionRequest records and total number of DCSrequests records
@@ -230,7 +225,6 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
                       "FusionRequests": 8342,
                       "DCSRequests": 12878
                     }
-
 /fusiontester/airlines:
   get:
     description: Returns an array with the 2 letter codes of the airlines for which there is data
@@ -264,7 +258,6 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
                       "SuccessfulRecords": 214,
                       "FailedRecords": 60
                     }
-
 /fusiontester/tests/{test-id}/results:
   get:
     description: Returns a page of results of a test
@@ -439,7 +432,6 @@ description: "Reads the Fusion requests from a table that has the logs of Fusion
                     {
                       "FusionRequests": 8342
                     }
-
 /fusiontester/fusion-requests/{fusion-request-id}:
   get:
     description: Runs a single fusion request. Intended for debugging Fusion code. 

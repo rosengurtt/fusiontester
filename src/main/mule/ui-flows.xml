@@ -11,10 +11,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
 	<flow name="get:\fusiontester\tests:FusionTester-config">
 		<db:stored-procedure doc:name="Get Tests" doc:id="68bdcc37-3941-4d2a-b639-8bc3e5ce3595" config-ref="mssql-jdbc">
-			<db:sql >{ call GetTests(:DateFrom, :DateTo, :PageSize, :Page)}</db:sql>
+			<db:sql >{ call GetTests(:DateFrom, :DateTo, :PageSize, :Page, :TestName)}</db:sql>
 			<db:input-parameters ><![CDATA[#[{ 'DateFrom': attributes.queryParams['date-from'], 
 'DateTo': attributes.queryParams['date-to'], 
-'PageSize': attributes.queryParams['page-size'], 'Page': attributes.queryParams['page'] }]]]></db:input-parameters>
+'PageSize': attributes.queryParams['page-size'], 'Page': attributes.queryParams['page'],
+'TestName': attributes.queryParams['test-name'] }]]]></db:input-parameters>
 		</db:stored-procedure>
 		<ee:transform doc:name="Format response" doc:id="dc05197a-3887-4dd9-bae8-d81877807692" >
 			<ee:message >
@@ -62,7 +63,7 @@ payload]]></ee:set-payload>
 			</java:invoke-static>
 			<logger level="INFO" doc:name="Logger" doc:id="b0885efe-b606-44c4-a403-1cf1e1898cd6" message="Will call UpdateTest #['\n']"/>
 			<db:stored-procedure doc:name="Update test" doc:id="0774cd1a-09d6-427a-87e2-6ef017b4114e" config-ref="mssql-jdbc">
-			<db:sql>{ call UpdateTest(:TestId, :TestName, :TestDescription, :TestCreator, :IncludeAirports, :IncludeAirlines, :FromDate, :ToDate, :IncludeFusionRequestTypes)}</db:sql>
+			<db:sql>{ call UpdateTest(:TestId, :TestName, :TestDescription, :TestCreator, :IncludeAirports, :IncludeAirlines, :DateFrom, :DateTo, :IncludeFusionRequestTypes)}</db:sql>
 			<db:input-parameters><![CDATA[#[{ 	
 	'TestId': vars.TestId,
 	'TestName': payload.TestName,
@@ -70,8 +71,8 @@ payload]]></ee:set-payload>
 	'TestCreator': payload.TestCreator,
 	'IncludeAirports': payload.IncludeAirports,
 	'IncludeAirlines': payload.IncludeAirlines,
-	'FromDate': payload.FromDate,
-	'ToDate': payload.ToDate,
+	'DateFrom': payload.DateFrom,
+	'DateTo': payload.DateTo,
 	'IncludeFusionRequestTypes': payload.IncludeFusionRequestTypes	
 }]]]></db:input-parameters>
 		</db:stored-procedure>
@@ -125,14 +126,14 @@ payload]]></ee:set-payload>
 				<java:args ><![CDATA[#[{ 'payload': payload}]]]></java:args>
 			</java:invoke-static>
 			<db:stored-procedure doc:name="Insert test" doc:id="0774cd1a-09d6-427a-87e2-6ef017b4114e" config-ref="mssql-jdbc">
-			<db:sql>{ call InsertTest(:TestName, :TestDescription, :TestCreator, :IncludeAirports, :IncludeAirlines, :FromDate, :ToDate, :IncludeFusionRequestTypes)}</db:sql>
+			<db:sql>{ call InsertTest(:TestName, :TestDescription, :TestCreator, :IncludeAirports, :IncludeAirlines, :DateFrom, :DateTo, :IncludeFusionRequestTypes)}</db:sql>
 			<db:input-parameters><![CDATA[#[{ 	'TestName': payload.TestName,
 	'TestDescription': payload.TestDescription,
 	'TestCreator': payload.TestCreator,
 	'IncludeAirports': payload.IncludeAirports,
 	'IncludeAirlines': payload.IncludeAirlines,
-	'FromDate': payload.FromDate,
-	'ToDate': payload.ToDate,
+	'DateFrom': payload.DateFrom,
+	'DateTo': payload.DateTo,
 	'IncludeFusionRequestTypes': payload.IncludeFusionRequestTypes	
 }]]]></db:input-parameters>
 		</db:stored-procedure>
@@ -171,10 +172,6 @@ output application/json
 		<flow-ref doc:name="AddCORSheader" doc:id="be0b2120-c08f-42fb-ad83-ed393ed3ddf2" name="AddCORSheader"/>
 	</flow>
 	
-	
-	
-	
-	
 	<flow name="AddCORSheader" doc:id="40faf349-99e8-4c32-bfc1-09b1a6ffc7fb" >
 		<ee:transform doc:id="b50ff959-380b-4b19-b901-64b7b2a954cd" doc:name="Add Access-Control-Allow-Origin">
   <ee:variables>
@@ -186,7 +183,9 @@ output application/json
 	</flow>
 	<flow name="get:\fusiontester\tests\statistics:FusionTester-config" doc:id="c46f88be-007a-41b5-bcb8-f585ea010e7d" >
 		<db:stored-procedure doc:name="Get test statiscics" doc:id="60d8a235-dd96-4eaa-b476-19a42c5c7b2e" config-ref="mssql-jdbc">
-			<db:sql >{ call GetTestsStatistics() }</db:sql>
+			<db:sql >{ call GetTestsStatistics(:DateFrom, :DateTo, :TestName) }</db:sql>
+			<db:input-parameters ><![CDATA[#[{ 'DateFrom': attributes.queryParams['date-from'], 'DateTo': attributes.queryParams['date-to'], 
+'TestName': attributes.queryParams['test-name']}]]]></db:input-parameters>
 		</db:stored-procedure>
 		<ee:transform doc:name="Format response" doc:id="b8befcbd-c42c-4898-a39d-ba62a7a9ed19" >
 			<ee:message >
@@ -385,7 +384,7 @@ output application/json
     
 
 </flow>
-<flow name="get:\fusiontester\tests\(test-id)\results\statistics:FusionTester-config"  >
+    <flow name="get:\fusiontester\tests\(test-id)\results\statistics:FusionTester-config"  >
 		<db:stored-procedure doc:name="Get results statiscics"  config-ref="mssql-jdbc">
 			<db:sql >{ call GetTestResultsStatistics(:TestId) }</db:sql>
 			<db:input-parameters ><![CDATA[#[{ 'TestId': attributes.uriParams['test-id'] }]]]></db:input-parameters>
@@ -444,10 +443,10 @@ payload.resultSet1]]></ee:set-payload>
 	</flow>
 	<flow name="get:\fusiontester\fusion-requests:FusionTester-config" doc:id="b8167d99-dde8-4ee9-895b-5304324fb085" >
 		<db:stored-procedure doc:name="Get Fusion Requests" doc:id="5a7d7b60-9d52-41a9-b79f-dfc3d12dbbac" config-ref="mssql-jdbc">
-			<db:sql >{ call GetFusionRequests(:airline, :airport, :PNR, :RequestType, :FromDate, :ToDate, :PageSize, :Page) }</db:sql>
+			<db:sql >{ call GetFusionRequests(:airline, :airport, :PNR, :RequestType, :DateFrom, :DateTo, :PageSize, :Page) }</db:sql>
 			<db:input-parameters ><![CDATA[#[{ 'airline': attributes.queryParams['airline'], 'airport': attributes.queryParams['airport'], 
 'PNR': attributes.queryParams['pnr'], 'RequestType': attributes.queryParams['request-type'],
-'FromDate': attributes.queryParams['date-from'], 'ToDate': attributes.queryParams['date-to'],
+'DateFrom': attributes.queryParams['date-from'], 'DateTo': attributes.queryParams['date-to'],
 'PageSize': attributes.queryParams['page-size'], 'Page': attributes.queryParams['page']
 }]]]></db:input-parameters>
 		</db:stored-procedure>
@@ -463,13 +462,13 @@ payload.resultSet1]]></ee:set-payload>
 	</flow>
 	<flow name="get:\fusiontester\fusion-requests\statistics:FusionTester-config" doc:id="47f33c40-9296-4fe4-b2d8-94e574fe9c54" >
 		<db:stored-procedure doc:name="Get Fusion Requests Statistics" doc:id="000854dd-00bc-4b9b-ba56-f1dd9c319189" config-ref="mssql-jdbc">
-			<db:sql >{ call GetFusionRequestsStatistics(:airline, :airport, :PNR, :RequestType, :FromDate, :ToDate) }</db:sql>
+			<db:sql >{ call GetFusionRequestsStatistics(:airline, :airport, :PNR, :RequestType, :DateFrom, :DateTo) }</db:sql>
 			<db:input-parameters ><![CDATA[#[{ 	'airline': attributes.queryParams['airline'], 
 	'airport': attributes.queryParams['airport'], 
 	'PNR': attributes.queryParams['pnr'], 
 	'RequestType': attributes.queryParams['request-type'],
-	'FromDate': attributes.queryParams['date-from'], 
-	'ToDate': attributes.queryParams['date-to']
+	'DateFrom': attributes.queryParams['date-from'], 
+	'DateTo': attributes.queryParams['date-to']
 }]]]></db:input-parameters>
 		</db:stored-procedure>
 		<ee:transform doc:name="Format response"  doc:id="4af551c6-be87-4045-bbb7-0667478b78c0">
